@@ -10,7 +10,7 @@ export async function startGame(
   parent: HTMLElement,
 ): Promise<Phaser.Game> {
   try {
-    await document.fonts.load(`12px ${FONT_FAMILY}`, '가A');
+    await document.fonts.load(`12px ${FONT_FAMILY}`, String.fromCharCode(0xac00) + 'A');
   } catch {
     // Font load errors fall back to the system font; the script checker still guards widths.
   }
