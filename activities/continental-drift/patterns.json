@@ -1,0 +1,21 @@
+{
+  "placeholder": true,
+  "colors": { "glacier": "#eaf6ff", "mountain": "#7a4a22" },
+  "fossil": [
+    { "taxon": "mesosaurus", "color": "#e07b39", "width": 5, "points": [[230, 160], [252, 158]] },
+    { "taxon": "cynognathus", "color": "#b5577f", "width": 5, "points": [[222, 146], [246, 138]] },
+    { "taxon": "lystrosaurus", "color": "#e3c75a", "width": 5, "points": [[262, 164], [300, 156]] },
+    { "taxon": "lystrosaurus", "color": "#e3c75a", "width": 5, "points": [[264, 168], [266, 190]] },
+    { "taxon": "glossopteris", "color": "#4f8f3f", "width": 4, "points": [[226, 182], [256, 174], [278, 192], [300, 206]] }
+  ],
+  "glacier": [
+    { "from": [256, 172], "to": [236, 168] },
+    { "from": [260, 168], "to": [254, 150] },
+    { "from": [268, 170], "to": [292, 160] },
+    { "from": [270, 184], "to": [292, 198] },
+    { "from": [262, 182], "to": [258, 204] }
+  ],
+  "mountain": [
+    { "points": [[203, 104], [210, 86], [214, 64], [208, 46], [199, 32]] }
+  ]
+}

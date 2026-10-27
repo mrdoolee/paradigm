@@ -1,0 +1,19 @@
+{
+  "colors": {
+    "africa": "#c9a75a",
+    "south-america": "#7fb069",
+    "north-america": "#6f9bd1",
+    "greenland": "#9ed2c6",
+    "antarctica": "#dfe3ea",
+    "australia": "#d0789e",
+    "india": "#d98a5b",
+    "eurasia": "#a990c9"
+  },
+  "phases": [
+    { "id": "coast", "board": "world", "move": ["south-america"], "pattern": null, "dot": null, "before": "intro", "guide": "line-guide-coast", "after": "coast-after" },
+    { "id": "fossil", "board": "world", "move": ["india", "antarctica"], "pattern": "fossil", "dot": 0, "before": "fossil-before", "guide": "line-guide-fossil", "after": "fossil-after" },
+    { "id": "glacier", "board": "world", "move": ["australia"], "pattern": "glacier", "dot": 1, "before": "glacier-before", "guide": "line-guide-glacier", "after": "glacier-after" },
+    { "id": "mountain", "board": "world", "move": ["north-america", "greenland", "eurasia"], "pattern": "mountain", "dot": 2, "before": "mountain-before", "guide": "line-guide-mountain", "after": "mountain-after" },
+    { "id": "stripes", "board": "seafloor", "move": ["strip-1", "strip-2", "strip-3"], "pattern": null, "dot": null, "before": "seafloor-before", "guide": "line-guide-stripes", "after": "seafloor-after" }
+  ]
+}

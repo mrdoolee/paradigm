@@ -6,9 +6,9 @@ export default defineConfig({
     target: 'es2022',
     rollupOptions: {
       input: {
-        home: resolve(__dirname, 'index.html'),
-        game: resolve(__dirname, 'continental-drift/index.html'),
-        about: resolve(__dirname, 'continental-drift/about/index.html'),
+        home: resolve(import.meta.dirname, 'index.html'),
+        game: resolve(import.meta.dirname, 'continental-drift/index.html'),
+        about: resolve(import.meta.dirname, 'continental-drift/about/index.html'),
       },
     },
   },
