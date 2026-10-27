@@ -10,7 +10,8 @@
     "shots": "playwright test --grep @shots",
     "e2e": "playwright test --grep @e2e",
     "build:masks": "tsx scripts/map/build-masks.ts",
-    "build:widths": "tsx scripts/font/build-widths.ts"
+    "build:widths": "tsx scripts/font/build-widths.ts",
+    "check:script": "tsx scripts/check-script.ts"
   },
   "license": "UNLICENSED",
   "type": "module",
