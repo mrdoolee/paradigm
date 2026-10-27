@@ -1,0 +1,87 @@
+// Builds the sea-floor magnetic stripe pieces (grey-box art) from one list of stripe widths.
+// Usage: npm run build:stripes
+// The left flank plus the ridge band is one fixed piece; the right flank is cut into three pieces
+// the student drags so they mirror the left flank.
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { PNG } from 'pngjs';
+import { dotted, outline } from './raster';
+
+const OUT = 'activities/continental-drift/art/seafloor';
+/** Stripe widths from the ridge outward; even index = normal polarity (like today), odd = reversed. */
+export const STRIPES = [12, 7, 10, 6, 13, 9, 7, 12, 9, 10];
+/** Right-flank pieces: which stripes (by index) each one holds. */
+const GROUPS = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+const RIDGE_X = 200;
+const TOP = 46;
+const H = 150;
+const STARTS: [number, number][] = [
+  [372, 70],
+  [412, 52],
+  [330, 60],
+];
+const NORMAL = [36, 40, 52];
+const REVERSED = [222, 214, 190];
+
+function colorOf(i: number) {
+  return i % 2 === 0 ? NORMAL : REVERSED;
+}
+
+function writeStrip(path: string, cols: number[][], h: number) {
+  const w = cols.length;
+  const png = new PNG({ width: w, height: h });
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const k = (y * w + x) * 4;
+      const c = cols[x];
+      png.data[k] = c[0];
+      png.data[k + 1] = c[1];
+      png.data[k + 2] = c[2];
+      png.data[k + 3] = 255;
+    }
+  writeFileSync(path, PNG.sync.write(png));
+}
+
+function writeMask(path: string, m: Uint8Array, w: number, h: number) {
+  const png = new PNG({ width: w, height: h });
+  for (let i = 0; i < w * h; i++) {
+    png.data.set([255, 255, 255, m[i] ? 255 : 0], i * 4);
+  }
+  writeFileSync(path, PNG.sync.write(png));
+}
+
+function writeOutlines(id: string, w: number, h: number) {
+  const full = new Uint8Array(w * h).fill(1);
+  const o = outline(full, w, h);
+  writeMask(`${OUT}/${id}-outline.png`, o, w, h);
+  writeMask(`${OUT}/${id}-dotted.png`, dotted(o, w, h), w, h);
+}
+
+mkdirSync(OUT, { recursive: true });
+const pieces: Record<string, { w: number; h: number; start: [number, number]; target: [number, number]; fixed?: true }> = {};
+
+// Fixed piece: left flank (outermost first) + the ridge band on both sides.
+const left: number[][] = [];
+for (let i = STRIPES.length - 1; i >= 1; i--) for (let k = 0; k < STRIPES[i]; k++) left.push(colorOf(i));
+for (let k = 0; k < STRIPES[0] * 2; k++) left.push(colorOf(0));
+const leftX = RIDGE_X - STRIPES.slice(1).reduce((a, b) => a + b, 0) - STRIPES[0];
+writeStrip(`${OUT}/ridge.png`, left, H);
+writeOutlines('ridge', left.length, H);
+pieces.ridge = { w: left.length, h: H, start: [leftX, TOP], target: [leftX, TOP], fixed: true };
+
+let x = RIDGE_X + STRIPES[0];
+GROUPS.forEach((g, n) => {
+  const cols: number[][] = [];
+  for (const i of g) for (let k = 0; k < STRIPES[i]; k++) cols.push(colorOf(i));
+  const id = `strip-${n + 1}`;
+  writeStrip(`${OUT}/${id}.png`, cols, H);
+  writeOutlines(id, cols.length, H);
+  pieces[id] = { w: cols.length, h: H, start: STARTS[n], target: [x, TOP] };
+  x += cols.length;
+});
+
+writeFileSync(`${OUT}/seafloor.json`, JSON.stringify({ ridgeX: RIDGE_X, stripes: STRIPES, pieces }, null, 2) + '\n');
+console.log(`${OUT}: ridge + ${GROUPS.length} strips`);

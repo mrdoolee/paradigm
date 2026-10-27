@@ -1,6 +1,7 @@
 // Activity data that the scenes share: piece masks, phases and asset URLs.
 import piecesFile from '../../../activities/continental-drift/art/pieces/pieces.json';
 import puzzle from '../../../activities/continental-drift/puzzle.json';
+import seafloor from '../../../activities/continental-drift/art/seafloor/seafloor.json';
 import type { PieceSpec } from '../common/DragBoard';
 
 export interface Phase {
@@ -54,7 +55,22 @@ export function worldPieces(): PieceSpec[] {
   });
 }
 
-/** Sea-floor stripe pieces (filled in by the stripes task). */
+/** Sea-floor stripe pieces: a fixed ridge (left flank + ridge band) and three right-flank strips. */
 export function seafloorPieces(): PieceSpec[] {
-  return [];
+  return Object.entries(seafloor.pieces).map(([id, p]) => {
+    const info = p as { w: number; h: number; start: number[]; target: number[]; fixed?: boolean };
+    return {
+      id,
+      w: info.w,
+      h: info.h,
+      start: { x: info.start[0], y: info.start[1] },
+      target: { x: info.target[0], y: info.target[1] },
+      fixed: info.fixed,
+      tex: `seafloor/${id}`,
+      outlineTex: `seafloor/${id}-outline`,
+      dottedTex: `seafloor/${id}-dotted`,
+      layers: {},
+      color: 0xffffff,
+    };
+  });
 }
