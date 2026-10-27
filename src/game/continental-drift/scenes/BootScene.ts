@@ -22,6 +22,7 @@ export class BootScene extends Phaser.Scene {
     this.scene.launch(UI_KEY);
     // Dev-only shortcuts used by tests and tuning: ?start=<Scene>&debug=assembled
     const first = (import.meta.env.DEV && params.get('start')) || 'Title';
+    if (import.meta.env.DEV && params.get('steady')) this.registry.set('steady', true);
     const data: Record<string, unknown> = {};
     if (import.meta.env.DEV && params.get('debug') === 'assembled') data.assembled = true;
     if (import.meta.env.DEV && params.get('phases')) data.phases = params.get('phases')!.split(',');

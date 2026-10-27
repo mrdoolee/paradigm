@@ -23,8 +23,9 @@ const STARTS: [number, number][] = [
   [412, 52],
   [330, 60],
 ];
-const NORMAL = [36, 40, 52];
-const REVERSED = [222, 214, 190];
+/** Textbook style: coloured = normal polarity (like today), pale = reversed. */
+const NORMAL = [224, 160, 64];
+const REVERSED = [242, 236, 220];
 
 function colorOf(i: number) {
   return i % 2 === 0 ? NORMAL : REVERSED;

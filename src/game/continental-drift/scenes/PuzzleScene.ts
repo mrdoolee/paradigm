@@ -4,6 +4,7 @@ import { PUZZLE_AREA } from '../../common/layout';
 import { VIEW_H, VIEW_W } from '../../common/screen';
 import { dbg } from '../../common/debug';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
+import seafloor from '../../../../activities/continental-drift/art/seafloor/seafloor.json';
 import { DOT_TOTAL, PHASES, WORLD_PHASES, seafloorPieces, worldPieces, type Phase } from '../data';
 
 interface PuzzleData {
@@ -15,6 +16,7 @@ interface PuzzleData {
 const SEA = 0x274660;
 const SEA_GRID = 0x2d506c;
 const DEEP = 0x1d3448;
+const RIDGE = 0xd9483b;
 
 /** Drag-to-fit puzzle. Runs the given phases in order with their dialogs, then starts `next`. */
 export class PuzzleScene extends Phaser.Scene {
@@ -47,6 +49,7 @@ export class PuzzleScene extends Phaser.Scene {
     if (data.assembled) for (const s of specs) s.start = { ...s.target };
     this.board = new DragBoard(this, specs, PUZZLE_AREA);
     dbg.board = this.board;
+    if (board !== 'world') this.drawRidgeMark();
     this.events.on('ui-opened', () => this.board.setEnabled(false));
     this.events.on('ui-closed', () => this.board.setEnabled(true));
     this.board.events.on('snap', () => this.ui.sfx('snap'));
@@ -67,6 +70,18 @@ export class PuzzleScene extends Phaser.Scene {
     g.fillStyle(DEEP).fillRect(0, 0, VIEW_W, VIEW_H);
     g.fillStyle(SEA_GRID);
     for (let y = 22; y < VIEW_H; y += 40) g.fillRect(0, y, VIEW_W, 1);
+  }
+
+  /** A red line and small peaks mark the mid-ocean ridge, drawn above the stripes. */
+  private drawRidgeMark() {
+    const x = seafloor.ridgeX;
+    const top = seafloor.pieces.ridge.target[1];
+    const h = seafloor.pieces.ridge.h;
+    const g = this.add.graphics().setDepth(950);
+    g.fillStyle(RIDGE).fillRect(x - 1, top - 6, 2, h + 12);
+    for (const y of [top - 6, top + h + 6]) {
+      g.fillRect(x - 3, y - 1, 6, 2).fillRect(x - 2, y - 3, 4, 2);
+    }
   }
 
   private async run() {

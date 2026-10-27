@@ -96,7 +96,7 @@ export class DragBoard {
     for (const p of this.pieces.values()) {
       const active = movable.includes(p.spec.id);
       for (const [name, img] of Object.entries(p.layers)) img.setVisible(name === pattern);
-      p.box.setAlpha(active ? 1 : p.snapped ? 0.75 : 0.4);
+      p.box.setAlpha(active || p.spec.fixed ? 1 : p.snapped ? 0.75 : 0.4);
       p.box.setDepth(active ? 100 + depth : depth);
       depth++;
     }
@@ -269,7 +269,8 @@ export class DragBoard {
   }
 
   private tickBlink() {
-    this.blink++;
+    // Screenshot runs (?steady=1, dev only) keep the target outline lit so every shot shows it.
+    if (!this.scene.registry.get('steady')) this.blink++;
     for (const p of this.pieces.values()) {
       const active = this.movable.includes(p.spec.id) && !p.snapped;
       p.dotted.setVisible(active && this.blink % 2 === 0);

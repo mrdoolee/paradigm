@@ -8,7 +8,7 @@ const shot = (page: Page, project: string, name: string) =>
 test('@shots 주요 장면 스크린샷', async ({ page }, info) => {
   const touch = isTouch(info.project.name);
   const p = info.project.name;
-  await page.goto('/continental-drift/');
+  await page.goto('/continental-drift/?steady=1');
   await waitForNos(page);
   await page.waitForTimeout(400);
   await shot(page, p, 'title');
@@ -39,4 +39,9 @@ test('@shots 주요 장면 스크린샷', async ({ page }, info) => {
     const s = await state(page);
     if (s.scene === 'Ending') break;
   }
+  await playUntil(page, () => false, touch, 400).catch(() => null);
+  await page.waitForURL('**/continental-drift/about/');
+  await page.screenshot({ path: `test-results/screens/${p}-about.png`, fullPage: true });
+  await page.goto('/');
+  await page.screenshot({ path: `test-results/screens/${p}-home.png` });
 });
