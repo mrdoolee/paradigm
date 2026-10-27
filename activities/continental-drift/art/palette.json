@@ -1,0 +1,21 @@
+{
+  "status": "draft",
+  "colors": [
+    { "name": "night", "hex": "#121a28", "use": "dialog background" },
+    { "name": "sea", "hex": "#274660", "use": "sea" },
+    { "name": "sea-line", "hex": "#2d506c", "use": "sea grid" },
+    { "name": "deep", "hex": "#1d3448", "use": "sea-floor background" },
+    { "name": "slate", "hex": "#4b5870", "use": "inner frame line, dimmed" },
+    { "name": "paper", "hex": "#e8dfc6", "use": "frame" },
+    { "name": "paper2", "hex": "#f4ecd8", "use": "text, Antarctica" },
+    { "name": "gold", "hex": "#ffd23f", "use": "names, cursor, selected rim" },
+    { "name": "mist", "hex": "#9aa6b8", "use": "marks" },
+    { "name": "ink", "hex": "#1b2a38", "use": "continent outline" },
+    { "name": "land-africa", "hex": "#c9a75a", "use": "Africa" },
+    { "name": "land-sa", "hex": "#7fb069", "use": "South America" },
+    { "name": "land-na", "hex": "#6f9bd1", "use": "North America" },
+    { "name": "land-eurasia", "hex": "#a990c9", "use": "Eurasia" },
+    { "name": "land-india", "hex": "#d98a5b", "use": "India" },
+    { "name": "land-australia", "hex": "#d0789e", "use": "Australia" }
+  ]
+}
