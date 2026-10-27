@@ -117,7 +117,7 @@ export class UiScene extends Phaser.Scene {
     return this.queue.enqueue(() => this.runChoice(anchor));
   }
 
-  setGuide(anchor: string | null, dots: { done: number; total: number } | null = null) {
+  setGuide(anchor: string | null, dots: { done: number; total: number } | null = null) /* done = index of the current step */ {
     this.guideAnchor = anchor;
     const b = anchor ? this.script.blocks.get(anchor) : null;
     this.guideText.setText(b && b.kind === 'line' ? b.text : '');
@@ -125,7 +125,9 @@ export class UiScene extends Phaser.Scene {
     if (dots) {
       for (let i = 0; i < dots.total; i++) {
         const x = TOPBAR.w - 30 - (dots.total - 1 - i) * 10;
-        g.fillStyle(i < dots.done ? 0xfff6c8 : 0x4a5a6a).fillRect(x - 3, 8, 6, 6);
+        // Filled = this step or one already done; hollow = still ahead.
+        if (i <= dots.done) g.fillStyle(0xfff6c8).fillRect(x - 3, 8, 6, 6);
+        else g.lineStyle(1, 0x8a96a8).strokeRect(x - 2.5, 8.5, 5, 5);
       }
     }
     this.refreshGuide();

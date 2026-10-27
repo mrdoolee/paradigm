@@ -53,3 +53,8 @@ export function worldPieces(): PieceSpec[] {
     };
   });
 }
+
+/** Sea-floor stripe pieces (filled in by the stripes task). */
+export function seafloorPieces(): PieceSpec[] {
+  return [];
+}

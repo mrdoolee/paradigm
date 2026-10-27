@@ -1,4 +1,4 @@
-import table from './galmuri11-widths.json';
+import table from './galmuri11-widths.json' with { type: 'json' };
 
 export type Measure = (s: string) => number;
 export interface WidthTable {

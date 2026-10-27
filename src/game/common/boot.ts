@@ -8,6 +8,7 @@ export const FONT_FAMILY = 'Galmuri11';
 export async function startGame(
   scenes: Phaser.Types.Scenes.SceneType[],
   parent: HTMLElement,
+  registry: Record<string, unknown> = {},
 ): Promise<Phaser.Game> {
   try {
     await document.fonts.load(`12px ${FONT_FAMILY}`, String.fromCharCode(0xac00) + 'A');
@@ -24,6 +25,11 @@ export async function startGame(
     scale: { mode: Phaser.Scale.NONE, zoom: pickZoom(window.innerWidth, window.innerHeight) },
     input: { activePointers: 2 },
     scene: scenes,
+    callbacks: {
+      preBoot: (g) => {
+        for (const [k, v] of Object.entries(registry)) g.registry.set(k, v);
+      },
+    },
   });
   const onResize = () => {
     const z = pickZoom(window.innerWidth, window.innerHeight);
