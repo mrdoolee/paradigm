@@ -9,7 +9,8 @@
     "test": "vitest run",
     "shots": "playwright test --grep @shots",
     "e2e": "playwright test --grep @e2e",
-    "build:masks": "tsx scripts/map/build-masks.ts"
+    "build:masks": "tsx scripts/map/build-masks.ts",
+    "build:widths": "tsx scripts/font/build-widths.ts"
   },
   "license": "UNLICENSED",
   "type": "module",
