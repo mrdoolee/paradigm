@@ -1,0 +1,4 @@
+Pixel art texture of one continent seen from above on an old hand-coloured school wall map, 1910s-1960s geology lab style.
+Fill exactly the white silhouette given in the reference image; keep its outline unchanged.
+Flat colour {{color}} with one darker shade for relief, a 1-pixel outline in #1b2a38, light from the top-left, 2 shading steps only.
+No text, no labels, no gradients, no anti-aliasing, no transparency inside the land.
