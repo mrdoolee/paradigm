@@ -15,6 +15,6 @@
     { "from": [262, 188], "to": [256, 204], "source": "G-LATE-PALEOZOIC" }
   ],
   "mountain": [
-    { "source": "M-CALEDONIAN", "width": 3, "points": [[214, 88], [215, 74], [216, 64], [210, 52], [203, 44], [198, 34]] }
+    { "source": "M-CALEDONIAN", "width": 4, "points": [[214, 88], [215, 74], [216, 64], [210, 52], [203, 44], [198, 34]] }
   ]
 }

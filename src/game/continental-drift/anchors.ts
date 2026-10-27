@@ -26,6 +26,7 @@ export const ANCHORS: Record<string, BlockKind> = {
   'line-guide-glacier': 'line',
   'line-guide-mountain': 'line',
   'line-guide-stripes': 'line',
+  'line-label-ridge': 'line',
   'line-card-title': 'line',
   'line-card-desc': 'line',
   'page-about': 'page',

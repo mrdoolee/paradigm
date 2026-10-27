@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { DragBoard } from '../../common/DragBoard';
-import { PUZZLE_AREA } from '../../common/layout';
+import { FONT, PUZZLE_AREA } from '../../common/layout';
 import { VIEW_H, VIEW_W } from '../../common/screen';
 import { dbg } from '../../common/debug';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
@@ -82,6 +82,10 @@ export class PuzzleScene extends Phaser.Scene {
     for (const y of [top - 6, top + h + 6]) {
       g.fillRect(x - 3, y - 1, 6, 2).fillRect(x - 2, y - 3, 4, 2);
     }
+    this.add
+      .text(x, top - 9, this.ui.line('line-label-ridge'), { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: '#ff8a7a' })
+      .setOrigin(0.5, 1)
+      .setDepth(950);
   }
 
   private async run() {
