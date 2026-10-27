@@ -46,6 +46,7 @@
 | SEA-STRIPES | 바인·매슈스(1963)와 몰리는 해령 양쪽 자기 줄무늬가 거울처럼 같다는 것을 해저 확장과 지구 자기 역전으로 설명했다. 처음엔 가정이 많아 의심도 받았고, 이후 연구(1964·1966 등)가 뒷받침했다. | 위 Wikipedia | 2차 | 확인 |
 | SEA-MIRROR | 해령에서 식은 새 바닥은 그때의 자기 방향을 간직하고 양쪽으로 퍼지므로 같은 기록이 거울 대칭으로 남는다. | 위 Wikipedia | 2차 | 확인 |
 | PT-1960S | 판구조론은 한 해에 세워지지 않았다. 1960년대 후반 여러 연구(변환단층, 판의 회전, 지진 분포 등)가 모여 자리 잡았다. | [50 Years of Plate Tectonics (ENS)](https://www.geosciences.ens.fr/?p=1471) | 2차 | 확인 ("1960년대 후반"으로만) |
+| PT-BOUNDARY | 지구 겉은 여러 판으로 나뉘고 판은 1년에 몇 cm 움직인다. 판의 경계는 멀어지는·가까워지는·어긋나는 경계로 나뉘며 지진과 화산은 판의 경계를 따라 띠 모양으로 많이 일어난다. | [USGS, This Dynamic Earth: Understanding plate motions](https://pubs.usgs.gov/gip/dynamic/understanding.html); 2022 개정 중학교 과학 [9과09-05] | 2차 | 확인 (교과서 수준) |
 | PT-FORCE | 판을 움직이는 힘(맨틀 대류, 해령에서 미는 힘, 가라앉는 판이 당기는 힘)의 비중은 의견이 갈린다. | [Physical Geology: Mechanisms for plate motion](https://opentextbc.ca/physicalgeologyh5p/chapter/mechanisms-for-plate-motion/); [U. Michigan: Plate driving forces](https://public.websites.umich.edu/~gs265/tecpaper.htm) | 2차 | 확인 (교재 수준. "지금도 연구 중"으로 씀) |
 
 ## 교육과정
