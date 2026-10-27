@@ -123,3 +123,15 @@ export async function playUntil(page: Page, pred: (s: NosState) => boolean, touc
   }
   throw new Error(`playUntil: condition not reached; last state ${JSON.stringify(await state(page))}`);
 }
+
+/** Picks choice i (0-based) of a 3-row choice box: arrow keys on desktop, tap on the row on tablet. */
+export async function chooseIndex(page: Page, i: number, rows: number, touch: boolean) {
+  const top = 244 - (rows * 16 + 12) + 6;
+  if (touch) {
+    await tapAt(page, { x: 380, y: top + i * 16 + 8 }, true);
+  } else {
+    for (let k = 0; k < i; k++) await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+  }
+  await page.waitForTimeout(120);
+}

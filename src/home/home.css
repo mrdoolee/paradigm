@@ -1,0 +1,9 @@
+:root { --bg: #14161c; --ink: #ece6d6; --card: #232836; --accent: #ffd23f; }
+html { background: var(--bg); color: var(--ink); }
+body { margin: 0; font: 18px/1.6 system-ui, "Malgun Gothic", sans-serif; }
+main { max-width: 44em; margin: 0 auto; padding: 40px 16px; }
+h1 { font-size: 1.6em; }
+.cards { list-style: none; padding: 0; display: grid; gap: 16px; }
+.card { display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 10px; background: var(--card); color: var(--ink); text-decoration: none; border: 2px solid transparent; }
+.card:hover, .card:focus-visible { border-color: var(--accent); }
+.card strong { font-size: 1.25em; color: var(--accent); }

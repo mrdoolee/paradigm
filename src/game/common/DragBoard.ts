@@ -104,6 +104,13 @@ export class DragBoard {
     if (this.movable.length === 0) this.scene.time.delayedCall(0, () => this.events.emit('phase-done'));
   }
 
+  /** Shows every piece at full strength with no highlight (for cut-scenes). */
+  showAll(): void {
+    this.movable = [];
+    for (const p of this.pieces.values()) p.box.setAlpha(1);
+    this.refreshRims();
+  }
+
   setEnabled(on: boolean): void {
     this.enabled = on;
     if (!on) this.onUp(true);
@@ -155,13 +162,13 @@ export class DragBoard {
     tick();
   }
 
-  /** Moves pieces back to their start positions in whole-pixel steps. */
-  scatter(ids: string[], steps: number, done: () => void): void {
+  /** Moves pieces to the given positions in whole-pixel steps (no dragging involved). */
+  moveAll(dest: Record<string, Pt>, steps: number, done: () => void): void {
+    const ids = Object.keys(dest).filter((id) => this.pieces.has(id));
     let left = ids.length;
     if (!left) return done();
     for (const id of ids) {
-      const p = this.pieces.get(id)!;
-      this.animate(p, p.spec.start, steps, () => {
+      this.animate(this.pieces.get(id)!, dest[id], steps, () => {
         if (--left === 0) done();
       });
     }
