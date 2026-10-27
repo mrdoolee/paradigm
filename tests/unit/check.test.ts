@@ -53,3 +53,7 @@ test('선택지 글이 176px을 넘으면 CHOICE_TOO_WIDE', () => {
   const r = run(`\n## @choice-q\n- ${'가'.repeat(15)} -> @a\n\n## @a\naide: 말\n`);
   expect(codes(r)).toContain('CHOICE_TOO_WIDE');
 });
+
+test('목록 카드 글(line-card-*)은 HTML이라 한 줄 폭 검사를 하지 않는다', () => {
+  expect(codes(run(`\n## @line-card-desc\n${'가'.repeat(60)}\n`))).not.toContain('LINE_TOO_WIDE');
+});

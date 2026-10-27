@@ -70,6 +70,8 @@ export function checkScript(
       pagesByAnchor[b.anchor] = n;
       totalPages += n;
     } else if (b.kind === 'line') {
+      // line-card-* are shown on the HTML list page, not on the canvas.
+      if (b.anchor.startsWith('line-card-')) continue;
       glyphs(b.text, b.line + 1);
       const guide = b.anchor.startsWith('line-guide-');
       if (!oneLine(b.text, guide ? TOPBAR_TEXT_W : LINE_W)) {
