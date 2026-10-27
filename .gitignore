@@ -1,0 +1,17 @@
+# 의존성·빌드
+node_modules/
+dist/
+*.local
+# 비밀 (키는 각자 .env에)
+.env*
+!.env.example
+# 테스트 산출물
+test-results/
+playwright-report/
+# 하네스 작업 공간(장부·검토 결과)과 브레인스토밍 화면
+_workspace/
+.superpowers/
+# 외부 도구와 그림 생성 작업 폴더(원본·호출 기록). 고른 결과만 activities/<id>/art/로 옮긴다
+tools/sprite-gen/
+tools/art-runs/
+__pycache__/
