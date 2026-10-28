@@ -67,6 +67,10 @@ export class PuzzleScene extends Phaser.Scene {
   }
 
   private drawSea() {
+    if (this.textures.exists('sail/sea')) {
+      this.add.image(0, 0, 'sail/sea').setOrigin(0);
+      return;
+    }
     const g = this.add.graphics();
     g.fillStyle(SEA).fillRect(0, 0, VIEW_W, VIEW_H);
     g.fillStyle(SEA_GRID);

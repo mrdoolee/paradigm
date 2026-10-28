@@ -94,7 +94,7 @@ export class ScratchScene extends Phaser.Scene {
         if (this.field.isCleared(x, y)) continue;
         const px = C.origin[0] + x * C.cell;
         const py = C.origin[1] + y * C.cell;
-        g.fillStyle((x * 7 + y * 3) % 5 === 0 ? DIRT_DOT : DIRT).fillRect(px, py, C.cell, C.cell);
+        g.fillStyle((x * 73 + y * 151 + ((x * y) % 7)) % 11 === 0 ? DIRT_DOT : DIRT).fillRect(px, py, C.cell, C.cell);
       }
   }
 

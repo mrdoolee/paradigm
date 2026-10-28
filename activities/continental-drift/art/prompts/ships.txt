@@ -1,0 +1,4 @@
+Pixel art sprites, 2 small ships stacked vertically with clear empty space between them:
+1 a 1920s passenger steamship seen from directly above (top-down), black hull, cream deck, one red funnel, pointing right;
+2 a 1960s white research vessel seen from the side, small red bridge, a cable trailing behind the stern, pointing right.
+1-pixel dark navy (#1b2a38) outline, light from the top-left, 2 shading steps, crisp pixels, no anti-aliasing, no text.

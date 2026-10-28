@@ -19,7 +19,8 @@ export class EndingScene extends Phaser.Scene {
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
 
-    const g = this.add.graphics();
+    if (this.textures.exists('sail/sea')) this.add.image(0, 0, 'sail/sea').setOrigin(0);
+    const g = this.add.graphics().setVisible(!this.textures.exists('sail/sea'));
     g.fillStyle(0x274660).fillRect(0, 0, VIEW_W, VIEW_H);
     g.fillStyle(0x2d506c);
     for (let x = 0; x < VIEW_W; x += 40) g.fillRect(x, 0, 1, VIEW_H);

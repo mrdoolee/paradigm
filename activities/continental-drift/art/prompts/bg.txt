@@ -1,0 +1,3 @@
+Pixel art background, 4:3, {{scene}}
+Flat pixel art, at most 16 colours, muted palette like an old hand-coloured school map (navy, slate, paper cream, ochre),
+light from the top-left, crisp pixels, no anti-aliasing, no text, no letters, no people.

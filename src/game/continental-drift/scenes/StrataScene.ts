@@ -45,7 +45,7 @@ export class StrataScene extends Phaser.Scene {
     const top = C.left[1];
     const yOf = (i: number) => top + (n - 1 - i) * C.h; // layer 0 is the bottom
     const left = this.add.graphics().setDepth(2);
-    const label = { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: '#f4ecd8' };
+    const label = { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: '#f4ecd8', backgroundColor: '#121a28', padding: { x: 3, y: 2 } };
     for (let i = 0; i < n; i++) {
       const key = this.layerTex(i);
       this.add.image(C.left[0], yOf(i), key).setOrigin(0).setTint(hex(C.colors[i])).setDepth(1);

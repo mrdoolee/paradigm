@@ -58,7 +58,7 @@ export class SailScene extends Phaser.Scene {
       g.fillStyle(0x6b4f33).fillRect(1, 6, 10, 3);
       g.fillStyle(0xe8dfc6).fillRect(5, 0, 1, 6).fillRect(6, 1, 4, 4);
     });
-    this.ship = this.add.image(0, 0, tex).setOrigin(0.5, 0.75).setDepth(500);
+    this.ship = this.add.image(0, 0, tex).setOrigin(0.5, 0.5).setDepth(500);
     this.placeShip();
 
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -176,19 +176,20 @@ export class SailScene extends Phaser.Scene {
   }
 
   private placeShip() {
-    this.ship.setPosition(Math.round(this.pos.x), Math.round(this.pos.y));
+    const x = Math.round(this.pos.x);
+    if (x !== Math.round(this.ship.x)) this.ship.setFlipX(x < this.ship.x);
+    this.ship.setPosition(x, Math.round(this.pos.y));
   }
 
   private drawMap() {
-    if (this.textures.exists('sail/map')) {
-      this.add.image(0, 0, 'sail/map').setOrigin(0);
-      return;
+    if (this.textures.exists('sail/sea')) this.add.image(0, 0, 'sail/sea').setOrigin(0);
+    else {
+      const g = this.add.graphics();
+      g.fillStyle(SEA_COLOR).fillRect(0, 0, VIEW_W, VIEW_H);
+      g.fillStyle(SEA_GRID);
+      for (let x = 0; x < VIEW_W; x += 40) g.fillRect(x, 0, 1, VIEW_H);
+      for (let y = 22; y < VIEW_H; y += 40) g.fillRect(0, y, VIEW_W, 1);
     }
-    const g = this.add.graphics();
-    g.fillStyle(SEA_COLOR).fillRect(0, 0, VIEW_W, VIEW_H);
-    g.fillStyle(SEA_GRID);
-    for (let x = 0; x < VIEW_W; x += 40) g.fillRect(x, 0, 1, VIEW_H);
-    for (let y = 22; y < VIEW_H; y += 40) g.fillRect(0, y, VIEW_W, 1);
     for (const s of worldPieces()) {
       this.add.image(s.start.x, s.start.y, s.tex).setOrigin(0).setTint(s.color);
       this.add.image(s.start.x, s.start.y, s.outlineTex).setOrigin(0).setTint(0x1b2a38);

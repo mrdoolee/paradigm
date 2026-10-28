@@ -1,0 +1,6 @@
+Pixel art terrain tiles for a classic top-down RPG town (format only, original design), 1920s small harbour town.
+Draw exactly 8 square tiles stacked vertically in one column with clear empty space between them, in this order:
+1 short grass, 2 dirt road, 3 sea water with small wave marks, 4 round tree crown seen from above,
+5 brick building wall, 6 red-brown tiled roof, 7 wooden pier planks, 8 grass with tiny white flowers.
+Each tile is a seamless 16x16 pixel square that tiles with itself, flat top-down view, light from the top-left,
+2 shading steps, muted earthy palette like an old hand-coloured map, crisp pixels, no anti-aliasing, no text.

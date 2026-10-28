@@ -119,6 +119,7 @@ export class SurveyScene extends Phaser.Scene {
   private placeShip() {
     this.ship.setX(Math.round(this.x));
     this.cable.clear().fillStyle(0x9aa6b8);
+    if (this.textures.exists('sail/survey-ship')) return; // the art already trails its cable
     for (let t = 0; t < 30; t++) this.cable.fillRect(Math.round(this.x - 12 - t), SURFACE_Y - 2 + Math.floor(t / 6), 1, 1);
   }
 

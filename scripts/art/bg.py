@@ -41,7 +41,7 @@ def main() -> int:
         for y in range(h):
             for x in range(w):
                 r, g, b, _ = px[x, y]
-                if r > 180 and b > 180 and g < 110:
+                if r - g > 60 and b - g > 60 and r > 120 and b > 120:
                     ap_[x, y] = 0
     rgb = small.convert("RGB")
     if a.palette:
@@ -59,7 +59,7 @@ def main() -> int:
         out.putalpha(alpha)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     out.save(a.out)
-    print(f"{a.out}: {w}x{h}, {len(set(out.getdata()))} colours")
+    print(f"{a.out}: {w}x{h}, {len(out.getcolors(65536) or [])} colours")
     return 0
 
 

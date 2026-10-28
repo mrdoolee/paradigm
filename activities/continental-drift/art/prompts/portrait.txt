@@ -1,0 +1,5 @@
+Pixel art portrait, 64x64 pixels, chest-up, facing front turned slightly to the left.
+A friendly young Korean research assistant in a 1920s geology laboratory, short dark hair, orange work jacket over a white shirt,
+holding nothing. Original character, not resembling any real person or any commercial game character.
+1-pixel dark navy (#1b2a38) outline, light from the top-left, 2 shading steps, muted palette, plain background,
+crisp pixels, no anti-aliasing, no text.

@@ -46,11 +46,12 @@ export function worldPieces(): PieceSpec[] {
       start: { x: info.start[0], y: info.start[1] },
       target: { x: info.target[0], y: info.target[1] },
       fixed: info.fixed,
-      tex: `pieces/${id}`,
+      // generated land art (cut to the same mask) when present, else the white mask tinted
+      tex: ART[`pieces/${id}-art`] ? `pieces/${id}-art` : `pieces/${id}`,
       outlineTex: `pieces/${id}-outline`,
       dottedTex: `pieces/${id}-dotted`,
       layers,
-      color: hex((puzzle.colors as Record<string, string>)[id] ?? '#cccccc'),
+      color: ART[`pieces/${id}-art`] ? 0xffffff : hex((puzzle.colors as Record<string, string>)[id] ?? '#cccccc'),
     };
   });
 }

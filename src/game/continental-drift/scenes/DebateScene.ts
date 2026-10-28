@@ -30,6 +30,10 @@ export class DebateScene extends Phaser.Scene {
 
   /** Grey-box lecture hall: blackboard with a world sketch, podium, rows of listeners. */
   private drawHall() {
+    if (this.textures.exists('scenes/debate')) {
+      this.add.image(0, 0, 'scenes/debate').setOrigin(0);
+      return;
+    }
     const g = this.add.graphics();
     g.fillStyle(WALL).fillRect(0, 0, VIEW_W, VIEW_H);
     g.fillStyle(FLOOR).fillRect(0, 168, VIEW_W, VIEW_H - 168);

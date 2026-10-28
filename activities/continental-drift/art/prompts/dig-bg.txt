@@ -1,0 +1,5 @@
+Pixel art background, 4:3, side view of an excavation pit in layered sedimentary rock in India, 1920s fossil dig.
+Horizontal rock strata in browns and ochres fill the whole picture; a wooden plank frame marks a rectangular dig area in the
+middle (about 60% wide, 40% tall, upper half of the picture) filled with plain loose soil. A few tools (small trowel, brush)
+lie at the top edge. Keep the bottom third simple rock layers with no details. Flat pixel art, 16 colours, light from the
+top-left, crisp pixels, no anti-aliasing, no text, no people.

@@ -15,3 +15,29 @@
 ## 무늬 층 (`pieces/<id>-fossil|glacier|mountain.png`)
 
 - `activities/continental-drift/patterns.json`(정답 배치 좌표)을 그려 조각마다 잘랐다. 근거는 `activities/continental-drift/sources.md`의 ID.
+
+## 생성 그림 (2026-10-29)
+
+- **모델**: OpenAI 이미지 API, 모델 `gpt-image-2.5-sunburst`(`.env`의 `OPENAI_IMAGE_MODEL`), `sprite-gen`(aldegad/sprite-gen, Apache-2.0)의 `gen` 명령으로 호출(`scripts/art/gen.py --raw-only`). 사용자 승인: 2026-10-29 "필요한 그림은 API 호출해서 알아서".
+- **후처리**: 원본(마젠타 배경)은 git 밖 `tools/art-runs/continental-drift/`에 둔다.
+  - 스프라이트·타일: `scripts/art/cut.py`(마젠타 틈으로 나누고, 원본 한 도트 크기를 재어 칸마다 가장 많은 색을 고름).
+  - 배경·초상: `scripts/art/bg.py`(가운데 잘라 비율 맞춤 → 칸 평균으로 줄임 → 16색 이내).
+  - 대륙: `cut.py --fill`로 마스크 크기에 맞춘 뒤 `gen.apply_mask`로 마스크 밖 픽셀을 지움(윤곽은 늘 Natural Earth 마스크).
+- **프롬프트**: `art/prompts/*.txt`(같은 틀에 `--var`로 채움). 참고 이미지는 대륙 마스크(`pieces/<id>.png`)뿐. 실존 인물 사진은 쓰지 않았다.
+- **사람**: 학생·한별·선장·과학자 셋은 모두 지어낸 모습이다. 실존 과학자(사니·데이비드·뒤 토이트)의 얼굴을 닮게 그리지 않았고 초상도 없다(진본·라이선스 미확인).
+
+| 파일 | 원본 id | 호출 | 손질 |
+|---|---|---|---|
+| `chars/player-{down,up,left,right}.png` | player | 1 | cut 16×24 |
+| `chars/{aide,port,india-scientist,australia-scientist,africa-scientist}-down.png` | people | 1 | cut 16×24 |
+| `town/{grass,road,water,tree,wall,roof,pier,flowers}.png` | tiles | 1 | cut --fill 16×16 |
+| `portrait/aide.png` | portrait-aide | 1 | bg 64×64, 16색, 배경 투명 |
+| `minigames/dig.png` | dig-bg | 1 | bg 480×360, 16색 |
+| `sail/ship.png`, `sail/survey-ship.png` | ships | 1 | cut 36×10, 72×24 |
+| `pieces/<id>-art.png` (대륙 8개) | africa, south-america, … | 8 | cut --fill 마스크 크기, 마스크로 자름 |
+| `sail/sea.png` | sail-sea | 1 | bg 480×360, 12색 (항해·퍼즐·마무리 바다) |
+| `minigames/{scratch,strata}.png` | scratch-bg, strata-bg | 2 | bg 480×360, 16색 |
+| `scenes/{debate,title}.png` | debate-bg, title-bg | 2 | bg 480×360, 16색 |
+| (쓰지 않음) | survey-bg | 1 | 해령을 눈 덮인 물 위 산맥처럼 그려 사실과 어긋남 → 코드로 그린 단면도를 씀 |
+
+생성 호출 합계: 20회 (견본 5 + 대량 15), 기록 `tools/art-runs/calls.jsonl`.

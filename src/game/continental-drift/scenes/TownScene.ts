@@ -60,10 +60,16 @@ export class TownScene extends Phaser.Scene {
     this.marker = this.add.graphics().setDepth(500);
 
     const spawn = this.def.spawn[data.at ?? 'start'] ?? Object.values(this.def.spawn)[0];
-    const tex = artOr(this, 'chars/player', 'gb-player', 16, 16, (g) => drawPerson(g, 0x3f7fbf));
-    const sprite = this.add.image(0, 0, tex).setOrigin(0).setDepth(400);
+    const sprite = this.add.image(0, 0, this.charTex('player', 'down', 0x3f7fbf)).setDepth(400);
+    this.fitChar(sprite);
     this.walker = new Walker(this.grid, { x: spawn[0], y: spawn[1] }, TOWN_ORIGIN, TILE, sprite);
     this.walker.facing = data.at === 'port' && this.def.id === 'lab' ? 'left' : data.at === 'port' ? 'right' : 'up';
+    const face = (d: Dir) => {
+      sprite.setTexture(this.charTex('player', d, 0x3f7fbf));
+      this.fitChar(sprite);
+    };
+    face(this.walker.facing);
+    this.walker.events.on('face', face);
 
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => this.onTap(p.x, p.y));
     bindActions(this, (a) => {
@@ -210,6 +216,24 @@ export class TownScene extends Phaser.Scene {
 
   // ---- drawing -----------------------------------------------------------
 
+  /** Character art `chars/<who>-<dir>` (16x24) when present, else a 16x16 grey-box person. */
+  private charTex(who: string, dir: Dir, body: number): string {
+    const key = `chars/${who}-${dir}`;
+    if (this.textures.exists(key)) return key;
+    return artOr(this, `chars/${who}-down`, `gb-${who}`, 16, 16, (g) => drawPerson(g, body));
+  }
+
+  /** Taller character art stands on its cell: the extra height goes above. */
+  private fitChar(img: Phaser.GameObjects.Image) {
+    const h = img.height;
+    img.setOrigin(0, h > TILE ? (h - TILE) / h : 0);
+  }
+
+  private tileName(ch: string, x: number, y: number): string | null {
+    if (ch === '#') return y === 0 || this.def.rows[y - 1]?.[x] !== '#' ? 'roof' : 'wall';
+    return ({ '.': 'grass', ',': 'flowers', '=': 'road', '~': 'water', T: 'tree', p: 'pier' } as Record<string, string>)[ch] ?? null;
+  }
+
   private cellPx(c: Cell): Pt {
     return { x: TOWN_ORIGIN.x + c.x * TILE, y: TOWN_ORIGIN.y + c.y * TILE };
   }
@@ -220,6 +244,21 @@ export class TownScene extends Phaser.Scene {
   }
 
   private drawMap() {
+    if (this.textures.exists('town/grass')) {
+      // generated tiles; region towns get a drier tint on the plants
+      const dry = ({ lab: 0xffffff, india: 0xf2e2a8, australia: 0xffd8a8, africa: 0xe8e2a8 } as Record<string, number>)[this.def.id] ?? 0xffffff;
+      this.add.graphics().fillStyle(0x14161c).fillRect(0, 0, VIEW_W, VIEW_H);
+      this.def.rows.forEach((row, y) =>
+        [...row].forEach((ch, x) => {
+          const name = this.tileName(ch, x, y);
+          if (!name || !this.textures.exists(`town/${name}`)) return;
+          const p = this.cellPx({ x, y });
+          const img = this.add.image(p.x, p.y, `town/${name}`).setOrigin(0);
+          if (['grass', 'flowers', 'tree'].includes(name)) img.setTint(dry);
+        }),
+      );
+      return;
+    }
     const g = this.add.graphics();
     g.fillStyle(0x14161c).fillRect(0, 0, VIEW_W, VIEW_H);
     const ground = parseInt(this.def.ground.slice(1), 16);
@@ -240,10 +279,9 @@ export class TownScene extends Phaser.Scene {
     const p = this.cellPx({ x: t.cell[0], y: t.cell[1] });
     const g = this.add.graphics().setDepth(300);
     if (t.kind in PERSON) {
-      const key = artOr(this, `chars/${t.kind === 'npc' ? `${this.def.id}-scientist` : t.kind}`, `gb-${t.kind}`, 16, 16, (gg) =>
-        drawPerson(gg, PERSON[t.kind]),
-      );
-      this.add.image(p.x, p.y, key).setOrigin(0).setDepth(300);
+      const who = t.kind === 'npc' ? `${this.def.id}-scientist` : t.kind;
+      const img = this.add.image(p.x, p.y, this.charTex(who, 'down', PERSON[t.kind])).setDepth(300);
+      this.fitChar(img);
     } else if (t.kind === 'table') {
       g.fillStyle(0x3a2a1c).fillRect(p.x + 2, p.y + 2, 12, 14);
       g.fillStyle(0xe8dfc6).fillRect(p.x + 4, p.y + 4, 8, 6);
