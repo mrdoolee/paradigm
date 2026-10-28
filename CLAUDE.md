@@ -6,7 +6,7 @@
 
 과학사 사례로 **과학의 본성(NOS)** 을 겪어 보는 짧은 웹 게임 활동 모음. 대상은 한국 중·고등학생, 혼자 하는 자율 학습이 기본.
 
-- 한 활동은 **10~15분**. **기록이 아니라 경험이 목적**이다. 결과를 수집하지 않는다(교사 화면·시트 연동·저장 없음).
+- 한 활동은 **10~15분**(대륙이동설은 사용자 결정으로 **20분 이내**, 증거 수집 RPG). **기록이 아니라 경험이 목적**이다. 결과를 수집하지 않는다(교사 화면·시트 연동·저장 없음).
 - **타이핑 없이** 끌기·고르기·누르기로 진행한다. 학생이 흐름을 따라가면 NOS를 느끼게 하고, 가상 조수가 짧게 짚어 준다. 끝나면 학생용 정리 페이지(과학 개념 + 이 활동의 NOS 뜻).
 - 카드 획득, "렌즈" 같은 장치 이름은 쓰지 않는다.
 - 첫 활동: **대륙이동설** (`activities/continental-drift/`). 다음: 플로지스톤을 같은 방식으로 다시.
@@ -42,7 +42,8 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 |---|---|
 | `bash .claude/skills/nos-check/scripts/check.sh [--shots] [--e2e]` | 규칙·타입·테스트·원고 검사 한 번에 |
 | `npm run dev` | 개발 서버 (Claude Code에서는 Browser 도구의 preview_start) |
-| `npm run typecheck` / `npm test` / `npm run check:script` / `npm run shots` / `npm run e2e` | 단계 A에서 만든다 |
+| `npm run typecheck` / `npm test` / `npm run check:script` / `npm run shots` / `npm run e2e` | 타입·단위·원고·스크린샷·끝까지 플레이 (e2e 서버 포트 5191) |
+| `npm run build:masks` / `build:sea` / `build:stripes` | 대륙 마스크·항해 바다 칸·해저 줄무늬 다시 만들기 |
 
 ## 하네스: NOS 활동 만들기
 
@@ -60,5 +61,7 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 | 파일 | 내용 |
 |---|---|
 | `docs/superpowers/specs/2026-10-27-continental-drift-design.md` | 대륙이동설 활동 + 저장소·하네스 설계 (승인됨) |
+| `docs/superpowers/specs/2026-10-28-continental-drift-rpg-design.md` | 대륙이동설을 증거 수집 RPG로(마을·항구·항해·미니게임), 위 설계를 바꾼 부분 (승인됨) |
+| `docs/superpowers/plans/2026-10-29-continental-drift-rpg.md` | 위 RPG 설계의 구현 계획 |
 | `docs/research/2026-10-01-hos-nos-case-list.md` | 과학사 사례 24개의 NOS 분석·평가 (이전 저장소에서 가져옴) |
 | `docs/research/2026-10-14-classic-rpg-ui-ux-patterns.md` | 고전 도트 RPG 화면·조작 규칙 조사 (이전 저장소에서 가져옴, 코드 경로는 이전 저장소 기준) |
