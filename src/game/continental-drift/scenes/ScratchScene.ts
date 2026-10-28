@@ -10,8 +10,9 @@ const C = config.scratch;
 const ROCK = 0x8a8f96;
 const ROCK_DARK = 0x6e737a;
 const SCRATCH = 0xd8dde4;
-const DIRT = 0x8a6a4a;
-const DIRT_DOT = 0x7a5c3e;
+const DIRT = 0xa08060;
+const DIRT_DOT = 0x8f7050;
+const DIRT_LIGHT = 0xb08f68;
 const ARROW = 0x7fd0ff;
 const CURSOR = 0xffd23f;
 
@@ -94,7 +95,10 @@ export class ScratchScene extends Phaser.Scene {
         if (this.field.isCleared(x, y)) continue;
         const px = C.origin[0] + x * C.cell;
         const py = C.origin[1] + y * C.cell;
-        g.fillStyle((x * 73 + y * 151 + ((x * y) % 7)) % 11 === 0 ? DIRT_DOT : DIRT).fillRect(px, py, C.cell, C.cell);
+        let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263);
+        h = Math.imul(h ^ (h >>> 13), 1274126177);
+        h = ((h ^ (h >>> 16)) >>> 0) % 9; // fixed hash: looks scattered, same every run
+        g.fillStyle(h < 2 ? DIRT_DOT : h < 4 ? DIRT_LIGHT : DIRT).fillRect(px, py, C.cell, C.cell);
       }
   }
 

@@ -153,7 +153,7 @@ export class SurveyScene extends Phaser.Scene {
     const r = this.add.graphics().setDepth(6);
     r.fillStyle(0xd9483b).fillRect(RIDGE_X - 1, C.floorTop - 44, 2, 6);
     this.add
-      .text(RIDGE_X, C.floorTop - 46, this.ui.line('line-label-ridge'), { fontFamily: 'Galmuri11', fontSize: '12px', color: '#ff8a7a' })
+      .text(RIDGE_X, C.floorTop - 46, this.ui.line('line-label-ridge'), { fontFamily: 'Galmuri11', fontSize: '12px', color: '#e8dfc6', backgroundColor: '#121a28', padding: { x: 2, y: 1 } })
       .setOrigin(0.5, 1)
       .setDepth(6);
   }

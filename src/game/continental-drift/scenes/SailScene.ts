@@ -207,9 +207,9 @@ export class SailScene extends Phaser.Scene {
       g.fillStyle(0x121a28).fillRect(x - 3, y - 3, 6, 6);
       g.fillStyle(status === 'next' ? 0xffd23f : 0x9aa6b8).fillRect(x - 2, y - 2, 4, 4);
       if (status === 'next') blinkers.push(g);
-      const right = x < VIEW_W - 80;
+      const right = PORTS[id].side ? PORTS[id].side === 'right' : x < VIEW_W - 80;
       this.add
-        .text(x + (right ? 6 : -6), y, this.ui.line(PORTS[id].label), style)
+        .text(x + (right ? 6 : -6), PORTS[id].side === 'left' ? y - 12 : y, this.ui.line(PORTS[id].label), style)
         .setOrigin(right ? 0 : 1, 0.5)
         .setDepth(400)
         .setAlpha(status === 'next' ? 1 : 0.7);

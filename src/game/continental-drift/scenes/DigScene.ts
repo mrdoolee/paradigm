@@ -8,8 +8,8 @@ import { DigBoard } from '../minigames/logic';
 
 const C = config.dig;
 const ROCK = [0x8a6a4a, 0x7a5c3e, 0x94744f];
-const DIRT = 0xa07f5a;
-const DIRT_EDGE = 0x6b4f33;
+const DIRT = 0x8a5a36;
+const DIRT_EDGE = 0x5a3820;
 const LEAF = 0x3f7f32;
 const CURSOR = 0xffd23f;
 
@@ -17,7 +17,7 @@ const CURSOR = 0xffd23f;
 export class DigScene extends Phaser.Scene {
   private board!: DigBoard;
   private flow!: FieldFlow;
-  private dirt: (Phaser.GameObjects.Rectangle | null)[] = [];
+  private dirt: (Phaser.GameObjects.Image | null)[] = [];
   private cursor = { x: 0, y: 0 };
   private cursorBox!: Phaser.GameObjects.Graphics;
   private down = false;
@@ -38,7 +38,7 @@ export class DigScene extends Phaser.Scene {
     for (let y = 0; y < C.rows; y++)
       for (let x = 0; x < C.cols; x++) {
         const p = this.cellPx(x, y);
-        this.dirt.push(this.add.rectangle(p.x, p.y, C.cell, C.cell, DIRT).setOrigin(0).setStrokeStyle(1, DIRT_EDGE).setDepth(10));
+        this.dirt.push(this.add.image(p.x, p.y, this.dirtTex((x * 5 + y * 3) % 4)).setOrigin(0).setDepth(10));
       }
     this.cursorBox = this.add.graphics().setDepth(20);
     this.cursor = { x: 0, y: 0 };
@@ -74,6 +74,24 @@ export class DigScene extends Phaser.Scene {
       this.started = true;
       this.drawCursor();
     })();
+  }
+
+  /** A loose-soil cell with scattered grains (four variants so the grid does not repeat). */
+  private dirtTex(v: number): string {
+    const key = `gb-dirt-${v}`;
+    if (this.textures.exists(key)) return key;
+    const g = this.add.graphics();
+    g.fillStyle(DIRT).fillRect(0, 0, C.cell, C.cell);
+    const tones = [0x7a4e30, 0x9a6a42, 0x6a4228, 0xa8784c];
+    for (let y = 0; y < C.cell; y++)
+      for (let x = 0; x < C.cell; x++) {
+        const h = (x * 73 + y * 151 + v * 37 + ((x * y) % 13)) % 17;
+        if (h < 4) g.fillStyle(tones[h]).fillRect(x, y, 1, 1);
+      }
+    g.fillStyle(DIRT_EDGE).fillRect(0, C.cell - 1, C.cell, 1).fillRect(C.cell - 1, 0, 1, C.cell);
+    g.generateTexture(key, C.cell, C.cell);
+    g.destroy();
+    return key;
   }
 
   private dots() {

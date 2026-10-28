@@ -7,7 +7,7 @@ import type { PortId } from './run';
 
 export const SEA_CELL = sail.cell;
 export const SAIL_SPEED = sail.speedCellsPerSec;
-export const PORTS = sail.ports as Record<PortId, { at: [number, number]; label: string }>;
+export const PORTS = sail.ports as Record<PortId, { at: [number, number]; label: string; side?: 'left' | 'right' }>;
 
 export function seaGrid0(): Grid {
   const open = new Set((sail.open as number[][]).map(([x, y]) => `${x},${y}`));

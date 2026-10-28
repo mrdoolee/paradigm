@@ -29,8 +29,8 @@ export class TitleScene extends Phaser.Scene {
 
     const style = { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: '#f4ecd8' };
     // Title drawn at 2x of the pixel font by scaling the text object by an integer.
-    this.add.text(VIEW_W / 2, 132, ui.line('line-title'), style).setOrigin(0.5).setScale(2);
-    const start = this.add.text(VIEW_W / 2, 182, ui.line('line-start'), { ...style, color: '#ffd23f' }).setOrigin(0.5);
+    this.add.text(VIEW_W / 2, 144, ui.line('line-title'), style).setOrigin(0.5).setScale(2);
+    const start = this.add.text(VIEW_W / 2, 178, ui.line('line-start'), { ...style, color: '#ffd23f' }).setOrigin(0.5);
     this.time.addEvent({ delay: 500, loop: true, callback: () => start.setVisible(!start.visible) });
 
     let started = false;

@@ -25,7 +25,7 @@ interface Piece {
   land: Phaser.GameObjects.Image;
   rim: Phaser.GameObjects.Image;
   layers: Record<string, Phaser.GameObjects.Image>;
-  dotted: Phaser.GameObjects.Image;
+  dotted: Phaser.GameObjects.Container;
   pos: Pt;
   snapped: boolean;
   moving: boolean;
@@ -59,10 +59,13 @@ export class DragBoard {
       const rim = scene.add.image(0, 0, spec.outlineTex).setOrigin(0).setTint(RIM_IDLE);
       const pos = spec.fixed ? { ...spec.target } : { ...spec.start };
       const box = scene.add.container(pos.x, pos.y, [land, ...Object.values(layers), rim]);
+      // target outline: a dark shadow plus a two-pixel-wide light dotted line, so it reads on any sea
       const dotted = scene.add
-        .image(spec.target.x, spec.target.y, spec.dottedTex)
-        .setOrigin(0)
-        .setTint(RIM_ACTIVE)
+        .container(spec.target.x, spec.target.y, [
+          scene.add.image(1, 1, spec.dottedTex).setOrigin(0).setTint(RIM_IDLE),
+          scene.add.image(0, 0, spec.dottedTex).setOrigin(0).setTint(RIM_ACTIVE),
+          scene.add.image(1, 0, spec.dottedTex).setOrigin(0).setTint(RIM_ACTIVE),
+        ])
         .setVisible(false)
         .setDepth(900);
       const piece: Piece = { spec, box, land, rim, layers, dotted, pos, snapped: !!spec.fixed, moving: false };

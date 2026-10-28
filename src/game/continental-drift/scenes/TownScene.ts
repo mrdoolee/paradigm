@@ -295,7 +295,7 @@ export class TownScene extends Phaser.Scene {
     }
     if (t.label) {
       this.add
-        .text(p.x + TILE / 2, p.y - 2, this.ui.line(t.label), {
+        .text(p.x + TILE / 2, p.y - (t.kind in PERSON ? 12 : 2), this.ui.line(t.label), {
           fontFamily: FONT.family,
           fontSize: `${FONT.sizePx}px`,
           color: '#f4ecd8',
