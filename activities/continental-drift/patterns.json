@@ -1,20 +1,215 @@
 {
-  "colors": { "glacier": "#eaf6ff", "mountain": "#6b3d1c" },
+  "colors": {
+    "glacier": "#eaf6ff",
+    "mountain": "#6b3d1c"
+  },
   "fossil": [
-    { "taxon": "glossopteris", "source": "F-GLOSSOPTERIS", "color": "#3f7f32", "width": 3, "points": [[222, 170], [262, 168], [270, 192], [296, 204]] },
-    { "taxon": "glossopteris", "source": "F-GLOSSOPTERIS", "color": "#3f7f32", "width": 3, "points": [[306, 164], [284, 182]] },
-    { "taxon": "mesosaurus", "source": "F-MESOSAURUS", "color": "#e07b39", "width": 5, "points": [[238, 154], [258, 160]] },
-    { "taxon": "cynognathus", "source": "F-CYNOGNATHUS", "color": "#b5577f", "width": 5, "points": [[228, 140], [264, 144]] },
-    { "taxon": "lystrosaurus", "source": "F-LYSTROSAURUS", "color": "#e3c75a", "width": 5, "points": [[304, 158], [268, 161], [266, 186]] }
+    {
+      "taxon": "glossopteris",
+      "source": "F-GLOSSOPTERIS",
+      "color": "#3f7f32",
+      "width": 3,
+      "points": [
+        [
+          222,
+          170
+        ],
+        [
+          262,
+          168
+        ],
+        [
+          270,
+          192
+        ],
+        [
+          296,
+          204
+        ]
+      ]
+    },
+    {
+      "taxon": "glossopteris",
+      "source": "F-GLOSSOPTERIS",
+      "color": "#3f7f32",
+      "width": 3,
+      "points": [
+        [
+          306,
+          164
+        ],
+        [
+          284,
+          182
+        ]
+      ]
+    },
+    {
+      "taxon": "mesosaurus",
+      "source": "F-MESOSAURUS",
+      "color": "#e07b39",
+      "width": 5,
+      "points": [
+        [
+          238,
+          154
+        ],
+        [
+          258,
+          160
+        ]
+      ]
+    },
+    {
+      "taxon": "cynognathus",
+      "source": "F-CYNOGNATHUS",
+      "color": "#b5577f",
+      "width": 5,
+      "points": [
+        [
+          228,
+          140
+        ],
+        [
+          264,
+          144
+        ]
+      ]
+    },
+    {
+      "taxon": "lystrosaurus",
+      "source": "F-LYSTROSAURUS",
+      "color": "#e3c75a",
+      "width": 5,
+      "points": [
+        [
+          304,
+          158
+        ],
+        [
+          268,
+          161
+        ],
+        [
+          266,
+          186
+        ]
+      ]
+    }
   ],
   "glacier": [
-    { "from": [232, 170], "to": [220, 166], "source": "G-LATE-PALEOZOIC" },
-    { "from": [262, 166], "to": [258, 152], "source": "G-LATE-PALEOZOIC" },
-    { "from": [268, 196], "to": [292, 204], "source": "G-LATE-PALEOZOIC" },
-    { "from": [286, 180], "to": [306, 167], "source": "G-LATE-PALEOZOIC" },
-    { "from": [262, 188], "to": [256, 204], "source": "G-LATE-PALEOZOIC" }
+    {
+      "from": [
+        232,
+        170
+      ],
+      "to": [
+        220,
+        166
+      ],
+      "source": "G-LATE-PALEOZOIC"
+    },
+    {
+      "from": [
+        262,
+        166
+      ],
+      "to": [
+        258,
+        152
+      ],
+      "source": "G-LATE-PALEOZOIC"
+    },
+    {
+      "from": [
+        268,
+        196
+      ],
+      "to": [
+        292,
+        204
+      ],
+      "source": "G-LATE-PALEOZOIC"
+    },
+    {
+      "from": [
+        286,
+        180
+      ],
+      "to": [
+        306,
+        167
+      ],
+      "source": "G-LATE-PALEOZOIC"
+    },
+    {
+      "from": [
+        262,
+        188
+      ],
+      "to": [
+        256,
+        204
+      ],
+      "source": "G-LATE-PALEOZOIC"
+    }
   ],
   "mountain": [
-    { "source": "M-CALEDONIAN", "width": 4, "points": [[214, 88], [215, 74], [216, 64], [210, 52], [203, 44], [198, 34]] }
+    {
+      "source": "M-CALEDONIAN",
+      "width": 4,
+      "points": [
+        [
+          214,
+          88
+        ],
+        [
+          215,
+          74
+        ],
+        [
+          216,
+          64
+        ],
+        [
+          210,
+          52
+        ],
+        [
+          203,
+          44
+        ],
+        [
+          198,
+          34
+        ]
+      ]
+    },
+    {
+      "source": "S-DUTOIT-1927",
+      "width": 3,
+      "points": [
+        [
+          224,
+          171
+        ],
+        [
+          236,
+          169
+        ],
+        [
+          248,
+          168
+        ],
+        [
+          258,
+          168
+        ],
+        [
+          266,
+          170
+        ]
+      ]
+    }
   ]
 }
