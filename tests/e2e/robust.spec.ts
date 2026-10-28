@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { dragPiece, isTouch, piece, playUntil, state, waitForNos } from './helpers';
+import { readFileSync } from 'node:fs';
+import { dragPiece, isTouch, minigame, piece, player, playUntil, state, tapAt, waitForNos } from './helpers';
 
 const zoomFor = (w: number, h: number) => Math.max(1, Math.min(Math.floor(w / 480), Math.floor(h / 360)));
 
@@ -54,9 +55,60 @@ test('@e2e 대화·선택지에서 Enter를 연타해도 선택은 한 번만 �
   for (let i = 0; i < 150; i++) {
     await page.keyboard.press('Enter');
     await page.waitForTimeout(30);
-    if ((await state(page)).scene === 'Puzzle') break;
+    if ((await state(page)).scene === 'Survey') break;
   }
   const s = await state(page);
-  expect(s.scene).toBe('Puzzle');
+  expect(s.scene).toBe('Survey');
   expect(s.choiceCount).toBe(before + 1);
+});
+
+test('@e2e 작은 창(1배)과 창 크기 바꿈에도 누른 칸으로 걸어간다', async ({ page }, info) => {
+  const touch = isTouch(info.project.name);
+  if (!touch) await page.setViewportSize({ width: 1280, height: 690 });
+  await page.goto('/continental-drift/?start=Town&town=india');
+  await waitForNos(page);
+  await playUntil(page, (s) => !s.dialog, touch, 20);
+  await tapAt(page, { x: 10 * 16 + 8, y: 22 + 11 * 16 + 8 }, touch);
+  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 10, y: 11 });
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.waitForTimeout(200);
+  await tapAt(page, { x: 14 * 16 + 8, y: 22 + 9 * 16 + 8 }, touch);
+  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 14, y: 9 });
+});
+
+test('@e2e 항해 중 땅을 눌러도 배는 바다에 있고, 다녀온 항구를 지나쳐도 멈추지 않는다', async ({ page }, info) => {
+  const touch = isTouch(info.project.name);
+  // goal 5 = sail to Sydney, Mumbai already visited
+  await page.goto('/continental-drift/?start=Sail&goal=5');
+  await waitForNos(page);
+  await page.waitForTimeout(300);
+  await tapAt(page, { x: 250, y: 130 }, touch); // middle of Africa
+  await page.waitForTimeout(3000);
+  const c = (await player(page))!;
+  const grid = JSON.parse(readFileSync('activities/continental-drift/art/sea/sea-grid.json', 'utf8')) as { rows: string[] };
+  expect(grid.rows[c.y][c.x]).toBe('.');
+  expect((await state(page)).scene).toBe('Sail');
+  // sail to Sydney: the route passes Mumbai's side of the ocean without a stop
+  await playUntil(page, (s) => s.scene === 'Town', touch, 120);
+});
+
+test('@e2e 발굴 칸을 빠르게 연타해도 장면은 한 번만 넘어간다', async ({ page }, info) => {
+  const touch = isTouch(info.project.name);
+  await page.goto('/continental-drift/?start=Dig&goal=3');
+  await waitForNos(page);
+  await playUntil(page, (s) => !s.dialog, touch, 20);
+  const m = (await minigame(page))!;
+  for (const p of m.todo) for (let k = 0; k < 3; k++) await tapAt(page, p, touch);
+  await page.waitForFunction(() => (window as unknown as { __nos: { state(): { dialog: boolean } } }).__nos.state().dialog);
+  const scenes: string[] = [];
+  await playUntil(
+    page,
+    (s) => {
+      if (scenes[scenes.length - 1] !== s.scene) scenes.push(s.scene);
+      return s.scene === 'Town';
+    },
+    touch,
+    200,
+  );
+  expect(scenes).toEqual(['Dig', 'Sail', 'Town']);
 });

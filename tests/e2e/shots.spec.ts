@@ -6,6 +6,7 @@ const shot = (page: Page, project: string, name: string) =>
 
 /** Plays from the title and takes a screenshot at each named moment. */
 test('@shots 주요 장면 스크린샷', async ({ page }, info) => {
+  test.setTimeout(900_000);
   const touch = isTouch(info.project.name);
   const p = info.project.name;
   await page.goto('/continental-drift/?steady=1');
@@ -14,30 +15,30 @@ test('@shots 주요 장면 스크린샷', async ({ page }, info) => {
   await shot(page, p, 'title');
 
   const moments: [string, (s: NosState) => boolean][] = [
-    ['puzzle-intro-dialog', (s) => s.scene === 'Puzzle' && s.phase === 'coast' && s.dialog],
+    ['town-lab-intro', (s) => s.scene === 'Town' && s.dialog],
+    ['town-lab', (s) => s.scene === 'Town' && !s.dialog],
     ['puzzle-coast', (s) => s.phase === 'coast' && !s.dialog],
-    ['puzzle-coast-dialog', (s) => s.phase === 'coast' && s.dialog && s.guide === null],
+    ['town-port-dialog', (s) => s.scene === 'Town' && s.dialog],
+    ['sail', (s) => s.scene === 'Sail' && !s.dialog],
+    ['town-india-scientist', (s) => s.scene === 'Town' && s.dialog && s.guide === null],
+    ['dig', (s) => s.scene === 'Dig' && !s.dialog],
+    ['sail-return', (s) => s.scene === 'Sail'],
     ['puzzle-fossil', (s) => s.phase === 'fossil' && !s.dialog],
+    ['scratch', (s) => s.scene === 'Scratch' && !s.dialog],
     ['puzzle-glacier', (s) => s.phase === 'glacier' && !s.dialog],
+    ['strata', (s) => s.scene === 'Strata' && !s.dialog],
     ['puzzle-mountain', (s) => s.phase === 'mountain' && !s.dialog],
     ['debate-choice', (s) => s.scene === 'Debate' && s.choice],
+    ['survey', (s) => s.scene === 'Survey' && !s.dialog],
     ['seafloor', (s) => s.phase === 'stripes' && !s.dialog],
     ['ending', (s) => s.scene === 'Ending' && s.dialog],
   ];
-  let introDone = false;
   for (const [name, pred] of moments) {
-    if (name === 'puzzle-coast-dialog') {
-      // the dialog that opens after South America snaps
-      await playUntil(page, (s) => s.phase === 'coast' && s.dialog && introDone, touch).catch(() => null);
-    } else {
-      const reached = await playUntil(page, pred, touch, 400).catch(() => null);
-      if (!reached) continue;
-    }
-    if (name === 'puzzle-coast') introDone = true;
-    await page.waitForTimeout(300);
+    const reached = await playUntil(page, pred, touch, 1500).catch(() => null);
+    if (!reached) continue;
+    await page.waitForTimeout(name === 'sail' ? 1500 : 300);
     await shot(page, p, name);
-    const s = await state(page);
-    if (s.scene === 'Ending') break;
+    if ((await state(page)).scene === 'Ending') break;
   }
   await playUntil(page, () => false, touch, 400).catch(() => null);
   await page.waitForURL('**/continental-drift/about/');
