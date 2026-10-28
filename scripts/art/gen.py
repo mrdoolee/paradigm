@@ -243,6 +243,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--mask", help="대륙 윤곽 마스크 PNG: 결과를 이 크기로 맞추고 마스크 밖 픽셀을 지운다(윤곽은 늘 마스크가 정한다)")
     ap.add_argument("--dry-run", action="store_true", help="API를 부르지 않고 생성 명령만 보여 준다")
     ap.add_argument("--from-raw", help="API를 부르지 않고 이 원본 PNG로 후처리만 한다")
+    ap.add_argument("--raw-only", action="store_true", help="생성 원본만 받고 멈춘다(배경처럼 화면을 채우는 그림은 scripts/art/bg.py로 줄인다)")
     args = ap.parse_args(argv)
 
     out = Path(args.out).resolve()
@@ -330,6 +331,9 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         if text.strip():
             print(text)
+    if args.raw_only:
+        print(f"생성 호출 {calls}회. 원본: {raw_path}")
+        return 0
 
     if args.sheet:
         # 줄 그림 하나를 상태 수만큼 잘라 상태별 원본으로 둔다(--from-raw도 같다)

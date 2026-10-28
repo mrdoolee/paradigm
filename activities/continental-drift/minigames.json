@@ -3,29 +3,78 @@
     "cols": 12,
     "rows": 6,
     "cell": 24,
-    "origin": [96, 56],
+    "origin": [
+      96,
+      56
+    ],
     "fossils": [
-      { "x": 1, "y": 1, "w": 2, "h": 1 },
-      { "x": 5, "y": 3, "w": 1, "h": 2 },
-      { "x": 8, "y": 1, "w": 2, "h": 1 },
-      { "x": 9, "y": 4, "w": 2, "h": 1 }
+      {
+        "x": 1,
+        "y": 1,
+        "w": 2,
+        "h": 1
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "w": 1,
+        "h": 2
+      },
+      {
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 1
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "w": 2,
+        "h": 1
+      }
     ]
   },
   "scratch": {
     "cols": 40,
     "rows": 20,
     "cell": 8,
-    "origin": [80, 48],
+    "origin": [
+      80,
+      48
+    ],
     "brush": 1.6,
-    "arrow": { "from": [130, 170], "to": [350, 90] }
+    "arrow": {
+      "from": [
+        130,
+        170
+      ],
+      "to": [
+        350,
+        90
+      ]
+    }
   },
   "strata": {
-    "layers": ["line-strata-1", "line-strata-2", "line-strata-3", "line-strata-4"],
-    "colors": ["#4a4038", "#6a6a72", "#b89a66", "#d8d0c0"],
-    "left": [150, 56],
-    "right": [330, 56],
+    "layers": [
+      "line-strata-1",
+      "line-strata-2",
+      "line-strata-3"
+    ],
+    "colors": [
+      "#4a4038",
+      "#6a6a72",
+      "#b89a66"
+    ],
+    "left": [
+      150,
+      56
+    ],
+    "right": [
+      330,
+      56
+    ],
     "w": 88,
-    "h": 36
+    "h": 44
   },
   "survey": {
     "trackY": 96,

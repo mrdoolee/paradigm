@@ -8,7 +8,7 @@ import { FieldFlow } from '../minigames/field';
 
 const C = config.strata;
 /** Shuffled start order of the South American samples (fixed, no randomness). */
-const START_ORDER = [2, 0, 3, 1];
+const START_ORDER = [2, 0, 1];
 const hex = (c: string) => parseInt(c.slice(1), 16);
 
 /** Grey-pattern texture for layer i, drawn white so the board can tint it with the layer colour. */

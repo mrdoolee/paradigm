@@ -75,7 +75,6 @@ export const ANCHORS: Record<string, BlockKind> = {
   'line-strata-1': 'line',
   'line-strata-2': 'line',
   'line-strata-3': 'line',
-  'line-strata-4': 'line',
 };
 
 export const MAX_PAGES = 70;

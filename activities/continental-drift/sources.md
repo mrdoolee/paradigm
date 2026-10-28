@@ -49,6 +49,18 @@
 | PT-BOUNDARY | 지구 겉은 여러 판으로 나뉘고 판은 1년에 몇 cm 움직인다. 판의 경계는 멀어지는·가까워지는·어긋나는 경계로 나뉘며 지진과 화산은 판의 경계를 따라 띠 모양으로 많이 일어난다. | [USGS, This Dynamic Earth: Understanding plate motions](https://pubs.usgs.gov/gip/dynamic/understanding.html); 2022 개정 중학교 과학 [9과09-05] | 2차 | 확인 (교과서 수준) |
 | PT-FORCE | 판을 움직이는 힘(맨틀 대류, 해령에서 미는 힘, 가라앉는 판이 당기는 힘)의 비중은 의견이 갈린다. | [Physical Geology: Mechanisms for plate motion](https://opentextbc.ca/physicalgeologyh5p/chapter/mechanisms-for-plate-motion/); [U. Michigan: Plate driving forces](https://public.websites.umich.edu/~gs265/tecpaper.htm) | 2차 | 확인 (교재 수준. "지금도 연구 중"으로 씀) |
 
+## 찾아가는 과학자와 여행 (2026-10-29 사실 확인, `nos-content-reviewer`)
+
+| ID | 사실 | 근거 | 1차/2차 | 상태 |
+|---|---|---|---|---|
+| P-SAHNI | 비르발 사니는 1921년부터 러크나우 대학교 식물학 교수였고, 인도 곤드와나 지층의 식물 화석(글로소프테리스 포함)을 연구했다. 1925년부터 뒤 토이트와 편지를 주고받았다. 대륙이동을 다룬 공개 논문은 1936·37년 것이 가장 이르다. | [Wikipedia: Birbal Sahni](https://en.wikipedia.org/wiki/Birbal_Sahni); [Palaeobotanical Society](https://palaeobotany.org/?p=74); [BSIP](https://bsip.res.in/en/bsip_contribution_geology) | 2차 | 확인 (1920년대 지지를 암시하지 않음. 초상 진본 없음 → 이름표만) |
+| P-DAVID | 에지워스 데이비드는 1891~1924년 시드니 대학 지질학 교수, 1924년 말 명예교수. 오스트레일리아의 옛 빙하 흔적을 오래 연구했다. 오스트레일리아 페름기 빙하 흔적은 1850~60년대부터 여러 사람이 보고했다. | [Sydney Univ. archives](https://archives-search.sydney.edu.au/nodes/view/22403); [Wikipedia](https://en.wikipedia.org/wiki/Edgeworth_David); [Early discoveries of ice action in Australia](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/406C6FBF747A99434EB58B872234F2D2/S002214300000873Xa.pdf/early-discoveries-of-the-effects-of-ice-action-in-australia.pdf) | 2차 | 확인 (찰흔을 그의 발견으로 쓰지 않음. 대륙이동 입장 확인 안 됨 → 쓰지 않음. 초상 → 이름표만) |
+| S-DUTOIT-1927 | 뒤 토이트는 1923년 카네기 연구비로 아르헨티나·파라과이·브라질을 답사하고 1927년 『A Geological Comparison of South America with South Africa』를 냈다. 남아프리카 카루 층서(빙하 퇴적층부터)를 정리했고, 메소사우루스가 든 셰일은 남아프리카(화이트힐)와 브라질(이라티)에 함께 있다. 시에라 데 라 벤타나–케이프 습곡대 비교는 케이델(1913)이 먼저 했다. 1926년 무렵 소속은 관개부. | [UCT archive](https://atom.lib.uct.ac.za/index.php/alex-du-toit-papers); [Wikipedia](https://en.wikipedia.org/wiki/Alexander_du_Toit); [BHL](https://www.biodiversitylibrary.org/bibliography/166113); [Andean Geology](https://andeangeology.cl/index.php/revista1/article/view/V49n2-3418/html) | 2차 | 부분 확인 (미니게임은 3층: 빙하 퇴적층·메소사우루스 셰일·사암과 이암. 현무암은 두 대륙 나이 차이가 커서 뺌) |
+| T-1926-NY | 1926년 11월 15일 뉴욕에서 미국석유지질학회가 대륙이동 심포지엄을 열었다(1928년 책으로 출판). | [AAPG Special Volume](https://archives.datapages.com/data/alt-browse/aapg-special-volumes/sp2.htm) | 2차 | 확인 (베게너가 직접 말하는 장면은 두지 않음) |
+| T-CANALS | 수에즈 운하 1869년, 파나마 운하 1914년 개통. | [Britannica](https://www.britannica.com/technology/canal-waterway/The-Suez-Canal) | 2차 | 확인 (항해 지도에서 지나갈 수 있음) |
+| T-ROUTES | 1920년대 유럽과 인도·오스트레일리아·남아프리카·북아메리카를 잇는 여객선이 있었다(예: 북독일 로이드 1922 오스트레일리아 노선 재개). 출발 항구는 확인하지 않았다. | [Papers Past 1925](https://paperspast.natlib.govt.nz/newspapers/AS19250504.2.44) | 2차 | 부분 확인 (출발 항구 이름을 쓰지 않고 "연구실 항구") |
+| SEA-SHIPMAG | 1950년대부터 배 뒤에 자력계를 끌고 바다 밑 자기를 쟀다(예: 1955년 미국 Pioneer호). 대서양 레이캬네스 해령의 대표 자료는 항공 측량이었다. | [Wikipedia: Ron G. Mason](https://en.wikipedia.org/wiki/Ron_G._Mason); [Heirtzler et al. 1966](https://www.geologie.ens.fr/50years_plate_tectonics/heirtzler_lepichon_baron_19.pdf) | 2차 | 확인 (조사선 장면은 특정 바다·배에 붙이지 않음) |
+
 ## 교육과정
 
 | ID | 사실 | 근거 | 상태 |
@@ -57,5 +69,6 @@
 
 ## 각색 표시
 
-- 베게너의 대사는 모두 **사료 각색**이다(위 W-·O- 근거의 내용을 쉬운 말로 옮김). 직접 인용은 없다.
-- 학회 참석자·조수는 **가상 인물**이다. 학회 참석자의 반박 내용은 O-FORCE, O-BRIDGE에 있는 것만 쓴다.
+- 베게너는 대사가 없다. 베게너의 주장은 조수가 "베게너는 …라고 썼어요"로 전한다(W-·O- 근거).
+- 사니·데이비드·뒤 토이트의 대사는 **사료 각색**이다(P-·S- 근거). 각자 자기 연구만 말한다. 학생과 조수는 발견하지 않고 확인해 볼 뿐이다.
+- 학회 참석자·조수·선장은 **가상 인물**이다. 학회 참석자의 반박 내용은 O-FORCE, O-BRIDGE에 있는 것만 쓴다.
