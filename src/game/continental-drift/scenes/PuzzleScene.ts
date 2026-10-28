@@ -2,14 +2,16 @@ import Phaser from 'phaser';
 import { DragBoard } from '../../common/DragBoard';
 import { FONT, PUZZLE_AREA } from '../../common/layout';
 import { VIEW_H, VIEW_W } from '../../common/screen';
-import { dbg } from '../../common/debug';
+import { dbg, enterScene } from '../../common/debug';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
 import seafloor from '../../../../activities/continental-drift/art/seafloor/seafloor.json';
+import type { Run } from '../run';
 import { DOT_TOTAL, PHASES, WORLD_PHASES, seafloorPieces, worldPieces, type Phase } from '../data';
 
 interface PuzzleData {
   phases?: string[];
   next?: string;
+  nextData?: object;
   assembled?: boolean;
 }
 
@@ -23,6 +25,7 @@ export class PuzzleScene extends Phaser.Scene {
   private board!: DragBoard;
   private phases: Phase[] = [];
   private next = '';
+  private nextData: object = {};
   private ui!: UiScene;
 
   constructor() {
@@ -32,13 +35,12 @@ export class PuzzleScene extends Phaser.Scene {
   init(data: PuzzleData) {
     const ids = data.phases ?? WORLD_PHASES;
     this.phases = ids.map((id) => PHASES.find((p) => p.id === id)!).filter(Boolean);
-    this.next = data.next ?? (data.phases ? '' : 'Debate');
+    this.next = data.next ?? '';
+    this.nextData = data.nextData ?? {};
   }
 
   create(data: PuzzleData) {
-    dbg.scene = 'Puzzle';
-    dbg.world = this;
-    dbg.phase = null;
+    enterScene('Puzzle', this);
     this.ui = this.scene.get(UI_KEY) as UiScene;
     this.ui.bind(this);
 
@@ -47,6 +49,14 @@ export class PuzzleScene extends Phaser.Scene {
     else this.drawSeafloor();
     const specs = board === 'world' ? worldPieces() : seafloorPieces();
     if (data.assembled) for (const s of specs) s.start = { ...s.target };
+    // Pieces placed at earlier tables start fixed on their targets.
+    for (const id of this.earlierPieces()) {
+      const s = specs.find((p) => p.id === id);
+      if (s) {
+        s.start = { ...s.target };
+        s.fixed = true;
+      }
+    }
     this.board = new DragBoard(this, specs, PUZZLE_AREA);
     dbg.board = this.board;
     if (board !== 'world') this.drawRidgeMark();
@@ -88,7 +98,22 @@ export class PuzzleScene extends Phaser.Scene {
       .setDepth(950);
   }
 
+  /** World phases before the first phase of this visit, in order. */
+  private earlierPhases(): Phase[] {
+    const first = this.phases[0];
+    if (!first || first.board !== 'world') return [];
+    const i = WORLD_PHASES.indexOf(first.id);
+    return WORLD_PHASES.slice(0, Math.max(0, i)).map((id) => PHASES.find((p) => p.id === id)!);
+  }
+
+  private earlierPieces(): string[] {
+    return this.earlierPhases().flatMap((p) => p.move);
+  }
+
   private async run() {
+    const shown = this.earlierPhases()
+      .map((p) => p.pattern)
+      .filter((p): p is string => !!p);
     for (const phase of this.phases) {
       dbg.phase = phase.id;
       this.board.setEnabled(false);
@@ -98,7 +123,8 @@ export class PuzzleScene extends Phaser.Scene {
       this.board.setEnabled(true);
       await new Promise<void>((resolve) => {
         this.board.events.once('phase-done', resolve);
-        this.board.setPhase(phase.move, phase.pattern);
+        if (phase.pattern) shown.push(phase.pattern);
+        this.board.setPhase(phase.move, [...shown]);
       });
       this.ui.sfx('done');
       this.ui.setGuide(null);
@@ -109,8 +135,10 @@ export class PuzzleScene extends Phaser.Scene {
       } else {
         await this.ui.say(phase.after);
       }
+      const run = this.registry.get('run') as Run | undefined;
+      run?.complete(phase.board === 'world' ? 'table' : 'stripes');
     }
     dbg.phase = null;
-    if (this.next) this.scene.start(this.next);
+    if (this.next) this.scene.start(this.next, this.nextData);
   }
 }

@@ -16,7 +16,23 @@ export const dbg = {
   },
   world: null as Phaser.Scene | null,
   measureCanvas: null as null | ((s: string) => number),
+  /** Virtual point to press for the current goal (towns, sailing). */
+  goalPoint: null as null | (() => Pt | null),
+  player: null as null | (() => { x: number; y: number } | null),
+  /** Mini-game: its kind and the virtual points still to press or rub. */
+  minigame: null as null | (() => { kind: string; todo: Pt[] }),
 };
+
+/** Every world scene calls this first in create(): names the scene and clears the old hooks. */
+export function enterScene(name: string, scene: Phaser.Scene): void {
+  dbg.scene = name;
+  dbg.world = scene;
+  dbg.board = null;
+  dbg.phase = null;
+  dbg.goalPoint = null;
+  dbg.player = null;
+  dbg.minigame = null;
+}
 
 export interface NosDebug {
   state(): {
@@ -34,6 +50,9 @@ export interface NosDebug {
   grabOffset(id: string): Pt | null;
   toScreen(p: Pt): Pt;
   measureCanvas(s: string): number;
+  goalPoint(): Pt | null;
+  player(): { x: number; y: number } | null;
+  minigame(): { kind: string; todo: Pt[] } | null;
 }
 
 export function installDebug(): void {
@@ -61,6 +80,9 @@ export function installDebug(): void {
       return { x: r.left + p.x * k, y: r.top + p.y * k };
     },
     measureCanvas: (s) => dbg.measureCanvas?.(s) ?? -1,
+    goalPoint: () => dbg.goalPoint?.() ?? null,
+    player: () => dbg.player?.() ?? null,
+    minigame: () => dbg.minigame?.() ?? null,
   };
   (window as unknown as { __nos: NosDebug }).__nos = api;
 }

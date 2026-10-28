@@ -36,6 +36,15 @@ export const piece = (page: Page, id: string) =>
 export const movable = (page: Page) =>
   page.evaluate(() => (window as unknown as { __nos: { movable(): string[] } }).__nos.movable());
 
+export const goalPoint = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __nos: { goalPoint(): Pt | null } }).__nos.goalPoint());
+
+export const player = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __nos: { player(): Pt | null } }).__nos.player());
+
+export const minigame = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __nos: { minigame(): { kind: string; todo: Pt[] } | null } }).__nos.minigame());
+
 export const toScreen = (page: Page, p: Pt) =>
   page.evaluate((p) => (window as unknown as { __nos: { toScreen(p: Pt): Pt } }).__nos.toScreen(p), p);
 
@@ -111,10 +120,19 @@ export async function playUntil(page: Page, pred: (s: NosState) => boolean, touc
       await page.waitForTimeout(80);
     } else if (s.dialog) {
       await advance(page, touch);
-    } else if (s.scene === 'Puzzle') {
+    } else if (s.scene === 'Town' || s.scene === 'Sail') {
+      const p = await goalPoint(page);
+      if (p) {
+        await tapAt(page, p, touch);
+        await page.waitForTimeout(600);
+      } else await page.waitForTimeout(150);
+    } else if ((await movable(page)).length) {
       const ids = await movable(page);
-      if (ids.length) await dragPiece(page, ids[0], 'target', touch);
-      else await page.waitForTimeout(100);
+      await dragPiece(page, ids[0], 'target', touch);
+    } else if (await minigame(page)) {
+      const m = (await minigame(page))!;
+      if (m.todo.length) await tapAt(page, m.todo[0], touch);
+      await page.waitForTimeout(m.kind === 'survey' ? 400 : 60);
     } else if (s.scene === 'Title') {
       await advance(page, touch);
     } else {

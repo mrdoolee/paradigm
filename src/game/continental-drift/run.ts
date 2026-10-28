@@ -93,3 +93,18 @@ export function runFromStart(s: string | null): Run {
   }
   return new Run(0);
 }
+
+/** Dev shortcut ?town=<id>: from `run`, moves on until the goal is to talk in that town. */
+export function advanceToTown(run: Run, town: TownId): Run {
+  if (town === 'lab') return run;
+  for (let guard = 0; guard < ROUTE.length; guard++) {
+    const g = run.goal;
+    if (g.kind === 'talk' && g.town === town) break;
+    if (g.kind === 'ending') break;
+    run.complete(g.kind);
+  }
+  return run;
+}
+
+/** The port each field trip sails home from. */
+export const FIELD_PORT: Record<FieldGame, PortId> = { Dig: 'mumbai', Scratch: 'sydney', Strata: 'capetown' };

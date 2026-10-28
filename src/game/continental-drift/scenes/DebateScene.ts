@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
-import { dbg } from '../../common/debug';
+import { enterScene } from '../../common/debug';
 import { VIEW_H, VIEW_W } from '../../common/screen';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
+import type { Run } from '../run';
 
 const WALL = 0x3a2f2a;
 const FLOOR = 0x5a4636;
@@ -20,10 +21,7 @@ export class DebateScene extends Phaser.Scene {
   }
 
   create() {
-    dbg.scene = 'Debate';
-    dbg.world = this;
-    dbg.board = null;
-    dbg.phase = null;
+    enterScene('Debate', this);
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
     this.drawHall();
@@ -72,6 +70,7 @@ export class DebateScene extends Phaser.Scene {
     await ui.say(reply);
     await ui.say('debate-landbridge');
     await ui.say('debate-note');
-    this.scene.start('Puzzle', { phases: ['stripes'], next: 'Ending' });
+    (this.registry.get('run') as Run | undefined)?.complete('debate');
+    this.scene.start('Survey');
   }
 }

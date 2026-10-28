@@ -8,14 +8,14 @@ const WORLD = ['south-america', 'india', 'antarctica', 'australia', 'north-ameri
 
 test('@e2e 퍼즐 네 단계를 대화와 함께 끝내면 모든 대륙이 붙는다', async ({ page }, info) => {
   const touch = isTouch(info.project.name);
-  await page.goto('/continental-drift/?start=Puzzle');
+  await page.goto('/continental-drift/?start=Puzzle&phases=coast,fossil,glacier,mountain');
   await waitForNos(page);
   const seen: string[] = [];
   await playUntil(
     page,
     (s) => {
       if (s.phase && seen[seen.length - 1] !== s.phase) seen.push(s.phase);
-      return s.scene === 'Debate';
+      return s.scene === 'Town';
     },
     touch,
   );
@@ -83,13 +83,13 @@ test('@e2e 원고 글자 폭 표와 캔버스 글자 폭이 같다', async ({ pa
   expect(canvasWidths).toEqual(samples.map((s) => galmuriMeasure(s)));
 });
 
-test('@e2e 타이틀에서 누르면 퍼즐이 시작된다', async ({ page }, info) => {
+test('@e2e 타이틀에서 누르면 연구실 마을이 시작된다', async ({ page }, info) => {
   const touch = isTouch(info.project.name);
   await page.goto('/continental-drift/');
   await waitForNos(page);
   expect((await state(page)).scene).toBe('Title');
   await advance(page, touch);
-  await page.waitForFunction(() => (window as unknown as { __nos: { state(): { scene: string } } }).__nos.state().scene === 'Puzzle');
+  await page.waitForFunction(() => (window as unknown as { __nos: { state(): { scene: string } } }).__nos.state().scene === 'Town');
 });
 
 export { WORLD };

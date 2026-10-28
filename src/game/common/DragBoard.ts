@@ -88,14 +88,14 @@ export class DragBoard {
     });
   }
 
-  /** Makes `movable` the current phase and shows `pattern` on every piece that has it. */
-  setPhase(movable: string[], pattern: string | null): void {
+  /** Makes `movable` the current phase and shows the listed patterns on every piece that has them. */
+  setPhase(movable: string[], patterns: string[]): void {
     this.movable = movable.filter((id) => !this.pieces.get(id)?.snapped);
     this.selected = null;
     let depth = 0;
     for (const p of this.pieces.values()) {
       const active = movable.includes(p.spec.id);
-      for (const [name, img] of Object.entries(p.layers)) img.setVisible(name === pattern);
+      for (const [name, img] of Object.entries(p.layers)) img.setVisible(patterns.includes(name));
       p.box.setAlpha(active || p.spec.fixed ? 1 : p.snapped ? 0.75 : 0.4);
       p.box.setDepth(active ? 100 + depth : depth);
       depth++;

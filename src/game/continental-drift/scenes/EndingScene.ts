@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { DragBoard } from '../../common/DragBoard';
-import { dbg } from '../../common/debug';
+import { dbg, enterScene } from '../../common/debug';
 import { PUZZLE_AREA } from '../../common/layout';
 import { VIEW_H, VIEW_W } from '../../common/screen';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
@@ -15,9 +15,7 @@ export class EndingScene extends Phaser.Scene {
   }
 
   create() {
-    dbg.scene = 'Ending';
-    dbg.world = this;
-    dbg.phase = null;
+    enterScene('Ending', this);
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
 

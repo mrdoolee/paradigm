@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { advance, chooseIndex, isTouch, playUntil, state, waitForNos } from './helpers';
 
 for (const i of [0, 1, 2]) {
-  test(`@e2e 학회 선택지 ${i + 1}번을 골라도 해저 단계로 간다`, async ({ page }, info) => {
+  test(`@e2e 학회 선택지 ${i + 1}번을 골라도 해저 조사로 간다`, async ({ page }, info) => {
     const touch = isTouch(info.project.name);
     await page.goto('/continental-drift/?start=Debate');
     await waitForNos(page);
@@ -10,7 +10,7 @@ for (const i of [0, 1, 2]) {
     const before = (await state(page)).choiceCount;
     await chooseIndex(page, i, 3, touch);
     expect((await state(page)).choiceCount).toBe(before + 1);
-    const s = await playUntil(page, (s) => s.scene === 'Puzzle' && s.phase === 'stripes', touch);
+    const s = await playUntil(page, (s) => s.scene === 'Survey', touch);
     expect(s.choiceCount).toBe(before + 1);
   });
 }
@@ -25,7 +25,7 @@ test('@e2e 줄무늬 세 조각을 맞추면 마무리로 간다', async ({ page
 });
 
 test('@e2e 목록에서 시작해 끝까지 하면 정리 페이지가 나온다', async ({ page }, info) => {
-  test.setTimeout(300_000);
+  test.setTimeout(900_000);
   const touch = isTouch(info.project.name);
   await page.goto('/');
   const histStart = await page.evaluate(() => history.length);
@@ -33,9 +33,19 @@ test('@e2e 목록에서 시작해 끝까지 하면 정리 페이지가 나온다
   await waitForNos(page);
   expect((await state(page)).scene).toBe('Title');
   await advance(page, touch);
-  const play = playUntil(page, () => false, touch, 2000).catch(() => null);
-  await page.waitForURL('**/continental-drift/about/', { timeout: 280_000 });
+  const seen: string[] = [];
+  const play = playUntil(
+    page,
+    (s) => {
+      if (seen[seen.length - 1] !== s.scene) seen.push(s.scene);
+      return false;
+    },
+    touch,
+    6000,
+  ).catch(() => null);
+  await page.waitForURL('**/continental-drift/about/', { timeout: 880_000 });
   await play;
+  for (const scene of ['Town', 'Puzzle', 'Sail', 'Dig', 'Scratch', 'Strata', 'Debate', 'Survey', 'Ending']) expect(seen).toContain(scene);
   await expect(page.locator('main#about h3').first()).toBeVisible();
   const links = page.locator('nav a.button');
   await expect(links).toHaveCount(2);

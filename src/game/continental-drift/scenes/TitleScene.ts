@@ -1,10 +1,9 @@
 import Phaser from 'phaser';
 import { bindActions } from '../../common/actions';
-import { dbg } from '../../common/debug';
+import { enterScene } from '../../common/debug';
 import { FONT } from '../../common/layout';
 import { VIEW_H, VIEW_W } from '../../common/screen';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
-import { WORLD_PHASES } from '../data';
 
 /** Title screen: the activity name and "press to start". Any confirm or tap starts the puzzle. */
 export class TitleScene extends Phaser.Scene {
@@ -13,10 +12,7 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create() {
-    dbg.scene = 'Title';
-    dbg.world = this;
-    dbg.board = null;
-    dbg.phase = null;
+    enterScene('Title', this);
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
 
@@ -37,7 +33,7 @@ export class TitleScene extends Phaser.Scene {
       if (started) return;
       started = true;
       ui.sfx('page');
-      this.scene.start('Puzzle', { phases: WORLD_PHASES, next: 'Debate' });
+      this.scene.start('Town', { town: 'lab', at: 'start' });
     };
     bindActions(this, (a) => a === 'confirm' && go());
     this.input.once('pointerdown', go);
