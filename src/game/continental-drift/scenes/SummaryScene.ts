@@ -9,6 +9,7 @@ import { galmuriMeasure } from '../../../script/measure';
 import { BULLET, layoutPage, type PageLayout } from '../../../script/page';
 
 const S = SUMMARY;
+const FOCUS_GUARD_MS = 600;
 
 /**
  * The last scene: the summary page (`page-about` in script.md) in one full-screen window,
@@ -18,6 +19,8 @@ export class SummaryScene extends Phaser.Scene {
   private layout!: PageLayout;
   private page = 0;
   private focus = -1;
+  /** last time the focus moved or Enter was pressed; Enter presses a button only after a calm moment, so mashing Enter never leaves the game */
+  private focusAt = 0;
   private body!: Phaser.GameObjects.Container;
   private pageText!: Phaser.GameObjects.Text;
   private prev!: Phaser.GameObjects.Text;
@@ -38,7 +41,8 @@ export class SummaryScene extends Phaser.Scene {
     const b = script.blocks.get('page-about');
     this.layout = layoutPage(b && b.kind === 'page' ? b.markdown : '', galmuriMeasure, S.textW, S.rows);
     this.page = 0;
-    this.focus = -1;
+    this.focus = 0;
+    this.focusAt = 0;
 
     if (this.textures.exists('sail/sea')) this.add.image(0, 0, 'sail/sea').setOrigin(0);
     else this.add.graphics().fillStyle(0x274660).fillRect(0, 0, VIEW_W, VIEW_H);
@@ -69,10 +73,15 @@ export class SummaryScene extends Phaser.Scene {
       else if (a === 'right') this.turn(1);
       else if (a === 'confirm') {
         if (!this.isLast()) this.turn(1);
-        else if (this.focus >= 0) location.assign(this.layout.links[this.focus].href);
+        else {
+          const calm = this.time.now - this.focusAt >= FOCUS_GUARD_MS;
+          this.focusAt = this.time.now;
+          if (calm && this.links.length) location.assign(this.layout.links[this.focus].href);
+        }
       } else if ((a === 'up' || a === 'down' || a === 'cycle') && this.isLast() && this.links.length) {
         const n = this.links.length;
-        this.focus = this.focus < 0 ? 0 : (this.focus + (a === 'up' ? n - 1 : 1)) % n;
+        this.focus = (this.focus + (a === 'up' ? n - 1 : 1)) % n;
+        this.focusAt = this.time.now;
         this.drawFocus();
       }
     });
@@ -94,7 +103,9 @@ export class SummaryScene extends Phaser.Scene {
     const to = Phaser.Math.Clamp(this.page + d, 0, this.layout.pages.length - 1);
     if (to === this.page) return;
     this.page = to;
-    this.focus = -1;
+    // the last page opens with the first button picked (shown with the cursor), so Enter works from there
+    this.focus = 0;
+    this.focusAt = this.time.now;
     (this.scene.get(UI_KEY) as UiScene).sfx('page');
     this.show();
   }
@@ -113,8 +124,6 @@ export class SummaryScene extends Phaser.Scene {
     this.next.setVisible(!last);
     for (const t of this.links) t.setVisible(last);
     this.pageText.setText(`${this.page + 1} / ${this.layout.pages.length}`);
-    // with links on the last page, the page count moves left so nothing overlaps
-    this.pageText.setX(last && this.links.length ? S.textX + 40 : VIEW_W / 2);
     this.drawFocus();
   }
 

@@ -8,9 +8,9 @@
   "R": "rocks"
  },
  "rows": [
-  "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCT",
-  "~~~~~~CCCCCCCCCCCCCCCCCCCCCCCT",
-  "~~~~~~.......................T",
+  "TTTTTTTTTTCCCCCCCCCCCCCCCTTTTT",
+  "~~~~~~.CCCCCCCCCCCCCCCCCCCCC.T",
+  "~~~~~~CCCC.................CCT",
   "~~~~~~....,...###G####.R....RT",
   "~~~~~~.T......########.......T",
   "~~~~~~.....,..########.......T",
@@ -27,7 +27,7 @@
   "~~~~~~...,..=................T",
   "~~~~~~...........VVVVVVVVVVV.T",
   "~~~~~~...T.....T.............T",
-  "~~~~~~.......,....,......,...T",
+  "~~~~~~....R..,....,...R..,...T",
   "~~~~~~TTTTTTTTTTTTTTTTTTTTTTTT"
  ],
  "spawn": {
@@ -85,7 +85,8 @@
     6,
     11
    ],
-   "talk": "npc-africa-fisher"
+   "talk": "npc-africa-fisher",
+   "tint": "#9ab8c8"
   },
   {
    "id": "dassie",
@@ -93,7 +94,7 @@
    "sprite": "folk-dassie",
    "cell": [
     24,
-    2
+    4
    ],
    "talk": "npc-africa-dassie",
    "hop": true

@@ -19,6 +19,8 @@ export interface Thing {
   sprite?: string;
   /** townsfolk: a small animal that hops when spoken to */
   hop?: boolean;
+  /** townsfolk: colour multiplied over the art, so a passer-by never looks like the goal (e.g. "#9ab8c8") */
+  tint?: string;
 }
 
 export interface TownDef {

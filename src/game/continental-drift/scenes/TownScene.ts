@@ -335,7 +335,10 @@ export class TownScene extends Phaser.Scene {
       const who = t.kind === 'npc' ? `${this.def.id}-scientist` : t.kind === 'folk' ? (t.sprite ?? 'folk') : t.kind;
       const img = this.add.image(p.x, p.y, this.charTex(who, 'down', PERSON[t.kind])).setDepth(300);
       this.fitChar(img);
-      if (t.kind === 'folk') this.animateFolk(t, img);
+      if (t.kind === 'folk') {
+        if (t.tint) img.setTint(parseInt(t.tint.slice(1), 16));
+        this.animateFolk(t, img);
+      }
     } else if (t.kind === 'table') {
       g.fillStyle(0x3a2a1c).fillRect(p.x + 2, p.y + 2, 12, 14);
       g.fillStyle(0xe8dfc6).fillRect(p.x + 4, p.y + 4, 8, 6);

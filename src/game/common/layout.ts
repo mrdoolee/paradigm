@@ -35,7 +35,7 @@ export const SUMMARY = {
   textW: 444,
   rows: 16,
   rowH: 16,
-  footY: 334,
+  footY: 329,
   /** check:script and tests keep page-about within this many pages */
   maxPages: 6,
 };
