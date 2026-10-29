@@ -32,6 +32,13 @@ export class TitleScene extends Phaser.Scene {
     this.add.text(VIEW_W / 2, 144, ui.line('line-title'), style).setOrigin(0.5).setScale(2);
     const start = this.add.text(VIEW_W / 2, 178, ui.line('line-start'), { ...style, color: '#ffd23f' }).setOrigin(0.5);
     this.time.addEvent({ delay: 500, loop: true, callback: () => start.setVisible(!start.visible) });
+    // how to play, in one line under the title box
+    const controls = this.add.text(VIEW_W / 2, 222, ui.line('line-controls'), { ...style, color: '#c8d0dc' }).setOrigin(0.5);
+    this.add
+      .rectangle(VIEW_W / 2, 222, Math.ceil(controls.width) + 16, 20, 0x121a28)
+      .setStrokeStyle(2, 0xe8dfc6)
+      .setDepth(0);
+    controls.setDepth(1);
 
     let started = false;
     const go = () => {

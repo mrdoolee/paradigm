@@ -132,29 +132,134 @@ export class SurveyScene extends Phaser.Scene {
     }
   }
 
-  /** Cross-section: sky band, sea, a ridge rising in the middle, and the rock record below. */
+  /**
+   * Cross-section drawn pixel by pixel: sky, sea, the ridge under water with a small valley on its
+   * axis, then the layers of the ocean floor (sediment that thickens away from the ridge, pillow
+   * basalt, sheeted dikes, gabbro) over the mantle, and magma rising under the ridge. The magnetic
+   * record is painted later inside the basalt band.
+   */
   private drawSection() {
     if (this.textures.exists('minigames/survey')) {
       this.add.image(0, 0, 'minigames/survey').setOrigin(0);
     } else {
-      const g = this.add.graphics();
-      g.fillStyle(0x9ab8d0).fillRect(0, 0, VIEW_W, SURFACE_Y);
-      g.fillStyle(0x274660).fillRect(0, SURFACE_Y, VIEW_W, VIEW_H - SURFACE_Y);
-      g.fillStyle(0x1d3448).fillRect(0, C.floorTop, VIEW_W, VIEW_H - C.floorTop);
-      // ridge
-      g.fillStyle(0x3a4a5a);
-      for (let x = 0; x < VIEW_W; x++) {
-        const d = Math.abs(x - RIDGE_X);
-        const hgt = Math.max(0, 40 - d * 0.35);
-        g.fillRect(x, C.floorTop - hgt, 1, hgt + 44);
-      }
-      g.fillStyle(0x14202c).fillRect(0, C.floorTop + 44, VIEW_W, 56);
+      if (!this.textures.exists(SECTION_KEY)) this.buildSection();
+      this.add.image(0, 0, SECTION_KEY).setOrigin(0);
     }
     const r = this.add.graphics().setDepth(6);
-    r.fillStyle(0xd9483b).fillRect(RIDGE_X - 1, C.floorTop - 44, 2, 6);
-    this.add
-      .text(RIDGE_X, C.floorTop - 46, this.ui.line('line-label-ridge'), { fontFamily: 'Galmuri11', fontSize: '12px', color: '#e8dfc6', backgroundColor: '#121a28', padding: { x: 2, y: 1 } })
-      .setOrigin(0.5, 1)
-      .setDepth(6);
+    const top = ridgeTop(RIDGE_X);
+    r.fillStyle(0xd9483b).fillRect(RIDGE_X - 1, top - 10, 2, 6);
+    const label = { fontFamily: 'Galmuri11', fontSize: '12px', color: '#e8dfc6', backgroundColor: '#121a28', padding: { x: 2, y: 1 } };
+    this.add.text(RIDGE_X, top - 12, this.ui.line('line-label-ridge'), label).setOrigin(0.5, 1).setDepth(6);
+    // layer names on the left, away from the ship's track
+    const left = (y: number, anchor: string) => this.add.text(4, y, this.ui.line(anchor), { ...label, color: '#c8bfa8' }).setOrigin(0, 0.5).setDepth(6);
+    left(ridgeTop(8) + sedimentAt(8) / 2 + 1, 'line-label-sediment');
+    left(BAND_BOTTOM + 14, 'line-label-crust');
+    left(MANTLE_TOP + 30, 'line-label-mantle');
   }
+
+  private buildSection() {
+    const tex = this.textures.createCanvas(SECTION_KEY, VIEW_W, VIEW_H)!;
+    const ctx = tex.getContext();
+    const img = ctx.createImageData(VIEW_W, VIEW_H);
+    for (let y = 0; y < VIEW_H; y++)
+      for (let x = 0; x < VIEW_W; x++) {
+        const c = sectionColor(x, y);
+        const i = (y * VIEW_W + x) * 4;
+        img.data[i] = (c >> 16) & 255;
+        img.data[i + 1] = (c >> 8) & 255;
+        img.data[i + 2] = c & 255;
+        img.data[i + 3] = 255;
+      }
+    ctx.putImageData(img, 0, 0);
+    tex.refresh();
+  }
+}
+
+// ---- the cross-section, as pure functions of the pixel ------------------------
+
+const SECTION_KEY = 'gb-survey-section';
+const BAND_TOP = C.floorTop + 44;
+const BAND_BOTTOM = BAND_TOP + 56;
+const DIKES_BOTTOM = BAND_BOTTOM + 16;
+const MANTLE_TOP = DIKES_BOTTOM + 22;
+
+/** Fixed hash noise in 0..1 (same every run). */
+function hash(x: number, y: number): number {
+  let h = Math.imul(x, 374761393) ^ Math.imul(y, 668265263);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+
+/** Smooth 1D noise for gentle bumps on the sea floor. */
+function bumps(x: number): number {
+  const a = Math.floor(x / 12);
+  const t = (x / 12) - a;
+  const s = t * t * (3 - 2 * t);
+  return hash(a, 7) * (1 - s) + hash(a + 1, 7) * s;
+}
+
+/** Top of the rock (sea floor) at column x: a broad ridge, abyssal hills, and a small valley on the axis. */
+export function ridgeTop(x: number): number {
+  const d = Math.abs(x - RIDGE_X);
+  const rise = Math.max(0, 40 - d * 0.3) + (d < 60 ? (60 - d) * 0.08 : 0);
+  const valley = d < 7 ? (7 - d) * 0.8 : 0;
+  return Math.round(C.floorTop - rise + valley + bumps(x) * 4 - 2);
+}
+
+/** Sediment thickness: none on the ridge axis, thicker farther away (older floor). */
+export function sedimentAt(x: number): number {
+  const d = Math.abs(x - RIDGE_X);
+  return Math.max(0, Math.round((d - 24) / 18));
+}
+
+function dither(y: number, edge: number, x: number, a: number, b: number): number {
+  // two-row checker step between bands instead of a gradient
+  if (y < edge - 1) return a;
+  if (y > edge) return b;
+  return (x + y) % 2 === 0 ? a : b;
+}
+
+function sectionColor(x: number, y: number): number {
+  const floor = ridgeTop(x);
+  if (y < SURFACE_Y) {
+    // sky with two flat pixel clouds
+    const cloud = (cx: number, cy: number, w: number) => Math.abs(y - cy) <= 2 && Math.abs(x - cx) < w - Math.abs(y - cy) * 3;
+    if (cloud(110, 22, 22) || cloud(330, 14, 16) || cloud(420, 30, 12)) return 0xd8e4ee;
+    return dither(y, 30, x, 0x8fb0cc, 0x9ab8d0);
+  }
+  if (y < floor) {
+    if (y === SURFACE_Y && (x % 24) < 6) return 0x9ab8d0; // wave marks
+    let c = dither(y, SURFACE_Y + 10, x, 0x3a6a8a, 0x2d5a78);
+    if (y > SURFACE_Y + 11) c = dither(y, SURFACE_Y + 34, x, 0x2d5a78, 0x274660);
+    if (y > SURFACE_Y + 35) c = dither(y, C.floorTop - 10, x, 0x274660, 0x1f3b55);
+    return c;
+  }
+  const d = Math.abs(x - RIDGE_X);
+  const n = hash(x, y);
+  // magma rising under the ridge axis
+  const conduit = 3 + Math.round(bumps(y * 2) * 3) + Math.max(0, Math.round((y - MANTLE_TOP) / 6));
+  if (y > floor + 2 && d <= conduit && y >= BAND_BOTTOM) return n < 0.25 ? 0xf0a050 : 0xd9683b;
+  // a thin feeder up through the crust to the valley on the axis
+  if (y > floor + 2 && y < BAND_TOP && d <= (y > floor + 12 ? 1 : 0)) return 0xd9683b;
+  if (y >= MANTLE_TOP) {
+    const glow = d < 40 + (y - MANTLE_TOP) * 0.6 + (hash(y, 3) - 0.5) * 10 ? 0x7a4a36 : 0x5e3a2e;
+    return n < 0.08 ? 0x8a5a42 : n < 0.16 ? 0x4a2e26 : glow;
+  }
+  if (y >= DIKES_BOTTOM) return n < 0.12 ? 0x4e5660 : n < 0.2 ? 0x262c34 : 0x353c46; // gabbro
+  if (y >= BAND_BOTTOM) return (x + Math.floor(y / 8)) % 5 === 0 ? 0x262c34 : n < 0.1 ? 0x4e5660 : 0x3e4652; // sheeted dikes
+  const sed = sedimentAt(x);
+  if (y < floor + sed) {
+    // sediment: thin flat layers with grains
+    const layer = (y - floor) % 2 === 0 ? 0xb8a27a : 0xa48e68;
+    return n < 0.1 ? 0x8c7854 : layer;
+  }
+  // pillow basalt: rounded blobs in staggered rows, dark rims, a light spot top-left
+  const row = Math.floor((y - floor) / 7);
+  const off = row % 2 === 0 ? 0 : 6;
+  const px = (x + off) % 12;
+  const py = (y - floor) % 7;
+  const e = ((px - 5.5) / 6) ** 2 + ((py - 3) / 3.6) ** 2;
+  if (e > 0.78) return 0x262c34;
+  if (px >= 2 && px <= 4 && py >= 1 && py <= 2) return 0x5c6672;
+  return n < 0.06 ? 0x4e5660 : 0x404854;
 }

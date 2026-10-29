@@ -44,6 +44,9 @@
 ## @line-start
 눌러서 시작
 
+## @line-controls
+화면을 누르거나 끌어요 · 키보드는 방향키로 걷고 Enter로 말 걸기
+
 <!-- ① 도입 / ② 해안선 -->
 
 ## @intro
@@ -152,6 +155,15 @@ aide: 조사선들이 모은 자료를 지도로 옮겼어요. 해령 오른쪽 
 
 ## @line-label-ridge
 해령
+
+## @line-label-sediment
+퇴적물
+
+## @line-label-crust
+해양 지각
+
+## @line-label-mantle
+맨틀
 
 ## @line-guide-stripes
 줄무늬 조각을 끌어 해령 왼쪽과 거울처럼 맞춰 보세요
