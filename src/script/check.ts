@@ -1,7 +1,8 @@
 // Pure script checks shared by the CLI (scripts/check-script.ts) and tests.
-import { BODY, CHOICE_TEXT_W, LINE_W, TOPBAR_TEXT_W } from '../game/common/layout';
+import { BODY, CHOICE_TEXT_W, LINE_W, SUMMARY, TOPBAR_TEXT_W } from '../game/common/layout';
 import { galmuriMeasure, galmuriTable, missingChars, type Measure, type WidthTable } from './measure';
 import { parseScript, type BlockKind, type ParseErrorCode } from './parse';
+import { layoutPage } from './page';
 import { pagesFor, wrapText } from './wrap';
 
 export type IssueCode =
@@ -15,6 +16,8 @@ export type IssueCode =
   | 'CHOICE_TOO_WIDE'
   | 'NAME_TOO_WIDE'
   | 'TOTAL_PAGES'
+  | 'OPTIONAL_PAGES'
+  | 'SUMMARY_TOO_LONG'
   | 'MISSING_GLYPH';
 export interface Issue {
   code: IssueCode;
@@ -24,15 +27,20 @@ export interface Issue {
 export interface CheckResult {
   issues: Issue[];
   totalPages: number;
+  /** pages of optional talk (`npc-*`: townsfolk the student may skip), not in totalPages */
+  optionalPages: number;
   pagesByAnchor: Record<string, number>;
 }
+
+/** Anchors of talk the student can skip (townsfolk). They have their own cap. */
+export const OPTIONAL_PREFIX = 'npc-';
 
 export const MAX_SPEECH_PAGES = 2;
 export const NAME_SEP = ' · ';
 
 export function checkScript(
   text: string,
-  opts: { required: Record<string, BlockKind>; maxPages: number; measure?: Measure; table?: WidthTable },
+  opts: { required: Record<string, BlockKind>; maxPages: number; maxOptionalPages?: number; measure?: Measure; table?: WidthTable },
 ): CheckResult {
   const measure = opts.measure ?? galmuriMeasure;
   const table = opts.table ?? galmuriTable;
@@ -40,6 +48,7 @@ export function checkScript(
   const issues: Issue[] = errors.map((e) => ({ ...e }));
   const pagesByAnchor: Record<string, number> = {};
   let totalPages = 0;
+  let optionalPages = 0;
 
   for (const [anchor, kind] of Object.entries(opts.required)) {
     const b = script.blocks.get(anchor);
@@ -68,7 +77,8 @@ export function checkScript(
         n += pages;
       }
       pagesByAnchor[b.anchor] = n;
-      totalPages += n;
+      if (b.anchor.startsWith(OPTIONAL_PREFIX)) optionalPages += n;
+      else totalPages += n;
     } else if (b.kind === 'line') {
       // line-card-* are shown on the HTML list page, not on the canvas.
       if (b.anchor.startsWith('line-card-')) continue;
@@ -77,6 +87,10 @@ export function checkScript(
       if (!oneLine(b.text, guide ? TOPBAR_TEXT_W : LINE_W)) {
         issues.push({ code: guide ? 'GUIDE_TOO_WIDE' : 'LINE_TOO_WIDE', line: b.line + 1, detail: b.text });
       }
+    } else if (b.kind === 'page') {
+      glyphs(b.markdown.replace(/[#*\[\]()/-]/g, ''), b.line + 1);
+      const n = layoutPage(b.markdown, measure, SUMMARY.textW, SUMMARY.rows).pages.length;
+      if (n > SUMMARY.maxPages) issues.push({ code: 'SUMMARY_TOO_LONG', line: b.line, detail: `${n}/${SUMMARY.maxPages}` });
     } else if (b.kind === 'choices') {
       for (const c of b.choices) {
         glyphs(c.label, c.line);
@@ -88,6 +102,8 @@ export function checkScript(
   }
 
   if (totalPages > opts.maxPages) issues.push({ code: 'TOTAL_PAGES', line: 1, detail: `${totalPages}/${opts.maxPages}` });
+  if (opts.maxOptionalPages !== undefined && optionalPages > opts.maxOptionalPages)
+    issues.push({ code: 'OPTIONAL_PAGES', line: 1, detail: `${optionalPages}/${opts.maxOptionalPages}` });
   issues.sort((a, b) => a.line - b.line);
-  return { issues, totalPages, pagesByAnchor };
+  return { issues, totalPages, optionalPages, pagesByAnchor };
 }

@@ -24,7 +24,9 @@ const MESSAGES: Record<IssueCode, (d: string) => string> = {
   GUIDE_TOO_WIDE: (d) => `안내 띠 한 줄에 들어가지 않습니다: ${d}`,
   CHOICE_TOO_WIDE: (d) => `선택지 창 한 줄에 들어가지 않습니다: ${d}`,
   NAME_TOO_WIDE: (d) => `이름표가 너무 깁니다: ${d}`,
-  TOTAL_PAGES: (d) => `대화가 너무 깁니다: ${d}쪽(활동 시간 15분을 넘을 수 있습니다).`,
+  TOTAL_PAGES: (d) => `대화가 너무 깁니다: ${d}쪽(활동 시간을 넘을 수 있습니다).`,
+  OPTIONAL_PAGES: (d) => `마을 사람 대화(@npc-)가 너무 깁니다: ${d}쪽.`,
+  SUMMARY_TOO_LONG: (d) => `정리 페이지가 정리 창에 다 들어가지 않습니다: ${d}쪽.`,
   MISSING_GLYPH: (d) => `글꼴(Galmuri11)에 없는 글자라 화면에 빈 네모로 나옵니다: ${d}`,
 };
 
@@ -40,10 +42,19 @@ async function main() {
       failed = true;
       continue;
     }
-    const mod = (await import(pathToFileURL(anchorsPath).href)) as { ANCHORS: Record<string, BlockKind>; MAX_PAGES: number };
-    const r = checkScript(readFileSync(file, 'utf8'), { required: mod.ANCHORS, maxPages: mod.MAX_PAGES });
+    const mod = (await import(pathToFileURL(anchorsPath).href)) as {
+      ANCHORS: Record<string, BlockKind>;
+      MAX_PAGES: number;
+      MAX_OPTIONAL_PAGES?: number;
+    };
+    const r = checkScript(readFileSync(file, 'utf8'), {
+      required: mod.ANCHORS,
+      maxPages: mod.MAX_PAGES,
+      maxOptionalPages: mod.MAX_OPTIONAL_PAGES,
+    });
     for (const i of r.issues) console.error(`${file}:${i.line}  ${MESSAGES[i.code](i.detail)}`);
     console.log(`${file}: 대화 ${r.totalPages}쪽 / 상한 ${mod.MAX_PAGES}쪽 (약 ${Math.round((r.totalPages * 6) / 60)}분 읽기)`);
+    if (r.optionalPages) console.log(`  마을 사람 대화(골라 듣기) ${r.optionalPages}쪽 / 상한 ${mod.MAX_OPTIONAL_PAGES ?? '-'}쪽`);
     console.log(
       '  ' + Object.entries(r.pagesByAnchor).map(([a, n]) => `${a} ${n}`).join(', '),
     );

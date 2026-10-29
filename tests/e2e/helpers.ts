@@ -45,6 +45,15 @@ export const player = (page: Page) =>
 export const minigame = (page: Page) =>
   page.evaluate(() => (window as unknown as { __nos: { minigame(): { kind: string; todo: Pt[] } | null } }).__nos.minigame());
 
+export interface SummaryInfo {
+  page: number;
+  pages: number;
+  next: Pt | null;
+  links: Pt[];
+}
+export const summary = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __nos: { summary(): SummaryInfo | null } }).__nos.summary());
+
 export const toScreen = (page: Page, p: Pt) =>
   page.evaluate((p) => (window as unknown as { __nos: { toScreen(p: Pt): Pt } }).__nos.toScreen(p), p);
 
@@ -135,6 +144,10 @@ export async function playUntil(page: Page, pred: (s: NosState) => boolean, touc
       await page.waitForTimeout(m.kind === 'survey' ? 400 : 60);
     } else if (s.scene === 'Title') {
       await advance(page, touch);
+    } else if (s.scene === 'Summary') {
+      const sm = await summary(page);
+      if (sm?.next) await tapAt(page, sm.next, touch);
+      await page.waitForTimeout(150);
     } else {
       await page.waitForTimeout(100);
     }

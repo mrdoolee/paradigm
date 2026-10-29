@@ -44,6 +44,7 @@ def main() -> int:
     ap.add_argument("--cell", default="16x16")
     ap.add_argument("--cols", type=int, default=1)
     ap.add_argument("--fill", action="store_true", help="칸을 꽉 채우는 그림(타일): 상자를 칸 크기로 늘린다")
+    ap.add_argument("--pitch", type=float, help="원본 한 도트 크기(px)를 모든 칸에 같게 고정한다(동물이 사람만큼 커지지 않게)")
     a = ap.parse_args()
     names = a.names.split(",")
     cw, ch = (int(n) for n in a.cell.lower().split("x"))
@@ -63,7 +64,7 @@ def main() -> int:
             if k >= len(names):
                 break
             bw, bh = x1 - x0, y1 - y0
-            pitch = max(bw / cw, bh / ch) if not a.fill else None
+            pitch = (a.pitch or max(bw / cw, bh / ch)) if not a.fill else None
             cell = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
             cp = cell.load()
             if a.fill:

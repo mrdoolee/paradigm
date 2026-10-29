@@ -20,7 +20,7 @@ import {
 export const UI_KEY = 'Ui';
 export type Sfx = 'page' | 'snap' | 'done';
 
-const C = {
+export const UI_COLORS = {
   ink: '#f4ecd8',
   dim: '#9aa6b8',
   accent: '#ffd23f',
@@ -29,11 +29,12 @@ const C = {
   boxInner: 0x4b5870,
   barFill: 0x1a2733,
 };
+const C = UI_COLORS;
 
 const SLIDE_STEP_MS = 40;
 
 /** Draws a two-line pixel frame (outer light, inner dark) on a filled box. */
-function frame(g: Phaser.GameObjects.Graphics, x: number, y: number, w: number, h: number) {
+export function frame(g: Phaser.GameObjects.Graphics, x: number, y: number, w: number, h: number) {
   g.fillStyle(C.boxFill).fillRect(x, y, w, h);
   g.fillStyle(C.boxEdge);
   g.fillRect(x + 1, y, w - 2, 2).fillRect(x + 1, y + h - 2, w - 2, 2);

@@ -6,9 +6,7 @@ import { VIEW_H, VIEW_W } from '../../common/screen';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
 import { worldPieces } from '../data';
 
-export const ABOUT_PATH = 'continental-drift/about/';
-
-/** ⑥ Pangea drifts apart into today's map, the last words, then the summary page. */
+/** ⑥ Pangea drifts apart into today's map, the last words, then the summary window. */
 export class EndingScene extends Phaser.Scene {
   constructor() {
     super('Ending');
@@ -38,7 +36,7 @@ export class EndingScene extends Phaser.Scene {
       await new Promise<void>((r) => this.time.delayedCall(400, r));
       await new Promise<void>((r) => board.moveAll(today, 8, r));
       await ui.say('ending');
-      location.assign(import.meta.env.BASE_URL + ABOUT_PATH);
+      this.scene.start('Summary');
     })();
   }
 }

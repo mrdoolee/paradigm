@@ -1,4 +1,5 @@
 import type { BlockKind } from '../../script/parse';
+import { TOWNS } from './towns';
 
 /** Every script anchor the continental-drift code asks for. check:script fails if one is missing. */
 export const ANCHORS: Record<string, BlockKind> = {
@@ -77,4 +78,9 @@ export const ANCHORS: Record<string, BlockKind> = {
   'line-strata-3': 'line',
 };
 
+// every talk anchor a town map names (townsfolk, the aide) must exist too
+for (const town of Object.values(TOWNS)) for (const t of town.things) if (t.talk) ANCHORS[t.talk] = 'dialogue';
+
 export const MAX_PAGES = 70;
+/** Townsfolk talk (`npc-*`) is optional; it has its own cap so the towns stay light. */
+export const MAX_OPTIONAL_PAGES = 24;

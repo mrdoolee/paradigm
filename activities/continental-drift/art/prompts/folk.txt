@@ -1,0 +1,6 @@
+Pixel art character sprites for a classic top-down 16-bit style RPG (format only, original designs), 1920s setting.
+Draw exactly 8 different figures in a grid of 2 columns and 4 rows with clear empty space between them, all standing and facing down toward the viewer, in this order (left to right, top to bottom):
+{{list}}
+Ordinary townspeople drawn with respect, period clothing, no caricature, not resembling any real person. Animals are drawn small and natural, standing on the ground line.
+Each fits a 16x24 pixel cell, people have a big head about one third of the height,
+1-pixel dark navy (#1b2a38) outline, light from the top-left, 2 shading steps, crisp pixels, no anti-aliasing, no text.

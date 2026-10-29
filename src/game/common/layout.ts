@@ -24,3 +24,18 @@ export const LINE_W = 464;
 export const FONT = { family: 'Galmuri11', sizePx: 12, lineSpacing: 4 };
 export const SNAP_RADIUS = 10;
 export const KEY_STEP = 4;
+
+/** The summary window at the end: one fixed full-screen box under the top bar row, turned page by page. */
+export const SUMMARY = {
+  box: { x: 4, y: 24, w: 472, h: 332 } as Rect,
+  titleY: 32,
+  lineY: 50,
+  textX: 18,
+  textY: 56,
+  textW: 444,
+  rows: 16,
+  rowH: 16,
+  footY: 334,
+  /** check:script and tests keep page-about within this many pages */
+  maxPages: 6,
+};

@@ -1,0 +1,6 @@
+Pixel art terrain and prop tiles for a classic top-down RPG town (format only, original design): {{place}}.
+Draw exactly 12 square tiles in a grid of 3 columns and 4 rows, with clear empty space between every tile, in this order (left to right, top to bottom):
+{{list}}
+Ground, road and water tiles are seamless 16x16 pixel squares that tile with themselves. Prop tiles show one object centred on the ground tile 1 so they sit on the same ground.
+Flat top-down view slightly from the front, light from the top-left, 2 shading steps, muted earthy palette like an old hand-coloured map,
+1-pixel dark outline on props only, crisp pixels, no anti-aliasing, no text, no people.

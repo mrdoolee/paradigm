@@ -15,6 +15,7 @@ import { DigScene } from './scenes/DigScene';
 import { ScratchScene } from './scenes/ScratchScene';
 import { StrataScene } from './scenes/StrataScene';
 import { SurveyScene } from './scenes/SurveyScene';
+import { SummaryScene } from './scenes/SummaryScene';
 
 const { script, errors } = parseScript(scriptText);
 if (errors.length) {
@@ -26,7 +27,7 @@ if (card && card.kind === 'line') document.title = card.text;
 
 installDebug();
 const game = await startGame(
-  [BootScene, TitleScene, TownScene, SailScene, DigScene, ScratchScene, StrataScene, SurveyScene, PuzzleScene, DebateScene, EndingScene, UiScene],
+  [BootScene, TitleScene, TownScene, SailScene, DigScene, ScratchScene, StrataScene, SurveyScene, PuzzleScene, DebateScene, EndingScene, SummaryScene, UiScene],
   document.getElementById('game')!,
   { script },
 );

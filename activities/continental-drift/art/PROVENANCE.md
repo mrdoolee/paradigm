@@ -41,3 +41,22 @@
 | (쓰지 않음) | survey-bg | 1 | 해령을 눈 덮인 물 위 산맥처럼 그려 사실과 어긋남 → 코드로 그린 단면도를 씀 |
 
 생성 호출 합계: 20회 (견본 5 + 대량 15), 기록 `tools/art-runs/calls.jsonl`.
+
+## 지역 마을 타일과 마을 사람 (2026-10-29, 두 번째)
+
+- 같은 모델·도구·후처리. 사용자 요청: "지역 특성에 맞게 마을 배경", "빈 공간이 많으니 NPC". 참고 이미지는 앞의 `tiles`·`people` 원본(같은 그림체 유지).
+- 프롬프트: `art/prompts/tiles-region.txt`(마을마다 `--var place=… list=…`), `art/prompts/folk.txt`.
+- 마을 사람은 모두 지어낸 1920년대 주민이다. 실존 인물을 닮게 그리지 않았고, 희화화하지 않도록 프롬프트에 적었다.
+- 동물이 사람만큼 커지지 않도록 `cut.py --pitch 9.2`로 모든 칸의 도트 크기를 같게 잘랐다.
+- 새 바다 타일 4장은 16×16으로 줄이면 점 무늬로 보여 쓰지 않고, 앞의 `town/water.png`를 모든 마을이 함께 쓴다.
+
+| 파일 | 원본 id | 호출 | 손질 |
+|---|---|---|---|
+| `town/lab/{ground,ground2,road,tree,wall,roof,pier,lamp,bench,barrels,hedge}.png` | town-lab | 1 | cut --fill 16×16, 3열 |
+| `town/india/{ground,ground2,road,tree,wall,roof,pier,palm,well,stall,pots}.png` | town-india | 1 | 같음 |
+| `town/australia/{ground,ground2,road,tree,wall,roof,pier,windmill,tank,boulder,fence}.png` | town-australia | 1 | 같음 |
+| `town/africa/{ground,ground2,road,tree,wall,roof,pier,cliff,vines,gable,rocks}.png` | town-africa | 1 | 같음 |
+| `chars/folk-{postman,fisher,paper,cat,fruit,pupil,peacock,water}-down.png` | folk-a | 1 | cut 16×24, 2열, --pitch 9.2 |
+| `chars/folk-{farmer,girl,roo,kooka,flower,capefisher,dassie,gull}-down.png` | folk-b | 1 | 같음 |
+
+생성 호출 합계(누계): 26회 (앞 20 + 이번 6). 원본의 8번(놋 주전자를 든 사람)은 사실 확인 뒤 "물 장수"로 쓴다(1920년대 인도 시골의 차 장수는 확인 못 함).

@@ -21,7 +21,16 @@ export const dbg = {
   player: null as null | (() => { x: number; y: number } | null),
   /** Mini-game: its kind and the virtual points still to press or rub. */
   minigame: null as null | (() => { kind: string; todo: Pt[] }),
+  /** Summary window: current page, page count, and where to press next. */
+  summary: null as null | (() => SummaryInfo),
 };
+
+export interface SummaryInfo {
+  page: number;
+  pages: number;
+  next: Pt | null;
+  links: Pt[];
+}
 
 /** Every world scene calls this first in create(): names the scene and clears the old hooks. */
 export function enterScene(name: string, scene: Phaser.Scene): void {
@@ -32,6 +41,7 @@ export function enterScene(name: string, scene: Phaser.Scene): void {
   dbg.goalPoint = null;
   dbg.player = null;
   dbg.minigame = null;
+  dbg.summary = null;
 }
 
 export interface NosDebug {
@@ -53,6 +63,7 @@ export interface NosDebug {
   goalPoint(): Pt | null;
   player(): { x: number; y: number } | null;
   minigame(): { kind: string; todo: Pt[] } | null;
+  summary(): SummaryInfo | null;
 }
 
 export function installDebug(): void {
@@ -83,6 +94,7 @@ export function installDebug(): void {
     goalPoint: () => dbg.goalPoint?.() ?? null,
     player: () => dbg.player?.() ?? null,
     minigame: () => dbg.minigame?.() ?? null,
+    summary: () => dbg.summary?.() ?? null,
   };
   (window as unknown as { __nos: NosDebug }).__nos = api;
 }

@@ -8,7 +8,6 @@ export default defineConfig({
       input: {
         home: resolve(import.meta.dirname, 'index.html'),
         game: resolve(import.meta.dirname, 'continental-drift/index.html'),
-        about: resolve(import.meta.dirname, 'continental-drift/about/index.html'),
       },
     },
   },

@@ -5,7 +5,7 @@ import australia from '../../../activities/continental-drift/towns/australia.jso
 import africa from '../../../activities/continental-drift/towns/africa.json';
 import type { TownId } from './run';
 
-export type ThingKind = 'table' | 'port' | 'npc' | 'field' | 'aide' | 'boat';
+export type ThingKind = 'table' | 'port' | 'npc' | 'field' | 'aide' | 'boat' | 'folk';
 
 export interface Thing {
   id: string;
@@ -15,12 +15,17 @@ export interface Thing {
   label?: string;
   /** dialogue anchor said when the thing is looked at */
   talk?: string;
+  /** townsfolk: character art `chars/<sprite>-down` */
+  sprite?: string;
+  /** townsfolk: a small animal that hops when spoken to */
+  hop?: boolean;
 }
 
 export interface TownDef {
   id: TownId;
-  ground: string;
   walkable: string;
+  /** map letters for this town's props (blocked cells), e.g. { "W": "well" } -> tile `town/<id>/well` */
+  legend?: Record<string, string>;
   rows: string[];
   spawn: Record<string, [number, number]>;
   things: Thing[];

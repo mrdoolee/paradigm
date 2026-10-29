@@ -22,7 +22,11 @@ const TILE_COLORS: Record<string, number> = {
   '=': 0xb89a66,
   p: 0x6b4f33,
 };
-const PERSON: Record<string, number> = { port: 0x3a5a8a, npc: 0x7a5aa0, aide: 0xd98a5b };
+const PERSON: Record<string, number> = { port: 0x3a5a8a, npc: 0x7a5aa0, aide: 0xd98a5b, folk: 0x8a7a5a };
+/** Grey-box ground colour per town (used only when no tile art is loaded). */
+const GROUND: Record<string, number> = { lab: 0x6f8f4e, india: 0xb59a5a, australia: 0xa85a3a, africa: 0x9a9a6a };
+/** Townsfolk glance left and right now and then; each one on its own beat. */
+const GLANCE_MS = 2600;
 const MARK = 0xffd23f;
 
 /**
@@ -46,6 +50,7 @@ export class TownScene extends Phaser.Scene {
   create(data: TownData) {
     enterScene('Town', this);
     this.busy = false;
+    this.folkImages = new Map();
     this.def = TOWNS[data.town ?? 'lab'];
     this.run = this.registry.get('run') as Run;
     this.ui = this.scene.get(UI_KEY) as UiScene;
@@ -188,6 +193,13 @@ export class TownScene extends Phaser.Scene {
     if (this.busy) return;
     const g = this.run.goal;
     const isGoal = this.goalThing()?.id === t.id;
+    if (t.kind === 'folk') {
+      this.busy = true;
+      this.greet(t);
+      await this.ui.say(t.talk ?? 'town-not-yet');
+      this.busy = false;
+      return;
+    }
     if (!isGoal) {
       this.busy = true;
       await this.ui.say(t.talk ?? (t.kind === 'aide' ? 'aide-chat' : 'town-not-yet'));
@@ -214,6 +226,32 @@ export class TownScene extends Phaser.Scene {
     }
   }
 
+  // ---- townsfolk ----------------------------------------------------------
+
+  private folkImages = new Map<string, Phaser.GameObjects.Image>();
+
+  /** People glance left and right; animals stay put until spoken to. Timing is fixed per index. */
+  private animateFolk(t: Thing, img: Phaser.GameObjects.Image) {
+    this.folkImages.set(t.id, img);
+    if (t.hop) return;
+    const i = this.folkImages.size;
+    this.time.addEvent({
+      delay: GLANCE_MS + i * 370,
+      loop: true,
+      callback: () => {
+        if (!this.busy) img.setFlipX(!img.flipX);
+      },
+    });
+  }
+
+  /** Turns toward the player; small animals give a hop. */
+  private greet(t: Thing) {
+    const img = this.folkImages.get(t.id);
+    if (!img) return;
+    img.setFlipX(this.walker.cell.x > t.cell[0]);
+    if (t.hop) this.tweens.add({ targets: img, y: img.y - 4, duration: 90, yoyo: true, repeat: 1 });
+  }
+
   // ---- drawing -----------------------------------------------------------
 
   /** Character art `chars/<who>-<dir>` (16x24) when present, else a 16x16 grey-box person. */
@@ -230,8 +268,22 @@ export class TownScene extends Phaser.Scene {
   }
 
   private tileName(ch: string, x: number, y: number): string | null {
-    if (ch === '#') return y === 0 || this.def.rows[y - 1]?.[x] !== '#' ? 'roof' : 'wall';
-    return ({ '.': 'grass', ',': 'flowers', '=': 'road', '~': 'water', T: 'tree', p: 'pier' } as Record<string, string>)[ch] ?? null;
+    const legend = this.def.legend ?? {};
+    if (ch === '#') {
+      // the top row of a building is roof; a gable over a door counts as building too
+      const above = y > 0 ? this.def.rows[y - 1][x] : '';
+      return above === '#' || legend[above] === 'gable' ? 'wall' : 'roof';
+    }
+    if (legend[ch]) return legend[ch];
+    return ({ '.': 'ground', ',': 'ground2', '=': 'road', '~': 'water', T: 'tree', p: 'pier' } as Record<string, string>)[ch] ?? null;
+  }
+
+  /** This town's own tile, else the shared one (with the old names), else null. */
+  private tileTex(name: string): { key: string; shared: boolean } | null {
+    const own = `town/${this.def.id}/${name}`;
+    if (this.textures.exists(own)) return { key: own, shared: false };
+    const old = ({ ground: 'grass', ground2: 'flowers' } as Record<string, string>)[name] ?? name;
+    return this.textures.exists(`town/${old}`) ? { key: `town/${old}`, shared: true } : null;
   }
 
   private cellPx(c: Cell): Pt {
@@ -244,28 +296,29 @@ export class TownScene extends Phaser.Scene {
   }
 
   private drawMap() {
-    if (this.textures.exists('town/grass')) {
-      // generated tiles; region towns get a drier tint on the plants
+    this.add.graphics().fillStyle(0x14161c).fillRect(0, 0, VIEW_W, VIEW_H);
+    if (this.textures.exists('town/grass') || this.textures.exists(`town/${this.def.id}/ground`)) {
+      // generated tiles; the shared set gets a drier tint in region towns that have no set of their own
       const dry = ({ lab: 0xffffff, india: 0xf2e2a8, australia: 0xffd8a8, africa: 0xe8e2a8 } as Record<string, number>)[this.def.id] ?? 0xffffff;
-      this.add.graphics().fillStyle(0x14161c).fillRect(0, 0, VIEW_W, VIEW_H);
       this.def.rows.forEach((row, y) =>
         [...row].forEach((ch, x) => {
           const name = this.tileName(ch, x, y);
-          if (!name || !this.textures.exists(`town/${name}`)) return;
+          const tex = name ? this.tileTex(name) : null;
+          if (!name || !tex) return;
           const p = this.cellPx({ x, y });
-          const img = this.add.image(p.x, p.y, `town/${name}`).setOrigin(0);
-          if (['grass', 'flowers', 'tree'].includes(name)) img.setTint(dry);
+          const img = this.add.image(p.x, p.y, tex.key).setOrigin(0);
+          if (tex.shared && ['ground', 'ground2', 'tree'].includes(name)) img.setTint(dry);
         }),
       );
       return;
     }
     const g = this.add.graphics();
-    g.fillStyle(0x14161c).fillRect(0, 0, VIEW_W, VIEW_H);
-    const ground = parseInt(this.def.ground.slice(1), 16);
+    const ground = GROUND[this.def.id] ?? 0x6f8f4e;
     this.def.rows.forEach((row, y) => {
       [...row].forEach((ch, x) => {
         const p = this.cellPx({ x, y });
-        g.fillStyle(TILE_COLORS[ch] ?? ground).fillRect(p.x, p.y, TILE, TILE);
+        const prop = !!this.def.legend?.[ch];
+        g.fillStyle(prop ? 0x5a4a3a : (TILE_COLORS[ch] ?? ground)).fillRect(p.x, p.y, TILE, TILE);
         if (ch === ',') g.fillStyle(0xe8dfc6).fillRect(p.x + 4, p.y + 5, 2, 2).fillRect(p.x + 10, p.y + 10, 2, 2);
         if (ch === 'T') g.fillStyle(0x3f7a42).fillRect(p.x + 3, p.y + 2, 10, 9);
         if (ch === '#' && (y === 0 || row[x] !== this.def.rows[y - 1]?.[x])) g.fillStyle(0x6a3a2a).fillRect(p.x, p.y, TILE, 6);
@@ -279,9 +332,10 @@ export class TownScene extends Phaser.Scene {
     const p = this.cellPx({ x: t.cell[0], y: t.cell[1] });
     const g = this.add.graphics().setDepth(300);
     if (t.kind in PERSON) {
-      const who = t.kind === 'npc' ? `${this.def.id}-scientist` : t.kind;
+      const who = t.kind === 'npc' ? `${this.def.id}-scientist` : t.kind === 'folk' ? (t.sprite ?? 'folk') : t.kind;
       const img = this.add.image(p.x, p.y, this.charTex(who, 'down', PERSON[t.kind])).setDepth(300);
       this.fitChar(img);
+      if (t.kind === 'folk') this.animateFolk(t, img);
     } else if (t.kind === 'table') {
       g.fillStyle(0x3a2a1c).fillRect(p.x + 2, p.y + 2, 12, 14);
       g.fillStyle(0xe8dfc6).fillRect(p.x + 4, p.y + 4, 8, 6);

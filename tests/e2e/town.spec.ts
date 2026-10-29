@@ -46,3 +46,19 @@ test('@e2e 첫 한 바퀴: 해안선 → 항해 → 인도 → 화석 발굴 →
   expect(sa.snapped).toBe(true);
   void advance;
 });
+
+test('@e2e 마을 사람을 누르면 걸어가서 말을 걸고, 대화가 끝나면 안내가 돌아온다', async ({ page }, info) => {
+  const touch = isTouch(info.project.name);
+  await page.goto('/continental-drift/?start=Town&town=india');
+  await waitForNos(page);
+  await playUntil(page, (s) => !s.dialog && s.guide !== null, touch, 40);
+  const guide = (await state(page)).guide;
+  // the fruit seller stands at cell (11, 10) in towns/india.json
+  await tapAt(page, { x: 11 * 16 + 8, y: 22 + 10 * 16 + 8 }, touch);
+  await expect.poll(async () => (await state(page)).dialog, { timeout: 8000 }).toBe(true);
+  const p = (await player(page))!;
+  expect(Math.abs(p.x - 11) + Math.abs(p.y - 10)).toBe(1);
+  await playUntil(page, (s) => !s.dialog, touch, 20);
+  expect((await state(page)).guide).toBe(guide);
+  expect((await state(page)).scene).toBe('Town');
+});
