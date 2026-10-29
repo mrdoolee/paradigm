@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { enterScene } from '../../common/debug';
 import { VIEW_H, VIEW_W } from '../../common/screen';
-import { UI_KEY, type UiScene } from '../../common/UiScene';
+import { FONT } from '../../common/layout';
+import { UI_COLORS, UI_KEY, frame, type UiScene } from '../../common/UiScene';
 import type { Run } from '../run';
 
 const WALL = 0x3a2f2a;
@@ -10,6 +11,9 @@ const BOARD = 0x2f4a3a;
 const WOOD = 0x8a6440;
 const SEAT = 0x2a2220;
 const FIGURE = 0x6b7a90;
+
+/** The land-bridge picture: a framed board above the dialog box, with a one-line caption on top. */
+const PANEL = { x: 86, y: 24, w: 308, h: 222, imgX: 90, imgY: 42, imgW: 300, imgH: 200, captionY: 28 };
 
 /**
  * ④ The society meeting. Every choice gets one rebuttal and the story moves on:
@@ -67,12 +71,37 @@ export class DebateScene extends Phaser.Scene {
     }
   }
 
+  private showPanel(panel: Phaser.GameObjects.Container, ui: UiScene, image: string, caption: string) {
+    panel.removeAll(true);
+    const g = this.add.graphics();
+    frame(g, PANEL.x, PANEL.y, PANEL.w, PANEL.h);
+    panel.add(g);
+    if (this.textures.exists(image)) panel.add(this.add.image(PANEL.imgX, PANEL.imgY, image).setOrigin(0));
+    else panel.add(this.add.graphics().fillStyle(0x1b422c).fillRect(PANEL.imgX, PANEL.imgY, PANEL.imgW, PANEL.imgH));
+    panel.add(
+      this.add
+        .text(PANEL.x + PANEL.w / 2, PANEL.captionY, ui.line(caption), {
+          fontFamily: FONT.family,
+          fontSize: `${FONT.sizePx}px`,
+          color: UI_COLORS.accent,
+        })
+        .setOrigin(0.5, 0),
+    );
+  }
+
   private async run(ui: UiScene) {
     await ui.say('debate-arrive');
     await ui.say('debate-mechanism-q', { keep: true });
     const reply = await ui.choose('choice-debate-mechanism');
     await ui.say(reply);
+    // the opposing side's explanation, told with a picture: first the bridge, then the bridge sunk
+    const panel = this.add.container(0, 0).setDepth(100);
+    this.showPanel(panel, ui, 'scenes/landbridge', 'line-landbridge-1');
     await ui.say('debate-landbridge');
+    this.showPanel(panel, ui, 'scenes/landbridge-sunk', 'line-landbridge-2');
+    await ui.say('debate-landbridge-sink');
+    panel.destroy();
+    await ui.say('debate-response');
     await ui.say('debate-note');
     (this.registry.get('run') as Run | undefined)?.complete('debate');
     this.scene.start('Survey');
