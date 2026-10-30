@@ -22,7 +22,7 @@ tools: Read, Grep, Glob, Bash, WebSearch, WebFetch
 8. **참고 자료 제한**: 포켓몬스터·escape-kit의 이름·스토리.
 
 ## 출력
-파일을 고치지도 쓰지도 않는다. 최종 응답에 다음을 그대로 쓴다(오케스트레이터가 `_workspace/`에 옮겨 적는다).
+파일을 고치지도 쓰지도 않는다. 최종 응답에 다음을 그대로 쓴다(오케스트레이터가 `work/ledger/<id>/`에 옮겨 적는다).
 1. 첫 줄 판정: `통과` 또는 `수정 필요` (Critical n · Important n · Minor n).
 2. 지적 목록: `파일:줄 — 심각도(Critical/Important/Minor) — 문제 — 고칠 방향 — (사실이면) 확인한 출처`.
 3. `확인 못 함` 목록.

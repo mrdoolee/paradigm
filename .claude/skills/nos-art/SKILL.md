@@ -25,10 +25,10 @@ description: NOS 활동의 도트 그림을 만들고 판정하는 절차 — �
 STYLE.md와 견본은 **사용자에게 보여 주고 확인받는다**(인상은 사용자가 정한다).
 
 ## 2. 생성 도구 (OpenAI 이미지 API)
-- 도구: `sprite-gen`(aldegad/sprite-gen, Apache-2.0). 기본 설치본은 이전 저장소의 `C:\Users\mrdoo\Documents\nos_game_project\tools\sprite-gen`(가상환경 포함, 커밋 59b2738). 새로 설치하려면 이 저장소 `tools/sprite-gen/`(git 제외)에 `git clone https://github.com/aldegad/sprite-gen` → `python -m venv .venv` → `.venv/Scripts/pip install -e .`. 원본 설명서는 그 폴더의 `SKILL.md`·`docs/`.
+- 도구: `sprite-gen`(aldegad/sprite-gen, Apache-2.0). 기본 설치본은 이전 저장소의 `C:\Users\mrdoo\Documents\nos_game_project\tools\sprite-gen`(가상환경 포함, 커밋 59b2738). 새로 설치하려면 이 저장소 `work/sprite-gen/`(git 제외)에 `git clone https://github.com/aldegad/sprite-gen` → `python -m venv .venv` → `.venv/Scripts/pip install -e .`. 원본 설명서는 그 폴더의 `SKILL.md`·`docs/`.
 - Windows: 실행 파일 `.venv/Scripts/sprite-gen.exe`, 파이썬 `.venv/Scripts/python.exe`. 한국어 출력이 깨지면 `PYTHONIOENCODING=utf-8`.
 - 공급자 `--provider openai`. 키는 이 저장소 루트 `.env`의 `OPENAI_API_KEY`(사용자가 넣는다), 모델은 `OPENAI_IMAGE_MODEL`. sprite-gen은 `.env`를 스스로 읽지 않으니 실행할 때 환경 변수로만 넘긴다. **키 값을 명령줄·로그·대화에 쓰지 않는다.** 도구 기본 모델이 다르므로 `--model "$OPENAI_IMAGE_MODEL"`을 꼭 넘긴다.
-- 래퍼 스크립트 `scripts/art/gen.py`는 단계 E에서 이전 저장소의 같은 파일을 바탕으로 만든다(호출 수 기록 `tools/art-runs/calls.jsonl`, 마젠타 배경 → 배경 제거 → 격자 복원, `--dry-run`, `--from-raw`). 이전 것과 달리 **결과는 PNG**(Phaser가 바로 읽음), 팔레트 글자 격자로 바꾸지 않는다.
+- 래퍼 스크립트 `scripts/art/gen.py`는 단계 E에서 이전 저장소의 같은 파일을 바탕으로 만든다(호출 수 기록 `work/art-runs/calls.jsonl`, 마젠타 배경 → 배경 제거 → 격자 복원, `--dry-run`, `--from-raw`). 이전 것과 달리 **결과는 PNG**(Phaser가 바로 읽음), 팔레트 글자 격자로 바꾸지 않는다.
 - **호출마다 요금이 든다.** 견본 전에 "몇 장, 호출 몇 번"을 사용자에게 알린다. 그림 하나에 호출 한 번, 크레딧·인증 오류는 다시 보내지 않는다.
 
 ## 3. 대륙 (실제 지도 기반, 설계 5절)
@@ -51,6 +51,6 @@ STYLE.md와 견본은 **사용자에게 보여 주고 확인받는다**(인상�
 
 ## 5. 출처와 금지
 - 그림마다 `activities/<id>/art/PROVENANCE.md`: 지도 자료·복원도 출처와 라이선스, 생성 모델·날짜·참고 이미지, 손질 내용.
-- 생성 원본·작업 폴더(`tools/art-runs/`)는 git에 넣지 않는다. 게임에 쓰기로 고른 결과만 `activities/<id>/art/`로.
+- 생성 원본·참고 사진·작업 폴더(`work/art-runs/<id>/`)는 git에 넣지 않는다. 지도·지진 같은 내려받은 원본 자료는 `work/data/`. 그 주제만 쓰는 그림 생성·가공 도구(코드로 그리는 지도 등)는 `activities/<id>/tools/`, 여러 주제가 쓰는 후처리(`gen.py`·`cut.py`·`bg.py`·`chalk.py`)는 `scripts/art/`. 게임에 쓰기로 고른 결과만 `activities/<id>/art/`로.
 - 실존 인물 초상: 퍼블릭 도메인 초상화·사진(저작권 확인 필수)만 참고 이미지로, "원작 아님" 표시, 희화화 금지. 진본 초상이 없거나 저작권이 불확실하면 그리지 않고 이름표만.
 - 포켓몬스터 등 상업 게임의 이름·캐릭터·그림을 프롬프트나 참고 이미지로 쓰지 않는다.

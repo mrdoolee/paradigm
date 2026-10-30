@@ -44,7 +44,22 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 | `bash .claude/skills/nos-check/scripts/check.sh [--shots] [--e2e]` | 규칙·타입·테스트·원고 검사 한 번에 |
 | `npm run dev` | 개발 서버 (Claude Code에서는 Browser 도구의 preview_start) |
 | `npm run typecheck` / `npm test` / `npm run check:script` / `npm run shots` / `npm run e2e` | 타입·단위·원고·스크린샷·끝까지 플레이 (e2e 서버 포트 5191) |
-| `npm run build:masks` / `build:sea` / `build:stripes` | 대륙 마스크·항해 바다 칸·해저 줄무늬 다시 만들기 |
+| `npm run build:masks` / `build:sea` / `build:stripes` | 대륙 마스크·항해 바다 칸·해저 줄무늬 다시 만들기 (도구는 `activities/continental-drift/tools/`) |
+
+### 폴더 구조
+
+```
+src/engine/        모든 게임 공통: 화면·배율, UI 장면(대화창·선택지·안내 띠), 입력, 끌어 맞추기 / script/ 원고 읽기·검사
+src/rpg/           고전 RPG 틀: 걷기, 칸 길찾기, 정리 창
+src/home/          첫 화면 목록 (activities/*/script.md를 스스로 찾음)
+activities/<id>/   한 주제의 모든 것: index.html(주소 /<id>/), script.md, sources.md, 데이터, art/,
+                   game/(이 주제 장면·main.ts·anchors.ts), tools/(전용 생성 도구), tests/unit·e2e/
+scripts/ tests/    공통 도구·공통 테스트
+work/              git 밖 작업 폴더: ledger/<id>/(장부·검토 결과), art-runs/(그림 생성 원본), data/(내려받은 자료), debug/
+```
+
+- 주제 코드는 공통 부품을 `@engine/…`, `@rpg/…`로 가져온다. 새 주제는 `activities/<id>/`에 같은 구조를 만들면 페이지·테스트·원고 검사가 스스로 찾는다.
+- 마을·제목·항해 장면은 아직 대륙이동설 전용이다. 두 번째 주제를 설계할 때 일반화해 `src/rpg`로 옮긴다.
 
 ## 하네스: NOS 활동 만들기
 
@@ -56,6 +71,7 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 | 날짜 | 변경 내용 | 대상 | 사유 |
 | --- | --- | --- | --- |
 | 2026-10-27 | Harness v2로 처음 구성 (에이전트 3, 프로젝트 스킬 5, 외부 스킬 9, PostToolUse 규칙 훅) | 전체 | 이전 저장소(긴 RPG, 무거운 검토 파이프라인)를 접고 10~15분 경험형 활동으로 새로 시작 |
+| 2026-10-31 | 폴더 구조를 src/engine·src/rpg·activities/<id>/(game·tools·tests)·work/로, 장부를 work/ledger/<id>/로. 규칙 검사·nos-build·nos-check·nos-art·nos-script·검토 에이전트 경로 갱신 | 구조·하네스 | 고전 RPG 형태로 주제를 계속 더하기 위해 |
 
 ## 문서 위치
 
@@ -64,5 +80,7 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 | `docs/superpowers/specs/2026-10-27-continental-drift-design.md` | 대륙이동설 활동 + 저장소·하네스 설계 (승인됨) |
 | `docs/superpowers/specs/2026-10-28-continental-drift-rpg-design.md` | 대륙이동설을 증거 수집 RPG로(마을·항구·항해·미니게임), 위 설계를 바꾼 부분 (승인됨) |
 | `docs/superpowers/plans/2026-10-29-continental-drift-rpg.md` | 위 RPG 설계의 구현 계획 |
+| `docs/superpowers/plans/2026-10-30-continental-drift-polish.md` | 대륙이동설 마무리 다듬기 계획 |
+| `docs/superpowers/plans/2026-10-31-folder-structure.md` | 폴더 구조 정리(engine·rpg·주제 폴더·work/) 계획 |
 | `docs/research/2026-10-01-hos-nos-case-list.md` | 과학사 사례 24개의 NOS 분석·평가 (이전 저장소에서 가져옴) |
 | `docs/research/2026-10-14-classic-rpg-ui-ux-patterns.md` | 고전 도트 RPG 화면·조작 규칙 조사 (이전 저장소에서 가져옴, 코드 경로는 이전 저장소 기준) |
