@@ -124,7 +124,7 @@ export async function playUntil(page: Page, pred: (s: NosState) => boolean, touc
     const s = await state(page);
     if (pred(s)) return s;
     if (s.choice) {
-      if (touch) await tapAt(page, { x: 380, y: 244 - 6 - 16 * 2 + 8 }, true);
+      if (touch) await tapAt(page, { x: 380, y: 258 - 6 - 16 * 2 + 8 }, true);
       else await page.keyboard.press('Enter');
       await page.waitForTimeout(80);
     } else if (s.dialog) {
@@ -157,7 +157,7 @@ export async function playUntil(page: Page, pred: (s: NosState) => boolean, touc
 
 /** Picks choice i (0-based) of a 3-row choice box: arrow keys on desktop, tap on the row on tablet. */
 export async function chooseIndex(page: Page, i: number, rows: number, touch: boolean) {
-  const top = 244 - (rows * 16 + 12) + 6;
+  const top = 258 - (rows * 16 + 12) + 6;
   if (touch) {
     await tapAt(page, { x: 380, y: top + i * 16 + 8 }, true);
   } else {
