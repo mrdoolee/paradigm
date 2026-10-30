@@ -6,7 +6,7 @@ export interface Patterns {
   fossil: { taxon: string; color: string; points: Pt[]; width: number; source?: string }[];
   glacier: { from: Pt; to: Pt; source?: string }[];
   mountain: { points: Pt[]; width?: number; source?: string }[];
-  colors?: { glacier?: string; mountain?: string };
+  colors?: { glacier?: string; glacierRim?: string; mountain?: string };
   placeholder?: boolean;
 }
 
@@ -44,10 +44,11 @@ export function renderPatterns(p: Patterns, w: number, h: number): Record<string
   const fossil = new Uint8Array(w * h * 4);
   for (const f of p.fossil) stroke(fossil, w, h, f.points, f.width, hex(f.color));
 
+  // glacier arrows: a dark rim under a blue line, so they read on every land colour (also white Antarctica)
   const glacier = new Uint8Array(w * h * 4);
-  const gc = hex(p.colors?.glacier ?? '#e8f4ff');
-  for (const a of p.glacier) {
-    stroke(glacier, w, h, [a.from, a.to], 1.6, gc);
+  const gc = hex(p.colors?.glacier ?? '#2f78c8');
+  const rim = hex(p.colors?.glacierRim ?? '#1b2a38');
+  const arrows = p.glacier.map((a) => {
     const [fx, fy] = a.from;
     const [tx, ty] = a.to;
     const len = Math.hypot(tx - fx, ty - fy) || 1;
@@ -56,8 +57,10 @@ export function renderPatterns(p: Patterns, w: number, h: number): Record<string
     const head = 4;
     const left: Pt = [tx - ux * head - uy * head * 0.7, ty - uy * head + ux * head * 0.7];
     const right: Pt = [tx - ux * head + uy * head * 0.7, ty - uy * head - ux * head * 0.7];
-    stroke(glacier, w, h, [left, a.to, right], 1.6, gc);
-  }
+    return [[a.from, a.to], [left, a.to, right]] as Pt[][];
+  });
+  for (const lines of arrows) for (const l of lines) stroke(glacier, w, h, l, 3.6, rim);
+  for (const lines of arrows) for (const l of lines) stroke(glacier, w, h, l, 1.6, gc);
 
   const mountain = new Uint8Array(w * h * 4);
   const mc = hex(p.colors?.mountain ?? '#8a5a2b');
