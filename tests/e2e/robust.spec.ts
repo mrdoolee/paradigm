@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { dragPiece, isTouch, minigame, piece, player, playUntil, state, tapAt, waitForNos } from './helpers';
+import { dragPiece, goalPoint, isTouch, minigame, piece, player, playUntil, state, tapAt, waitForNos } from './helpers';
 
 const zoomFor = (w: number, h: number) => Math.max(1, Math.min(Math.floor(w / 480), Math.floor(h / 360)));
 
@@ -111,4 +111,30 @@ test('@e2e 발굴 칸을 빠르게 연타해도 장면은 한 번만 넘어간�
     200,
   );
   expect(scenes).toEqual(['Dig', 'Sail', 'Town']);
+});
+
+test('@e2e 수에즈 운하: 눌러서 가도, 방향키로 몰아도 처음 지날 때 선장이 말한다', async ({ page }, info) => {
+  test.setTimeout(90_000);
+  const touch = isTouch(info.project.name);
+  // tap route
+  await page.goto('/continental-drift/?start=Sail&goal=1');
+  await waitForNos(page);
+  await tapAt(page, (await goalPoint(page))!, touch);
+  await expect.poll(async () => (await state(page)).dialog, { timeout: 15000 }).toBe(true);
+  await playUntil(page, (s) => s.scene === 'Town', touch, 100);
+  if (touch) return;
+  // keyboard route: down along the coast to the canal row, then east
+  await page.goto('/continental-drift/?start=Sail&goal=1');
+  await waitForNos(page);
+  let talked = false;
+  await page.keyboard.down('ArrowDown');
+  await expect.poll(async () => (await player(page))!.y, { timeout: 15000 }).toBeGreaterThanOrEqual(24);
+  await page.keyboard.up('ArrowDown');
+  await page.keyboard.down('ArrowRight');
+  for (let i = 0; i < 80 && !talked; i++) {
+    talked = (await state(page)).dialog;
+    if (!talked) await page.waitForTimeout(100);
+  }
+  await page.keyboard.up('ArrowRight');
+  expect(talked).toBe(true);
 });

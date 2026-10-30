@@ -119,10 +119,10 @@ export class SailScene extends Phaser.Scene {
   /** The first time the ship enters a canal the captain says a word, then the ship sails on. */
   private checkCanals() {
     if (this.auto || this.done) return;
-    const c = toCell(this.pos);
     for (const [id, k] of Object.entries(CANALS)) {
       const flag = `seen-canal-${id}`;
-      if (c.x !== k.cell[0] || c.y !== k.cell[1] || this.registry.get(flag)) continue;
+      const mid = cellCenter({ x: k.cell[0], y: k.cell[1] });
+      if (Math.hypot(mid.x - this.pos.x, mid.y - this.pos.y) > SEA_CELL * 1.5 || this.registry.get(flag)) continue;
       this.registry.set(flag, true);
       const keep = [...this.path];
       void this.ui.say(k.talk).then(() => {
@@ -132,9 +132,14 @@ export class SailScene extends Phaser.Scene {
   }
 
   private tryMove(dx: number, dy: number) {
+    const from = toCell(this.pos);
+    // a cell is enterable when it is sea; crossing a corner also needs both side cells open
+    // (same rule as the path finder), so the ship cannot squeeze between two touching coasts
     const ok = (p: Pt) => {
       const c = toCell(p);
-      return SEA.open(c.x, c.y);
+      if (!SEA.open(c.x, c.y)) return false;
+      if (c.x !== from.x && c.y !== from.y) return SEA.open(c.x, from.y) && SEA.open(from.x, c.y);
+      return true;
     };
     const n = { x: this.pos.x + dx, y: this.pos.y + dy };
     if (ok(n)) this.pos = n;
