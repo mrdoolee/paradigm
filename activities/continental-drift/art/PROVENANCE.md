@@ -87,3 +87,4 @@
 | `portrait/{water,farmer,girl,flower,capefisher,member}.png` | portraits-b | 1 | 같음 |
 
 생성 호출 합계(누계): 29회.
+- `chars/folk-flower-down.png`: 초상(케이프 말레이 꽃 장수)과 맞도록 얼굴·손 피부색 33픽셀을 손으로 바꿨다(2026-10-30, 생성 없음).
