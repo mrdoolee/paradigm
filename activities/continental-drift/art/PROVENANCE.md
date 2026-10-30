@@ -112,3 +112,14 @@
 | `scenes/landbridge.png`, `scenes/landbridge-sunk.png` | landbridge-map | 1 | 바탕 합성, 땅다리 색만 옮김, 점선판, 화석 표시 |
 
 생성 호출 합계(누계): 34회.
+
+## 실존 과학자 초상 (2026-10-30)
+
+- 규칙(CLAUDE.md): 퍼블릭 도메인 원본을 참고해서만, "원작 아님" 표시, 희화화 금지, 진본이 없으면 그리지 않는다.
+- **에지워스 데이비드** `portrait/david.png`: 참고 사진 2장(git 밖 `tools/art-runs/continental-drift/ref/`)
+  - J.H. Newman, 1898, 뉴사우스웨일스 주립도서관 ML 524 — 위키미디어 공용 "PD-Art (PD-Australia)"
+  - 『The Days of a Man』(D.S. Jordan, 1922, 미국 World Book Co.) 수록 초상(E. Spencer Macky) — 공용 "PD-US"
+  - 생성 1회(`art/prompts/portrait-real.txt`, 참고: 마을 사람 초상 시트(그림체) + 위 사진 2장). 1920년 무렵 60대 모습. bg 64×64 15색, 배경 투명. 정리 페이지에 "원작 아님"을 적었다.
+- **비르발 사니·알렉산더 뒤 토이트**: 퍼블릭 도메인 원본 사진을 찾지 못해 그리지 않았다(공용에 사니는 2025년 흉상 사진 CC BY-SA뿐, 뒤 토이트는 초상 없음).
+
+생성 호출 합계(누계): 35회.
