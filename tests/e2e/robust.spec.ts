@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { dragPiece, goalPoint, isTouch, minigame, piece, player, playUntil, state, tapAt, waitForNos } from './helpers';
+import { dragPiece, goalPoint, townCell, isTouch, minigame, piece, player, playUntil, state, tapAt, waitForNos } from './helpers';
 
 const zoomFor = (w: number, h: number) => Math.max(1, Math.min(Math.floor(w / 480), Math.floor(h / 360)));
 
@@ -68,12 +68,12 @@ test('@e2e 작은 창(1배)과 창 크기 바꿈에도 누른 칸으로 걸어�
   await page.goto('/continental-drift/?start=Town&town=india');
   await waitForNos(page);
   await playUntil(page, (s) => !s.dialog, touch, 20);
-  await tapAt(page, { x: 10 * 16 + 8, y: 22 + 11 * 16 + 8 }, touch);
-  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 10, y: 11 });
+  await tapAt(page, townCell(9, 6), touch);
+  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 9, y: 6 });
   await page.setViewportSize({ width: 1024, height: 768 });
   await page.waitForTimeout(200);
-  await tapAt(page, { x: 14 * 16 + 8, y: 22 + 9 * 16 + 8 }, touch);
-  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 14, y: 9 });
+  await tapAt(page, townCell(12, 4), touch);
+  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 12, y: 4 });
 });
 
 test('@e2e 항해 중 땅을 눌러도 배는 바다에 있고, 다녀온 항구를 지나쳐도 멈추지 않는다', async ({ page }, info) => {

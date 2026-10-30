@@ -5,39 +5,28 @@
   "C": "cliff",
   "G": "gable",
   "V": "vines",
-  "R": "rocks"
+  "X": "rocks"
  },
  "rows": [
-  "TTTTTTTTTTCCCCCCCCCCCCCCCTTTTT",
-  "~~~~~~.CCCCCCCCCCCCCCCCCCCCC.T",
-  "~~~~~~CCCC.................CCT",
-  "~~~~~~....,...###G####.R....RT",
-  "~~~~~~.T......########.......T",
-  "~~~~~~.....,..########.......T",
-  "~~~~~~..,........=....R..=.R.T",
-  "~~~~~~...........=.......=...T",
-  "~pppp=====================...T",
-  "~~~~~~......=.,..............T",
-  "~~~~~~.,....=.......,.......TT",
-  "~~~~~~......=.T.........,....T",
-  "~~~~~~.#G##.=................T",
-  "~~~~~~.####.=....VVVVVVVVVVV.T",
-  "~~~~~~.####.=................T",
-  "~~~~~~......=....VVVVVVVVVVV.T",
-  "~~~~~~...,..=................T",
-  "~~~~~~...........VVVVVVVVVVV.T",
-  "~~~~~~...T.....T.............T",
-  "~~~~~~....R..,....,...R..,...T",
-  "~~~~~~TTTTTTTTTTTTTTTTTTTTTTTT"
+  "~~~TTCCCCCCCTTT",
+  "~~~.CCCCCCCCC.T",
+  "~~~.EEGEEE..,.T",
+  "~~~.wwDwvw..=XT",
+  "~~~...=..,..=.T",
+  "~pp==========.T",
+  "~~~X...=VVVVV.T",
+  "~~~EEE.=.....,T",
+  "~~~wDw.=.VVVVVT",
+  "~~~TTTTTTTTTTTT"
  ],
  "spawn": {
   "port": [
-   6,
-   8
+   3,
+   5
   ],
   "field": [
-   26,
-   6
+   12,
+   3
   ]
  },
  "things": [
@@ -45,8 +34,8 @@
    "id": "scientist",
    "kind": "npc",
    "cell": [
-    17,
-    6
+    6,
+    4
    ],
    "label": "line-label-africa"
   },
@@ -54,8 +43,8 @@
    "id": "field",
    "kind": "field",
    "cell": [
-    26,
-    5
+    12,
+    2
    ],
    "label": "line-label-field"
   },
@@ -63,8 +52,8 @@
    "id": "boat",
    "kind": "boat",
    "cell": [
-    1,
-    8
+    0,
+    5
    ]
   },
   {
@@ -72,8 +61,8 @@
    "kind": "folk",
    "sprite": "folk-flower",
    "cell": [
-    11,
-    10
+    9,
+    4
    ],
    "talk": "npc-africa-flower"
   },
@@ -82,8 +71,8 @@
    "kind": "folk",
    "sprite": "folk-capefisher",
    "cell": [
-    6,
-    11
+    4,
+    6
    ],
    "talk": "npc-africa-fisher",
    "tint": "#9ab8c8"
@@ -93,8 +82,8 @@
    "kind": "folk",
    "sprite": "folk-dassie",
    "cell": [
-    24,
-    4
+    11,
+    2
    ],
    "talk": "npc-africa-dassie",
    "hop": true
@@ -104,8 +93,8 @@
    "kind": "folk",
    "sprite": "folk-gull",
    "cell": [
-    6,
-    6
+    3,
+    4
    ],
    "talk": "npc-africa-gull",
    "hop": true

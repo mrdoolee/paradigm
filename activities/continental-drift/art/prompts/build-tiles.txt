@@ -1,0 +1,10 @@
+Pixel art building tiles for a classic top-down RPG town (format only, original design): {{place}}.
+Draw exactly 6 square tiles in a grid of 3 columns and 2 rows with clear empty magenta space between every tile, in this order (left to right, top to bottom):
+1 roof surface: {{roof}}, seen from above at a slight angle, a seamless pattern that repeats in every direction;
+2 roof front edge (eaves): the same roof ending in a front edge with a short dark shadow line along the bottom;
+3 plain wall: {{wall}}, a seamless pattern that repeats left and right;
+4 the same wall with one window in the middle;
+5 the same wall with a wooden door in the middle, door touching the bottom edge;
+6 the same wall with {{extra}}.
+Every tile is a full 16x16 pixel square filled edge to edge: no border, no frame, no outline around the tile, no ground or grass showing, no corners cut off.
+Light from the top-left, 2 shading steps, muted earthy palette like an old hand-coloured map, crisp pixels, no anti-aliasing, no text, no people.

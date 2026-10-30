@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { advance, goalPoint, isTouch, player, playUntil, state, tapAt, waitForNos } from './helpers';
+import { advance, goalPoint, townCell, isTouch, player, playUntil, state, tapAt, waitForNos } from './helpers';
 
 test('@e2e 마을: 칸을 누르면 걸어가고, 대화 중엔 멈추고, 탁자에서 퍼즐이 열린다', async ({ page }, info) => {
   const touch = isTouch(info.project.name);
@@ -9,18 +9,18 @@ test('@e2e 마을: 칸을 누르면 걸어가고, 대화 중엔 멈추고, 탁�
   await expect.poll(async () => (await state(page)).dialog).toBe(true);
   const before = await player(page);
   if (!touch) await page.keyboard.press('ArrowRight');
-  await tapAt(page, { x: 200, y: 22 + 10 * 16 + 8 }, touch); // also advances the dialog
+  await tapAt(page, townCell(6, 6), touch); // also advances the dialog
   await page.waitForTimeout(400);
   expect(await player(page)).toEqual(before);
   await playUntil(page, (s) => !s.dialog, touch, 20);
 
   // walk by pressing a cell
-  await tapAt(page, { x: 4 * 16 + 8, y: 22 + 10 * 16 + 8 }, touch);
-  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 4, y: 10 });
+  await tapAt(page, townCell(1, 6), touch);
+  await expect.poll(() => player(page), { timeout: 5000 }).toEqual({ x: 1, y: 6 });
 
   if (!touch) {
     await page.keyboard.press('ArrowRight');
-    await expect.poll(() => player(page)).toEqual({ x: 5, y: 10 });
+    await expect.poll(() => player(page)).toEqual({ x: 2, y: 6 });
   }
 
   // the table is the goal: pressing it walks there and opens the puzzle
@@ -53,11 +53,11 @@ test('@e2e 마을 사람을 누르면 걸어가서 말을 걸고, 대화가 끝�
   await waitForNos(page);
   await playUntil(page, (s) => !s.dialog && s.guide !== null, touch, 40);
   const guide = (await state(page)).guide;
-  // the fruit seller stands at cell (11, 10) in towns/india.json
-  await tapAt(page, { x: 11 * 16 + 8, y: 22 + 10 * 16 + 8 }, touch);
+  // the fruit seller stands at cell (6, 7) in towns/india.json
+  await tapAt(page, townCell(6, 7), touch);
   await expect.poll(async () => (await state(page)).dialog, { timeout: 8000 }).toBe(true);
   const p = (await player(page))!;
-  expect(Math.abs(p.x - 11) + Math.abs(p.y - 10)).toBe(1);
+  expect(Math.abs(p.x - 6) + Math.abs(p.y - 7)).toBe(1);
   await playUntil(page, (s) => !s.dialog, touch, 20);
   expect((await state(page)).guide).toBe(guide);
   expect((await state(page)).scene).toBe('Town');

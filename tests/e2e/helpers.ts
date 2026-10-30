@@ -54,6 +54,9 @@ export interface SummaryInfo {
 export const summary = (page: Page) =>
   page.evaluate(() => (window as unknown as { __nos: { summary(): SummaryInfo | null } }).__nos.summary());
 
+/** Centre of town cell (x, y) on the virtual screen: towns are shown at 2x under the 22px top bar. */
+export const townCell = (x: number, y: number): Pt => ({ x: x * 32 + 16, y: 22 + y * 32 + 16 });
+
 export const toScreen = (page: Page, p: Pt) =>
   page.evaluate((p) => (window as unknown as { __nos: { toScreen(p: Pt): Pt } }).__nos.toScreen(p), p);
 

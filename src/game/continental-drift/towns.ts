@@ -33,9 +33,15 @@ export interface TownDef {
   things: Thing[];
 }
 
+/** Town tiles are drawn 16x16 and shown at 2x (32px). One screen holds 15x10 tiles under the top bar;
+ *  a larger map scrolls with the player (camera bounds keep the view inside the map). */
 export const TILE = 16;
-/** Town maps start under the top guide bar. */
-export const TOWN_ORIGIN = { x: 0, y: 22 };
+export const TOWN_ZOOM = 2;
+export const TOWN_VIEW = { x: 0, y: 22, w: 480, h: 320 };
+/** Map cells are placed from the world origin; the camera puts them on screen. */
+export const TOWN_ORIGIN = { x: 0, y: 0 };
+/** Building tiles, the same letters in every town: roof, eaves, wall, window, door, second wall. */
+export const BUILDING: Record<string, string> = { R: 'roof', E: 'eave', '#': 'wall', w: 'window', D: 'door', v: 'wall2' };
 
 export const TOWNS: Record<TownId, TownDef> = {
   lab: lab as unknown as TownDef,

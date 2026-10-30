@@ -1,5 +1,5 @@
 import { findPath, gridFromRows, type Grid } from '../../src/game/common/grid';
-import { TOWNS } from '../../src/game/continental-drift/towns';
+import { BUILDING, TOWNS } from '../../src/game/continental-drift/towns';
 import { checkScript } from '../../src/script/check';
 
 const blocked = (id: keyof typeof TOWNS): Grid => {
@@ -13,11 +13,15 @@ describe.each(Object.keys(TOWNS) as (keyof typeof TOWNS)[])('마을 %s', (id) =>
   const def = TOWNS[id];
   const g = blocked(id);
 
-  test('지도는 30×21이고 쓰인 글자는 모두 그림이 있다', () => {
-    expect(def.rows).toHaveLength(21);
-    for (const r of def.rows) expect(r).toHaveLength(30);
-    const known = new Set(['.', ',', '=', '~', 'T', 'p', '#', ...Object.keys(def.legend ?? {})]);
+  test('지도는 한 화면 15×10이고 쓰인 글자는 모두 그림이 있다', () => {
+    expect(def.rows).toHaveLength(10);
+    for (const r of def.rows) expect(r).toHaveLength(15);
+    const known = new Set(['.', ',', '=', '~', 'T', 'p', ...Object.keys(BUILDING), ...Object.keys(def.legend ?? {})]);
     for (const r of def.rows) for (const ch of r) expect(known.has(ch)).toBe(true);
+  });
+
+  test('목표(탁자·선장·과학자·현장)는 대화창에 가리지 않는 위 7줄에 있다', () => {
+    for (const t of def.things.filter((x) => ['table', 'port', 'npc', 'field'].includes(x.kind))) expect(t.cell[1], t.id).toBeLessThanOrEqual(6);
   });
 
   test('소품 칸은 걸을 수 없다', () => {

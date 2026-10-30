@@ -8,7 +8,7 @@ import { VIEW_H, VIEW_W } from '../../common/screen';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
 import { Walker, type Dir } from '../../common/Walker';
 import type { Run, TownId } from '../run';
-import { TILE, TOWN_ORIGIN, TOWNS, type Thing, type TownDef } from '../towns';
+import { BUILDING, TILE, TOWN_ORIGIN, TOWN_VIEW, TOWN_ZOOM, TOWNS, type Thing, type TownDef } from '../towns';
 
 export interface TownData {
   town?: TownId;
@@ -19,6 +19,11 @@ const TILE_COLORS: Record<string, number> = {
   T: 0x2f5a32,
   '~': 0x274660,
   '#': 0x8a6a4a,
+  w: 0x8a6a4a,
+  v: 0x8a6a4a,
+  D: 0x4f3a26,
+  R: 0x6a3a2a,
+  E: 0x5a2f22,
   '=': 0xb89a66,
   p: 0x6b4f33,
 };
@@ -27,6 +32,7 @@ const PERSON: Record<string, number> = { port: 0x3a5a8a, npc: 0x7a5aa0, aide: 0x
 const GROUND: Record<string, number> = { lab: 0x6f8f4e, india: 0xb59a5a, australia: 0xa85a3a, africa: 0x9a9a6a };
 /** Townsfolk glance left and right now and then; each one on its own beat. */
 const GLANCE_MS = 2600;
+const CONFIRM_GUARD_MS = 200;
 const MARK = 0xffd23f;
 
 /**
@@ -40,6 +46,7 @@ export class TownScene extends Phaser.Scene {
   private grid!: Grid;
   private walker!: Walker;
   private busy = false;
+  private closedAt = -Infinity;
   private marker!: Phaser.GameObjects.Graphics;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
@@ -50,6 +57,7 @@ export class TownScene extends Phaser.Scene {
   create(data: TownData) {
     enterScene('Town', this);
     this.busy = false;
+    this.closedAt = -Infinity;
     this.folkImages = new Map();
     this.def = TOWNS[data.town ?? 'lab'];
     this.run = this.registry.get('run') as Run;
@@ -68,6 +76,7 @@ export class TownScene extends Phaser.Scene {
     const sprite = this.add.image(0, 0, this.charTex('player', 'down', 0x3f7fbf)).setDepth(400);
     this.fitChar(sprite);
     this.walker = new Walker(this.grid, { x: spawn[0], y: spawn[1] }, TOWN_ORIGIN, TILE, sprite);
+    this.setupCamera(sprite);
     this.walker.facing = data.at === 'port' && this.def.id === 'lab' ? 'left' : data.at === 'port' ? 'right' : 'up';
     const face = (d: Dir) => {
       sprite.setTexture(this.charTex('player', d, 0x3f7fbf));
@@ -76,9 +85,16 @@ export class TownScene extends Phaser.Scene {
     face(this.walker.facing);
     this.walker.events.on('face', face);
 
-    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => this.onTap(p.x, p.y));
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (p.y < TOWN_VIEW.y) return;
+      const w = this.cameras.main.getWorldPoint(p.x, p.y);
+      this.onTap(w.x, w.y);
+    });
     bindActions(this, (a) => {
-      if (a === 'confirm') this.lookAhead();
+      // the Enter that closed a dialog must not also talk to whoever stands in front
+      if (a === 'confirm') {
+        if (this.time.now - this.closedAt > CONFIRM_GUARD_MS) this.lookAhead();
+      }
       else if (a === 'up' || a === 'down' || a === 'left' || a === 'right') {
         // a quick tap is one step; holding the key keeps walking (update)
         if (!this.busy && !this.walker.moving) this.walker.step(a);
@@ -86,11 +102,14 @@ export class TownScene extends Phaser.Scene {
     });
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.events.on('ui-opened', () => this.walker.stop());
-    this.events.on('ui-closed', () => this.refresh());
+    this.events.on('ui-closed', () => {
+      this.closedAt = this.time.now;
+      this.refresh();
+    });
 
     dbg.goalPoint = () => {
       const t = this.goalThing();
-      return t ? this.center({ x: t.cell[0], y: t.cell[1] }) : null;
+      return t ? this.toView(this.center({ x: t.cell[0], y: t.cell[1] })) : null;
     };
     dbg.player = () => this.walker.cell;
 
@@ -163,8 +182,24 @@ export class TownScene extends Phaser.Scene {
 
   // ---- input -------------------------------------------------------------
 
+  /** One screen of 15x10 tiles at 2x; a bigger map follows the player inside its bounds. */
+  private setupCamera(player: Phaser.GameObjects.Image) {
+    const w = this.def.rows[0].length * TILE;
+    const h = this.def.rows.length * TILE;
+    const cam = this.cameras.main.setViewport(TOWN_VIEW.x, TOWN_VIEW.y, TOWN_VIEW.w, TOWN_VIEW.h).setZoom(TOWN_ZOOM);
+    cam.setBounds(0, 0, w, h);
+    if (w * TOWN_ZOOM > TOWN_VIEW.w || h * TOWN_ZOOM > TOWN_VIEW.h) cam.startFollow(player, true);
+    else cam.centerOn(w / 2, h / 2);
+  }
+
+  /** World point -> point on the 480x360 virtual screen (what the tests press). */
+  private toView(p: Pt): Pt {
+    const cam = this.cameras.main;
+    return { x: cam.x + (p.x - cam.worldView.x) * cam.zoom, y: cam.y + (p.y - cam.worldView.y) * cam.zoom };
+  }
+
   private onTap(x: number, y: number) {
-    if (this.busy || y < TOWN_ORIGIN.y) return;
+    if (this.busy) return;
     const cell = { x: Math.floor((x - TOWN_ORIGIN.x) / TILE), y: Math.floor((y - TOWN_ORIGIN.y) / TILE) };
     const thing = this.thingAt(cell);
     if (thing) {
@@ -267,13 +302,9 @@ export class TownScene extends Phaser.Scene {
     img.setOrigin(0, h > TILE ? (h - TILE) / h : 0);
   }
 
-  private tileName(ch: string, x: number, y: number): string | null {
+  private tileName(ch: string): string | null {
     const legend = this.def.legend ?? {};
-    if (ch === '#') {
-      // the top row of a building is roof; a gable over a door counts as building too
-      const above = y > 0 ? this.def.rows[y - 1][x] : '';
-      return above === '#' || legend[above] === 'gable' ? 'wall' : 'roof';
-    }
+    if (BUILDING[ch]) return BUILDING[ch];
     if (legend[ch]) return legend[ch];
     return ({ '.': 'ground', ',': 'ground2', '=': 'road', '~': 'water', T: 'tree', p: 'pier' } as Record<string, string>)[ch] ?? null;
   }
@@ -302,7 +333,7 @@ export class TownScene extends Phaser.Scene {
       const dry = ({ lab: 0xffffff, india: 0xf2e2a8, australia: 0xffd8a8, africa: 0xe8e2a8 } as Record<string, number>)[this.def.id] ?? 0xffffff;
       this.def.rows.forEach((row, y) =>
         [...row].forEach((ch, x) => {
-          const name = this.tileName(ch, x, y);
+          const name = this.tileName(ch);
           const tex = name ? this.tileTex(name) : null;
           if (!name || !tex) return;
           const p = this.cellPx({ x, y });
@@ -321,7 +352,6 @@ export class TownScene extends Phaser.Scene {
         g.fillStyle(prop ? 0x5a4a3a : (TILE_COLORS[ch] ?? ground)).fillRect(p.x, p.y, TILE, TILE);
         if (ch === ',') g.fillStyle(0xe8dfc6).fillRect(p.x + 4, p.y + 5, 2, 2).fillRect(p.x + 10, p.y + 10, 2, 2);
         if (ch === 'T') g.fillStyle(0x3f7a42).fillRect(p.x + 3, p.y + 2, 10, 9);
-        if (ch === '#' && (y === 0 || row[x] !== this.def.rows[y - 1]?.[x])) g.fillStyle(0x6a3a2a).fillRect(p.x, p.y, TILE, 6);
         if (ch === '~') g.fillStyle(0x2d506c).fillRect(p.x + 2, p.y + 6, 6, 1);
         if (ch === 'p') g.fillStyle(0x4f3a26).fillRect(p.x, p.y + 7, TILE, 1);
       });
@@ -339,7 +369,8 @@ export class TownScene extends Phaser.Scene {
         if (t.tint) img.setTint(parseInt(t.tint.slice(1), 16));
         this.animateFolk(t, img);
       }
-    } else if (t.kind === 'table') {
+    } else if (t.kind === 'table' && !BUILDING[this.def.rows[t.cell[1]][t.cell[0]]]) {
+      // the lab's map table; when it sits on a door tile the door itself is the entrance
       g.fillStyle(0x3a2a1c).fillRect(p.x + 2, p.y + 2, 12, 14);
       g.fillStyle(0xe8dfc6).fillRect(p.x + 4, p.y + 4, 8, 6);
     } else if (t.kind === 'field') {
@@ -360,6 +391,7 @@ export class TownScene extends Phaser.Scene {
           padding: { x: 2, y: 1 },
         })
         .setOrigin(0.5, 1)
+        .setScale(1 / TOWN_ZOOM) // labels keep the UI text size although the town is shown at 2x
         .setDepth(450);
     }
   }

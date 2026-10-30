@@ -4,40 +4,29 @@
  "legend": {
   "M": "windmill",
   "K": "tank",
-  "R": "boulder",
+  "O": "boulder",
   "F": "fence"
  },
  "rows": [
-  "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
-  "~~~~~~.......................T",
-  "~~~~~~.....T..########.......T",
-  "~~~~~~..T.....########..R....T",
-  "~~~~~~......,.########......RT",
-  "~~~~~~........########.......T",
-  "~~~~~~..,........=.....R.=...T",
-  "~~~~~~...........=.......=.R.T",
-  "~pppp=====================...T",
-  "~~~~~~....=...........,.R....T",
-  "~~~~~~....=..FF...,F.........T",
-  "~~~~~~.###=.,..........FFFFFFT",
-  "~~~~~~.###=..........M.......T",
-  "~~~~~~K###=...#######K...,.T.T",
-  "~~~~~~....=...#######........T",
-  "~~~~~~.,..=...#######..MK.T..T",
-  "~~~~~~....=...........T......T",
-  "~~~~~~.T..=......,........,..T",
-  "~~~~~~.......FFFFFFFFF...R...T",
-  "~~~~~~.R,..................T.T",
-  "~~~~~~TTTTTTTTTTTTTTTTTTTTTTTT"
+  "~~~TTTTTTTTTTTT",
+  "~~~.RRRRRR.O..T",
+  "~~~.EEEEEE...OT",
+  "~~~.wwDwvw..=.T",
+  "~~~...=..O..=.T",
+  "~pp==========.T",
+  "~~~.,.=.FFF.M.T",
+  "~~~K..=..RRR.,T",
+  "~~~...=.,wDw.OT",
+  "~~~TTTTTTTTTTTT"
  ],
  "spawn": {
   "port": [
-   6,
-   8
+   3,
+   5
   ],
   "field": [
-   26,
-   6
+   12,
+   3
   ]
  },
  "things": [
@@ -45,8 +34,8 @@
    "id": "scientist",
    "kind": "npc",
    "cell": [
-    17,
-    6
+    6,
+    4
    ],
    "label": "line-label-australia"
   },
@@ -54,8 +43,8 @@
    "id": "field",
    "kind": "field",
    "cell": [
-    26,
-    5
+    12,
+    2
    ],
    "label": "line-label-field"
   },
@@ -63,8 +52,8 @@
    "id": "boat",
    "kind": "boat",
    "cell": [
-    1,
-    8
+    0,
+    5
    ]
   },
   {
@@ -72,8 +61,8 @@
    "kind": "folk",
    "sprite": "folk-farmer",
    "cell": [
-    12,
-    12
+    8,
+    4
    ],
    "talk": "npc-australia-farmer"
   },
@@ -82,8 +71,8 @@
    "kind": "folk",
    "sprite": "folk-girl",
    "cell": [
-    20,
-    9
+    5,
+    7
    ],
    "talk": "npc-australia-girl",
    "tint": "#c8d8f0"
@@ -93,8 +82,8 @@
    "kind": "folk",
    "sprite": "folk-roo",
    "cell": [
-    25,
-    14
+    12,
+    7
    ],
    "talk": "npc-australia-roo",
    "hop": true
@@ -104,8 +93,8 @@
    "kind": "folk",
    "sprite": "folk-kooka",
    "cell": [
-    9,
-    4
+    10,
+    1
    ],
    "talk": "npc-australia-kooka",
    "hop": true
