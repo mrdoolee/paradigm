@@ -98,3 +98,17 @@
 | `town/<마을>/{roof,eave,wall,window,door,wall2}.png` (lab·india·australia·africa) | build-<마을> | 4 | cut --fill 16×16, 3열 |
 
 생성 호출 합계(누계): 33회.
+
+## 땅다리 그림 다시 (2026-10-30, 게임 세계지도 도트 스타일)
+
+- 사용자 요청: "게임 세계지도 도트 스타일로". 앞의 칠판 그림(`landbridge.txt`, chalk.py)을 대신한다.
+- 바탕은 코드로 합성: 항해 바다(`sail/sea.png`)에 대륙 그림(`pieces/<id>-art.png`, Natural Earth 마스크로 자른 것)과 외곽선을 오늘 위치에 놓고 (134,85)–(284,185)를 잘라 2배.
+- 생성 1회(`art/prompts/landbridge-map.txt`, 참고: 이 바탕을 4배로 키운 그림): 땅다리와 메소사우루스 두 마리. 생성 그림의 대륙 윤곽은 조금 달라져서 쓰지 않고, **바탕에서 바다였던 칸에 생긴 땅다리·동물 색만** 바탕 위에 옮겼다(대륙 윤곽은 늘 마스크).
+- `scenes/landbridge-sunk.png`: 같은 바탕에 땅다리 자리를 파란 점선으로만 남겼다(생성 없음).
+- 두 그림 모두 메소사우루스 화석 표시(작은 도마뱀 모양)를 파라나(브라질)와 카루(남아프리카)에 찍었다(F-MESOSAURUS, S-DUTOIT-1927).
+
+| 파일 | 원본 id | 호출 | 손질 |
+|---|---|---|---|
+| `scenes/landbridge.png`, `scenes/landbridge-sunk.png` | landbridge-map | 1 | 바탕 합성, 땅다리 색만 옮김, 점선판, 화석 표시 |
+
+생성 호출 합계(누계): 34회.

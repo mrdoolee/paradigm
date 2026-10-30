@@ -1,0 +1,5 @@
+Edit the reference image, a pixel-art map from an educational game: South America on the left, Africa on the right, deep blue sea between them.
+Keep the two continents, their exact outlines and colours, and the blue sea exactly as they are, at the same positions and the same chunky pixel scale.
+Add only this: one long narrow land bridge that crosses the open sea in a gently curving line from the east bulge of South America to the west coast of Africa, about as wide as one tenth of the picture height, coloured a pale sandy olive green with a darker 1-pixel edge, in the same pixel-art style as the continents.
+On the land bridge draw two small Mesosaurus (slender freshwater reptiles with long thin tails and short legs) walking toward Africa, in dark brown.
+No text, no letters, no numbers, no labels, no frame, no people. Crisp pixels, no anti-aliasing, flat colours.
