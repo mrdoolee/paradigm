@@ -1,4 +1,4 @@
-import { trySnap, clampToArea, snapSteps } from '../../src/game/common/snap';
+import { trySnap, clampToArea, snapSteps } from '../../src/engine/snap';
 
 test('반경 안이면 정답 자리, 밖이면 null', () => {
   expect(trySnap({ x: 107, y: 206 }, { x: 100, y: 200 }, 10)).toEqual({ x: 100, y: 200 });

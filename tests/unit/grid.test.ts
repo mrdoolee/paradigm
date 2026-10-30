@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findPath, gridFromRows, nearestOpen, pathLength } from '../../src/game/common/grid';
+import { findPath, gridFromRows, nearestOpen, pathLength } from '../../src/rpg/grid';
 
 const ring = gridFromRows(['...', '.#.', '...'], '.');
 

@@ -1,4 +1,4 @@
-import { parseScript } from '../../src/script/parse';
+import { parseScript } from '../../src/engine/script/parse';
 
 const SRC = `<!-- 안내 -->
 # 원고

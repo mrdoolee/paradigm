@@ -1,8 +1,8 @@
-import { layoutPage } from '../../src/script/page';
-import { galmuriMeasure } from '../../src/script/measure';
+import { layoutPage } from '../../src/engine/script/page';
+import { galmuriMeasure } from '../../src/engine/script/measure';
 import { readFileSync } from 'node:fs';
-import { parseScript } from '../../src/script/parse';
-import { SUMMARY } from '../../src/game/common/layout';
+import { parseScript } from '../../src/engine/script/parse';
+import { SUMMARY } from '../../src/engine/layout';
 
 const m = (s: string) => [...s].length * 10;
 

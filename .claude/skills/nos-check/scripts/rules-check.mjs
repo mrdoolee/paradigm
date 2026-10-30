@@ -30,9 +30,11 @@ function walk(dir, out) {
 }
 
 const norm = (p) => relative(ROOT, p).split(sep).join("/");
-const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f) || f.startsWith("tests/");
-// 한국어가 허용되는 코드: 테스트, 플랫폼 공통 문구 한 곳, 원고 검사 스크립트(교사용 오류 메시지)
-const hangulOk = (f) => isTest(f) || f === "src/strings.ts" || f.startsWith("scripts/");
+const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f) || /^(activities\/[^/]+\/)?tests\//.test(f);
+// 한국어가 허용되는 코드: 테스트, 플랫폼 공통 문구 한 곳, 도구(공통 scripts/, 주제별 activities/<id>/tools/ — 교사용 오류 메시지·사용법)
+const hangulOk = (f) => isTest(f) || f === "src/strings.ts" || /^(activities\/[^/]+\/tools|scripts)\//.test(f);
+// 게임 화면 코드: 공통 엔진·RPG 틀, 주제별 장면
+const isGameCode = (f) => /^(src\/engine|src\/rpg|activities\/[^/]+\/game)\//.test(f);
 
 const files = process.argv.length > 2
   ? process.argv.slice(2).map((p) => resolve(ROOT, p)).filter((p) => existsSync(p))
@@ -60,7 +62,7 @@ for (const abs of files) {
       if (/\bMath\.random\s*\(/.test(line)) errors.push(`${at}  Math.random() 금지 — 시드 난수를 쓴다(스크린샷·e2e가 같은 화면을 보도록)`);
       if (EMOJI.test(line.replace(ALLOWED_SYMBOLS, ""))) errors.push(`${at}  이모지 금지`);
       if (!hangulOk(f) && HANGUL.test(line)) errors.push(`${at}  코드 속 한국어 문장 — 원고(activities/<id>/script.md)나 src/strings.ts로 옮긴다`);
-      if (f.startsWith("src/game/") && (/\.add\.dom\s*\(/.test(line) || /document\.createElement\s*\(/.test(line))) {
+      if (isGameCode(f) && (/\.add\.dom\s*\(/.test(line) || /document\.createElement\s*\(/.test(line))) {
         errors.push(`${at}  게임 화면에 HTML 겹치기 금지 — 대화창·선택지·안내 띠는 UI 장면에 캔버스로 그린다(설계 6절)`);
       }
     }

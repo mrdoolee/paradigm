@@ -1,4 +1,4 @@
-import { pickZoom } from '../../src/game/common/screen';
+import { pickZoom } from '../../src/engine/screen';
 
 test('PC 1280x800과 태블릿 1024x768은 2배', () => {
   expect(pickZoom(1280, 800)).toBe(2);

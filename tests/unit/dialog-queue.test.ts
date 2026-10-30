@@ -1,4 +1,4 @@
-import { DialogQueue, PageCursor } from '../../src/game/common/dialogQueue';
+import { DialogQueue, PageCursor } from '../../src/engine/dialogQueue';
 
 test('두 번째 작업은 첫 번째가 끝난 뒤에 시작한다', async () => {
   const q = new DialogQueue();

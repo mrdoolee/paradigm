@@ -9,12 +9,12 @@
     "test": "vitest run",
     "shots": "playwright test --grep @shots",
     "e2e": "playwright test --grep @e2e",
-    "build:masks": "tsx scripts/map/build-masks.ts",
+    "build:masks": "tsx activities/continental-drift/tools/map/build-masks.ts",
     "build:widths": "tsx scripts/font/build-widths.ts",
     "check:script": "tsx scripts/check-script.ts",
     "build:sfx": "tsx scripts/sfx/make-sfx.ts",
-    "build:stripes": "tsx scripts/map/build-stripes.ts",
-    "build:sea": "tsx scripts/map/build-sea.ts"
+    "build:stripes": "tsx activities/continental-drift/tools/map/build-stripes.ts",
+    "build:sea": "tsx activities/continental-drift/tools/map/build-sea.ts"
   },
   "license": "UNLICENSED",
   "type": "module",

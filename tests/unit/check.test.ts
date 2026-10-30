@@ -1,4 +1,4 @@
-import { checkScript } from '../../src/script/check';
+import { checkScript } from '../../src/engine/script/check';
 
 const m = (s: string) => [...s].length * 12;
 const table = { sizePx: 12, ranges: [[0x20, 0x7e, 12], [0xac00, 0xd7a3, 12]] as [number, number, number][] };

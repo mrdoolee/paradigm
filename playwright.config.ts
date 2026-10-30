@@ -1,7 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: 'tests/e2e',
+  // shared e2e under tests/e2e, each activity's under activities/<id>/tests/e2e
+  testDir: '.',
+  testMatch: ['tests/e2e/**/*.spec.ts', 'activities/*/tests/e2e/**/*.spec.ts'],
+  testIgnore: ['**/node_modules/**', 'dist/**', 'work/**'],
   outputDir: 'test-results/artifacts',
   fullyParallel: false,
   workers: 2,

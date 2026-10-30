@@ -3,8 +3,8 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { checkScript, MAX_SPEECH_PAGES, type IssueCode } from '../src/script/check';
-import type { BlockKind } from '../src/script/parse';
+import { checkScript, MAX_SPEECH_PAGES, type IssueCode } from '../src/engine/script/check';
+import type { BlockKind } from '../src/engine/script/parse';
 
 const MESSAGES: Record<IssueCode, (d: string) => string> = {
   NO_CHARACTERS: () => '"## 등장인물" 표가 없습니다.',
@@ -36,9 +36,9 @@ async function main() {
   for (const id of readdirSync(root)) {
     const file = `${root}/${id}/script.md`;
     if (!existsSync(file)) continue;
-    const anchorsPath = resolve(`src/game/${id}/anchors.ts`);
+    const anchorsPath = resolve(`activities/${id}/game/anchors.ts`);
     if (!existsSync(anchorsPath)) {
-      console.error(`${file}: src/game/${id}/anchors.ts 가 없어 검사할 수 없습니다.`);
+      console.error(`${file}: activities/${id}/game/anchors.ts 가 없어 검사할 수 없습니다.`);
       failed = true;
       continue;
     }

@@ -1,5 +1,5 @@
-import { wrapText, paginate, pagesFor } from '../../src/script/wrap';
-import { makeTableMeasure, missingChars, galmuriMeasure } from '../../src/script/measure';
+import { wrapText, paginate, pagesFor } from '../../src/engine/script/wrap';
+import { makeTableMeasure, missingChars, galmuriMeasure } from '../../src/engine/script/measure';
 
 const m = (s: string) => [...s].length * 10;
 

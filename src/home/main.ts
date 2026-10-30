@@ -1,4 +1,4 @@
-import { parseScript } from '../script/parse';
+import { parseScript } from '../engine/script/parse';
 import { SITE_TITLE } from '../strings';
 
 // Activity list: one card per activities/<id>/script.md, using its line-card-* anchors.

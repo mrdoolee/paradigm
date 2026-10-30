@@ -1,11 +1,11 @@
-// Builds src/script/galmuri11-widths.json from the Galmuri11 font file.
+// Builds src/engine/script/galmuri11-widths.json from the Galmuri11 font file.
 // Usage: npm run build:widths
 // The table lets Node (script checker) and the browser (dialog box) wrap lines the same way.
 import { readFileSync, writeFileSync } from 'node:fs';
 import opentype from 'opentype.js';
 
 const FONT = 'node_modules/galmuri/dist/Galmuri11.ttf';
-const OUT = 'src/script/galmuri11-widths.json';
+const OUT = 'src/engine/script/galmuri11-widths.json';
 const SIZE = 12;
 
 const buf = readFileSync(FONT);
