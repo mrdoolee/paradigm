@@ -9,6 +9,9 @@ export const SEA_CELL = sail.cell;
 export const SAIL_SPEED = sail.speedCellsPerSec;
 export const PORTS = sail.ports as Record<PortId, { at: [number, number]; label: string; side?: 'left' | 'right' }>;
 
+/** Canals the ship can pass (one sea cell each); the captain says a word the first time. */
+export const CANALS = (sail as unknown as { canals?: Record<string, { cell: [number, number]; talk: string }> }).canals ?? {};
+
 export function seaGrid0(): Grid {
   const open = new Set((sail.open as number[][]).map(([x, y]) => `${x},${y}`));
   const block = new Set((sail.block as number[][]).map(([x, y]) => `${x},${y}`));

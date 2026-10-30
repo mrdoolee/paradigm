@@ -7,7 +7,7 @@ import { VIEW_H, VIEW_W } from '../../common/screen';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
 import { worldPieces } from '../data';
 import { TOWN_OF_PORT, type PortId, type Run } from '../run';
-import { PORTS, SAIL_SPEED, SEA, SEA_CELL, cellCenter, nearestSea, portCell, toCell } from '../sea';
+import { CANALS, PORTS, SAIL_SPEED, SEA, SEA_CELL, cellCenter, nearestSea, portCell, toCell } from '../sea';
 
 export interface SailData {
   /** Sail by hand toward this port. */
@@ -112,7 +112,23 @@ export class SailScene extends Phaser.Scene {
       }
     }
     this.placeShip();
+    this.checkCanals();
     this.checkPorts();
+  }
+
+  /** The first time the ship enters a canal the captain says a word, then the ship sails on. */
+  private checkCanals() {
+    if (this.auto || this.done) return;
+    const c = toCell(this.pos);
+    for (const [id, k] of Object.entries(CANALS)) {
+      const flag = `seen-canal-${id}`;
+      if (c.x !== k.cell[0] || c.y !== k.cell[1] || this.registry.get(flag)) continue;
+      this.registry.set(flag, true);
+      const keep = [...this.path];
+      void this.ui.say(k.talk).then(() => {
+        if (!this.done && !this.path.length) this.path = keep;
+      });
+    }
   }
 
   private tryMove(dx: number, dy: number) {

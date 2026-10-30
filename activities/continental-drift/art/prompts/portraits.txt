@@ -1,0 +1,7 @@
+Pixel art character portraits for an educational RPG set in the 1920s (format only, original designs), same style as the reference portrait.
+Draw exactly 6 portraits in a grid of 3 columns and 2 rows, in this order (left to right, top to bottom):
+{{list}}
+Each portrait is a square, chest-up, facing front turned slightly to the left, inside its own square with a plain muted grey-blue background.
+The squares are separated by wide flat #FF00FF magenta gaps, and the magenta fills the outer margin too.
+Ordinary people drawn with dignity and warmth, faces true to each person's region, period clothing, no caricature, not resembling any real person or any commercial game character.
+1-pixel dark navy (#1b2a38) outline, light from the top-left, 2 shading steps, muted palette, crisp pixels, no anti-aliasing, no text.

@@ -44,6 +44,7 @@ export const ANCHORS: Record<string, BlockKind> = {
   'town-not-yet': 'dialogue',
   'port-captain': 'dialogue',
   'sail-visited': 'dialogue',
+  'sail-suez': 'dialogue',
   'india-arrive': 'dialogue',
   'india-scientist': 'dialogue',
   'dig-before': 'dialogue',

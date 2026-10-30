@@ -16,20 +16,21 @@
 | id | 이름 | 표시 | 초상 |
 |---|---|---|---|
 | aide | 한별 | 가상 인물 | aide |
-| member | 학회 참석자 | 가상 인물 | - |
+| member | 학회 참석자 | 가상 인물 | member |
 | sahni | 비르발 사니 | 사료 각색 | - |
 | david | 에지워스 데이비드 | 사료 각색 | - |
 | dutoit | 알렉산더 뒤 토이트 | 사료 각색 | - |
-| captain | 선장 | 가상 인물 | - |
-| postman | 우편배달부 | 가상 인물 | - |
-| fisher | 어부 | 가상 인물 | - |
-| paper | 신문 파는 아이 | 가상 인물 | - |
-| fruit | 과일 장수 | 가상 인물 | - |
-| pupil | 수강생 | 가상 인물 | - |
-| water | 물 장수 | 가상 인물 | - |
-| farmer | 농부 | 가상 인물 | - |
-| girl | 마을 아이 | 가상 인물 | - |
-| flower | 꽃 장수 | 가상 인물 | - |
+| captain | 선장 | 가상 인물 | captain |
+| postman | 우편배달부 | 가상 인물 | postman |
+| fisher | 어부 | 가상 인물 | fisher |
+| capefisher | 어부 | 가상 인물 | capefisher |
+| paper | 신문 파는 아이 | 가상 인물 | paper |
+| fruit | 과일 장수 | 가상 인물 | fruit |
+| pupil | 수강생 | 가상 인물 | pupil |
+| water | 물 장수 | 가상 인물 | water |
+| farmer | 농부 | 가상 인물 | farmer |
+| girl | 마을 아이 | 가상 인물 | girl |
+| flower | 꽃 장수 | 가상 인물 | flower |
 | narr | | - | - |
 
 ## @line-card-title
@@ -187,6 +188,9 @@ narr: 지금은 여기서 할 일이 없다. 위쪽 띠의 안내를 보자.
 
 ## @port-captain
 captain: 배는 준비됐소. 지도에서 반짝이는 항구로 배를 몰고 가시오.
+
+## @sail-suez
+captain: 수에즈 운하요. 1869년에 이 물길이 열려서, 이제 아프리카 남쪽 끝을 돌지 않고도 인도양으로 갈 수 있소.
 
 ## @sail-visited
 narr: 이미 다녀온 항구다. 반짝이는 다음 항구로 가자.
@@ -373,7 +377,7 @@ narr: 웃음물총새가 말뚝 위에서 깔깔 웃듯이 운다.
 flower: 프로테아 꽃 사 가요. 이 근처 산비탈에 많이 피는 꽃이에요.
 
 ## @npc-africa-fisher
-fisher: 저 산 보이죠? 꼭대기가 탁자처럼 평평해서 테이블산이라고 불러요. 바다에서 돌아올 때 그 산을 보고 집을 찾아오지요.
+capefisher: 저 산 보이죠? 꼭대기가 탁자처럼 평평해서 테이블산이라고 불러요. 바다에서 돌아올 때 그 산을 보고 집을 찾아오지요.
 
 ## @npc-africa-dassie
 narr: 바위너구리가 볕 드는 바위 위에서 꼼짝 않고 졸고 있다.

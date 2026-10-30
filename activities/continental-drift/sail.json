@@ -1,44 +1,58 @@
 {
-  "cell": 4,
-  "speedCellsPerSec": 6,
-  "ports": {
-    "hamburg": {
-      "at": [
-        262,
-        50
-      ],
-      "label": "line-port-hamburg",
-      "side": "left"
-    },
-    "mumbai": {
-      "at": [
-        300,
-        100
-      ],
-      "label": "line-port-mumbai"
-    },
-    "sydney": {
-      "at": [
-        388,
-        160
-      ],
-      "label": "line-port-sydney"
-    },
-    "capetown": {
-      "at": [
-        254,
-        170
-      ],
-      "label": "line-port-capetown"
-    },
-    "newyork": {
-      "at": [
-        140,
-        70
-      ],
-      "label": "line-port-newyork"
-    }
+ "cell": 4,
+ "speedCellsPerSec": 6,
+ "ports": {
+  "hamburg": {
+   "at": [
+    262,
+    50
+   ],
+   "label": "line-port-hamburg",
+   "side": "left"
   },
-  "open": [],
-  "block": []
+  "mumbai": {
+   "at": [
+    300,
+    100
+   ],
+   "label": "line-port-mumbai"
+  },
+  "sydney": {
+   "at": [
+    388,
+    160
+   ],
+   "label": "line-port-sydney"
+  },
+  "capetown": {
+   "at": [
+    254,
+    170
+   ],
+   "label": "line-port-capetown"
+  },
+  "newyork": {
+   "at": [
+    140,
+    70
+   ],
+   "label": "line-port-newyork"
+  }
+ },
+ "open": [
+  [
+   68,
+   24
+  ]
+ ],
+ "block": [],
+ "canals": {
+  "suez": {
+   "cell": [
+    68,
+    24
+   ],
+   "talk": "sail-suez"
+  }
+ }
 }
