@@ -123,3 +123,16 @@
 - **비르발 사니·알렉산더 뒤 토이트**: 퍼블릭 도메인 원본 사진을 찾지 못해 그리지 않았다(공용에 사니는 2025년 흉상 사진 CC BY-SA뿐, 뒤 토이트는 초상 없음).
 
 생성 호출 합계(누계): 35회.
+
+## 정리 페이지 그림 (2026-10-30)
+
+| 파일 | 만든 방법 | 호출 |
+|---|---|---|
+| `summary/plates.png` (400×160) | 공개 데이터로 코드로 그림: `scripts/art/plates-map.py` (sources.md MAP-PLATES·MAP-QUAKES·MAP-VOLCANOES·MAP-LAND). 선=판 경계, 노란 점=지진, 흰 세모=화산, 범례는 원고 글 | 0 |
+| `summary/journey.png` (424×48) | 게임 그림을 잘라 이음: `scripts/art/journey-icons.py` (해안선·화석·빙하·산맥·학회·줄무늬) | 0 |
+| `summary/section.png` (240×144) | 생성 1회 `art/prompts/summary-section.txt`(참고: 해령 장면 화면) → bg 16색. 해령에서 판이 벌어지고 해구에서 가라앉음, 화산 | 1 |
+| `summary/mantle.png` (240×144) | 생성 1회 `art/prompts/summary-mantle.txt` → bg 16색. 맨틀의 느린 흐름(가운데 올라오고 양옆 가라앉음) | 1 |
+
+- 생성 그림은 맨틀을 용암처럼 주황으로 칠했다. 맨틀이 액체라는 오해를 막으려고 설명 글에 "맨틀은 대부분 고체지만 아주 천천히 흘러요(단순화한 그림)"를 붙였다.
+
+생성 호출 합계(누계): 37회.

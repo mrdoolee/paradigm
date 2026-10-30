@@ -37,5 +37,5 @@ export const SUMMARY = {
   rowH: 16,
   footY: 329,
   /** check:script and tests keep page-about within this many pages */
-  maxPages: 6,
+  maxPages: 8,
 };

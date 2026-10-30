@@ -1,0 +1,5 @@
+Pixel art educational diagram for middle-school students: a simple cut-away slice of the Earth seen from the side, in the style of the reference image.
+Thin rigid plates on top (dark grey-blue) with a mid-ocean ridge in the middle of the top edge; below them a thick mantle in warm orange-brown with two very large, slow circular flow loops drawn as soft curved white arrows:
+hot rock slowly rising under the ridge in the middle and spreading sideways under the plates, and cooler rock sinking at both sides where plates dive down. A small dark red core at the bottom centre.
+No text, no letters, no numbers, no labels, no people, no frame.
+Crisp chunky pixels, limited flat colours, no gradients, no anti-aliasing.

@@ -1,0 +1,7 @@
+Pixel art educational diagram for middle-school students: a simple side cross-section of the Earth's outer layers, in the style of the reference image (the game's ocean-floor cross-section).
+From left to right: under the sea, a mid-ocean ridge where two oceanic plates move apart from each other while orange-red magma rises up from the mantle into the gap in the middle;
+the right oceanic plate moves to the right and bends down into the mantle beneath the edge of a continent at a deep ocean trench;
+on the continent, just inland from the trench, a volcano with a little glow at its top.
+Thin plates (dark grey-blue rock) lie on top of a thick warm orange-brown mantle. A few simple white arrows show the plates moving apart at the ridge and the plate sinking at the trench.
+Blue sea above the ridge and trench, pale sky band at the very top. No text, no letters, no numbers, no labels, no people, no frame.
+Crisp chunky pixels, limited flat colours, no gradients, no anti-aliasing.

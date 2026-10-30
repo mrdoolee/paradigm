@@ -115,7 +115,20 @@ export class SummaryScene extends Phaser.Scene {
     const rows = this.layout.pages[this.page] ?? [];
     rows.forEach((r, i) => {
       const y = S.textY + i * S.rowH;
-      if (r.kind === 'gap') return;
+      if (r.kind === 'gap' || r.kind === 'imgfill') return;
+      if (r.img) {
+        // a picture fills its rows, centred, with a thin dark frame
+        const x = Math.round(S.textX + (S.textW - r.img.w) / 2);
+        const g = this.add.graphics();
+        g.fillStyle(0x1b2a38).fillRect(x - 1, y - 1, r.img.w + 2, r.img.h + 2);
+        this.body.add(g);
+        if (this.textures.exists(r.img.key)) this.body.add(this.add.image(x, y, r.img.key).setOrigin(0));
+        return;
+      }
+      if (r.kind === 'cap') {
+        this.body.add(this.text(S.textX + S.textW / 2, y + 2, r.text, C.dim).setOrigin(0.5, 0));
+        return;
+      }
       if (r.bullet) this.body.add(this.text(S.textX, y, BULLET, C.dim));
       this.body.add(this.text(S.textX + r.indent, y, r.text, r.kind === 'h' ? C.accent : C.ink));
     });
