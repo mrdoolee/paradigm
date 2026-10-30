@@ -7,6 +7,7 @@ import { UI_KEY, type UiScene } from '../../common/UiScene';
 import config from '../../../../activities/continental-drift/minigames.json';
 import seafloor from '../../../../activities/continental-drift/art/seafloor/seafloor.json';
 import { SURVEY_DONE, SurveyTrack, stripeAt } from '../minigames/logic';
+import { stripePixel } from '../minigames/stripeArt';
 import type { Run } from '../run';
 
 const C = config.survey;
@@ -16,8 +17,6 @@ const HALF = seafloor.stripes.reduce((a, b) => a + b, 0) * SCALE;
 const X0 = RIDGE_X - HALF;
 const X1 = RIDGE_X + HALF;
 const SPEED = 70; // px per second
-const NORMAL = 0xe0a040;
-const REVERSED = 0xf2ecdc;
 const SURFACE_Y = 52;
 
 /**
@@ -31,7 +30,9 @@ export class SurveyScene extends Phaser.Scene {
   private ship!: Phaser.GameObjects.Image;
   private x = X0;
   private target: number | null = null;
-  private paint!: Phaser.GameObjects.Graphics;
+  /** the whole record band, drawn once; the part the ship has crossed is shown by cropping */
+  private band!: Phaser.GameObjects.Image;
+  private seen: [number, number] | null = null;
   private started = false;
   private over = false;
   private keys!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -51,7 +52,9 @@ export class SurveyScene extends Phaser.Scene {
     this.run = this.registry.get('run') as Run;
     this.track = new SurveyTrack(X0, X1);
     this.drawSection();
-    this.paint = this.add.graphics().setDepth(5);
+    this.seen = null;
+    if (!this.textures.exists(BAND_KEY)) this.buildBand();
+    this.band = this.add.image(Math.floor(X0), BAND_TOP, BAND_KEY).setOrigin(0).setDepth(5).setVisible(false);
     const tex = artOr(this, 'sail/survey-ship', 'gb-survey-ship', 24, 14, (g) => {
       g.fillStyle(0x1b2a38).fillRect(0, 7, 24, 7);
       g.fillStyle(0xd8dde4).fillRect(1, 8, 22, 4);
@@ -123,13 +126,36 @@ export class SurveyScene extends Phaser.Scene {
     for (let t = 0; t < 30; t++) this.cable.fillRect(Math.round(this.x - 12 - t), SURFACE_Y - 2 + Math.floor(t / 6), 1, 1);
   }
 
+  /** Shows the record between a and b (the ship moves without jumps, so what it has seen is one span). */
   private drawStripes(a: number, b: number) {
-    const top = C.floorTop + 44;
-    const h = 56;
-    for (let x = Math.floor(Math.max(a, X0)); x < Math.ceil(Math.min(b, X1)); x++) {
-      const pol = stripeAt((x + 0.5 - RIDGE_X) / SCALE, seafloor.stripes);
-      this.paint.fillStyle(pol === 'normal' ? NORMAL : REVERSED).fillRect(x, top, 1, h);
-    }
+    const lo = Math.max(Math.floor(X0), Math.floor(a));
+    const hi = Math.min(Math.ceil(X1), Math.ceil(b));
+    if (hi <= lo) return;
+    this.seen = this.seen ? [Math.min(this.seen[0], lo), Math.max(this.seen[1], hi)] : [lo, hi];
+    const x0 = Math.floor(X0);
+    this.band.setCrop(this.seen[0] - x0, 0, this.seen[1] - this.seen[0], BAND_H).setVisible(true);
+  }
+
+  /** The magnetic record as rock: pillow basalt tinted by polarity (same look as the stripe puzzle). */
+  private buildBand() {
+    const x0 = Math.floor(X0);
+    const w = Math.ceil(X1) - x0;
+    const tex = this.textures.createCanvas(BAND_KEY, w, BAND_H)!;
+    const ctx = tex.getContext();
+    const img = ctx.createImageData(w, BAND_H);
+    for (let y = 0; y < BAND_H; y++)
+      for (let i = 0; i < w; i++) {
+        const x = x0 + i;
+        const pol = stripeAt((x + 0.5 - RIDGE_X) / SCALE, seafloor.stripes);
+        const c = stripePixel(x - RIDGE_X, y, BAND_H, pol, false, 0);
+        const k = (y * w + i) * 4;
+        img.data[k] = (c >> 16) & 255;
+        img.data[k + 1] = (c >> 8) & 255;
+        img.data[k + 2] = c & 255;
+        img.data[k + 3] = 255;
+      }
+    ctx.putImageData(img, 0, 0);
+    tex.refresh();
   }
 
   /**
@@ -178,8 +204,10 @@ export class SurveyScene extends Phaser.Scene {
 // ---- the cross-section, as pure functions of the pixel ------------------------
 
 const SECTION_KEY = 'gb-survey-section';
+const BAND_KEY = 'gb-survey-band';
 const BAND_TOP = C.floorTop + 44;
-const BAND_BOTTOM = BAND_TOP + 56;
+const BAND_H = 56;
+const BAND_BOTTOM = BAND_TOP + BAND_H;
 const DIKES_BOTTOM = BAND_BOTTOM + 16;
 const MANTLE_TOP = DIKES_BOTTOM + 22;
 

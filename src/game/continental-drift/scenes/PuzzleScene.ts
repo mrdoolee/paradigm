@@ -6,6 +6,7 @@ import { dbg, enterScene } from '../../common/debug';
 import { UI_KEY, type UiScene } from '../../common/UiScene';
 import seafloor from '../../../../activities/continental-drift/art/seafloor/seafloor.json';
 import type { Run } from '../run';
+import { hash } from '../minigames/stripeArt';
 import { DOT_TOTAL, PHASES, WORLD_PHASES, seafloorPieces, worldPieces, type Phase } from '../data';
 
 interface PuzzleData {
@@ -17,7 +18,6 @@ interface PuzzleData {
 
 const SEA = 0x274660;
 const SEA_GRID = 0x2d506c;
-const DEEP = 0x1d3448;
 const RIDGE = 0xd9483b;
 
 /** Drag-to-fit puzzle. Runs the given phases in order with their dialogs, then starts `next`. */
@@ -78,12 +78,31 @@ export class PuzzleScene extends Phaser.Scene {
     for (let y = 22; y < VIEW_H; y += 40) g.fillRect(0, y, VIEW_W, 1);
   }
 
-  /** Grey-box sea floor: deep water with a lighter mid-ocean ridge band in the middle. */
+  /**
+   * The stripe table as a cross-section of the ocean floor, like the survey scene: deep water above,
+   * the slot of crust where the stripe pieces go, then gabbro and the mantle with magma under the ridge.
+   */
   private drawSeafloor() {
-    const g = this.add.graphics();
-    g.fillStyle(DEEP).fillRect(0, 0, VIEW_W, VIEW_H);
-    g.fillStyle(SEA_GRID);
-    for (let y = 22; y < VIEW_H; y += 40) g.fillRect(0, y, VIEW_W, 1);
+    const key = 'gb-seafloor-section';
+    if (!this.textures.exists(key)) {
+      const tex = this.textures.createCanvas(key, VIEW_W, VIEW_H)!;
+      const ctx = tex.getContext();
+      const img = ctx.createImageData(VIEW_W, VIEW_H);
+      const top = seafloor.pieces.ridge.target[1];
+      const bottom = top + seafloor.pieces.ridge.h;
+      for (let y = 0; y < VIEW_H; y++)
+        for (let x = 0; x < VIEW_W; x++) {
+          const c = seafloorColor(x, y, top, bottom, seafloor.ridgeX);
+          const k = (y * VIEW_W + x) * 4;
+          img.data[k] = (c >> 16) & 255;
+          img.data[k + 1] = (c >> 8) & 255;
+          img.data[k + 2] = c & 255;
+          img.data[k + 3] = 255;
+        }
+      ctx.putImageData(img, 0, 0);
+      tex.refresh();
+    }
+    this.add.image(0, 0, key).setOrigin(0);
   }
 
   /** A red line and small peaks mark the mid-ocean ridge, drawn above the stripes. */
@@ -145,4 +164,24 @@ export class PuzzleScene extends Phaser.Scene {
     dbg.phase = null;
     if (this.next) this.scene.start(this.next, this.nextData);
   }
+}
+
+/** Background pixel of the stripe table: water, an empty crust slot, gabbro, mantle, magma under the ridge. */
+function seafloorColor(x: number, y: number, top: number, bottom: number, ridgeX: number): number {
+  const n = hash(x, y);
+  const d = Math.abs(x - ridgeX);
+  if (y < top - 2) {
+    // deep water in flat bands with a checker step between them
+    const edge = 30;
+    if (y < edge - 1) return 0x274660;
+    if (y > edge) return 0x1f3b55;
+    return (x + y) % 2 === 0 ? 0x274660 : 0x1f3b55;
+  }
+  if (y < top) return 0x1b2a38;
+  if (y < bottom) return n < 0.06 ? 0x30363e : 0x262c34; // the slot where the crust pieces go
+  if (y < bottom + 18) return n < 0.12 ? 0x4e5660 : n < 0.2 ? 0x262c34 : 0x353c46; // gabbro
+  const conduit = 2 + Math.floor((y - bottom - 18) / 24);
+  if (d <= conduit) return n < 0.25 ? 0xf0a050 : 0xd9683b;
+  const glow = d < 36 + (y - bottom - 18) * 0.6 + (hash(y, 3) - 0.5) * 10 ? 0x7a4a36 : 0x5e3a2e;
+  return n < 0.08 ? 0x8a5a42 : n < 0.16 ? 0x4a2e26 : glow;
 }

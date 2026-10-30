@@ -5,6 +5,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { PNG } from 'pngjs';
 import { dotted, outline } from './raster';
+import { stripePixel, type Polarity } from '../../src/game/continental-drift/minigames/stripeArt';
 
 const OUT = 'activities/continental-drift/art/seafloor';
 /** Stripe widths from the ridge outward; even index = normal polarity (like today), odd = reversed. */
@@ -23,24 +24,24 @@ const STARTS: [number, number][] = [
   [412, 52],
   [330, 60],
 ];
-/** Textbook style: coloured = normal polarity (like today), pale = reversed. */
-const NORMAL = [224, 160, 64];
-const REVERSED = [242, 236, 220];
-
-function colorOf(i: number) {
-  return i % 2 === 0 ? NORMAL : REVERSED;
+/** Textbook style: coloured = normal polarity (like today), pale = reversed. Drawn as layered crust (stripeArt.ts). */
+function polarityOf(i: number): Polarity {
+  return i % 2 === 0 ? 'normal' : 'reversed';
 }
 
-function writeStrip(path: string, cols: number[][], h: number) {
+/** One column per entry: its polarity and its distance from the ridge axis. */
+type Col = { pol: Polarity; dx: number };
+
+function writeStrip(path: string, cols: Col[], h: number) {
   const w = cols.length;
   const png = new PNG({ width: w, height: h });
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
       const k = (y * w + x) * 4;
-      const c = cols[x];
-      png.data[k] = c[0];
-      png.data[k + 1] = c[1];
-      png.data[k + 2] = c[2];
+      const c = stripePixel(cols[x].dx, y, h, cols[x].pol);
+      png.data[k] = (c >> 16) & 255;
+      png.data[k + 1] = (c >> 8) & 255;
+      png.data[k + 2] = c & 255;
       png.data[k + 3] = 255;
     }
   writeFileSync(path, PNG.sync.write(png));
@@ -65,18 +66,18 @@ mkdirSync(OUT, { recursive: true });
 const pieces: Record<string, { w: number; h: number; start: [number, number]; target: [number, number]; fixed?: true }> = {};
 
 // Fixed piece: left flank (outermost first) + the ridge band on both sides.
-const left: number[][] = [];
-for (let i = STRIPES.length - 1; i >= 1; i--) for (let k = 0; k < STRIPES[i]; k++) left.push(colorOf(i));
-for (let k = 0; k < STRIPES[0] * 2; k++) left.push(colorOf(0));
 const leftX = RIDGE_X - STRIPES.slice(1).reduce((a, b) => a + b, 0) - STRIPES[0];
+const left: Col[] = [];
+for (let i = STRIPES.length - 1; i >= 1; i--) for (let k = 0; k < STRIPES[i]; k++) left.push({ pol: polarityOf(i), dx: leftX + left.length - RIDGE_X });
+for (let k = 0; k < STRIPES[0] * 2; k++) left.push({ pol: polarityOf(0), dx: leftX + left.length - RIDGE_X });
 writeStrip(`${OUT}/ridge.png`, left, H);
 writeOutlines('ridge', left.length, H);
 pieces.ridge = { w: left.length, h: H, start: [leftX, TOP], target: [leftX, TOP], fixed: true };
 
 let x = RIDGE_X + STRIPES[0];
 GROUPS.forEach((g, n) => {
-  const cols: number[][] = [];
-  for (const i of g) for (let k = 0; k < STRIPES[i]; k++) cols.push(colorOf(i));
+  const cols: Col[] = [];
+  for (const i of g) for (let k = 0; k < STRIPES[i]; k++) cols.push({ pol: polarityOf(i), dx: x + cols.length - RIDGE_X });
   const id = `strip-${n + 1}`;
   writeStrip(`${OUT}/${id}.png`, cols, H);
   writeOutlines(id, cols.length, H);
