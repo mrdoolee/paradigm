@@ -5,11 +5,16 @@ import { FONT, PUZZLE_AREA } from '../../common/layout';
 import { VIEW_H, VIEW_W } from '../../common/screen';
 import config from '../../../../activities/continental-drift/minigames.json';
 import { FieldFlow } from '../minigames/field';
+import { worldPieces } from '../data';
+import { UI_COLORS, frame } from '../../common/UiScene';
 
 const C = config.strata;
 /** Shuffled start order of the South American samples (fixed, no randomness). */
 const START_ORDER = [2, 0, 1];
 const hex = (c: string) => parseInt(c.slice(1), 16);
+/** The small map lives far off to the side of the scene and is shown through its own camera. */
+const MAP_OFFSET = 2000;
+const SLIDE_MS = 1400;
 
 /** Grey-pattern texture for layer i, drawn white so the board can tint it with the layer colour. */
 function drawLayer(g: Phaser.GameObjects.Graphics, i: number, w: number, h: number) {
@@ -40,6 +45,7 @@ export class StrataScene extends Phaser.Scene {
     enterScene('Strata', this);
     this.flow = new FieldFlow(this, 'Strata');
     this.drawBackground();
+    const map = this.drawMap();
 
     const n = C.layers.length;
     const top = C.left[1];
@@ -80,10 +86,76 @@ export class StrataScene extends Phaser.Scene {
       this.board.setEnabled(true);
       this.board.events.once('phase-done', () => {
         this.board.setEnabled(false);
-        void this.flow.finish('strata-after');
+        // the layers match: on the map South America slides to Africa and the two places become neighbours
+        void map.join().then(() => this.flow.finish('strata-after'));
       });
       this.board.setPhase(specs.map((s) => s.id), []);
     })();
+  }
+
+  /**
+   * A window on the South Atlantic at today's positions: Karoo (South Africa) and Parana (Brazil) pinned,
+   * a dashed line with the distance between them. `join` slides South America onto its fit with Africa.
+   */
+  private drawMap() {
+    const M = C.map;
+    const [vx, vy, vw, vh] = M.view;
+    const [rx, ry] = M.region;
+    const g = this.add.graphics().setDepth(1);
+    frame(g, vx - 4, vy - 4, vw + 8, vh + 8);
+    const cam = this.cameras.add(vx, vy, vw, vh).setScroll(MAP_OFFSET + rx, ry).setBackgroundColor(0x274660);
+    const ox = MAP_OFFSET;
+    const pieces = worldPieces();
+    const imgs: Record<string, Phaser.GameObjects.Image> = {};
+    for (const s of pieces) {
+      imgs[s.id] = this.add.image(ox + s.start.x, s.start.y, s.tex).setOrigin(0).setTint(s.color);
+    }
+    const pins = M.pins as unknown as Record<string, [number, number]>;
+    const sa = pieces.find((s) => s.id === 'south-america')!;
+    const af = pieces.find((s) => s.id === 'africa')!;
+    const pin = (id: string, piece: typeof sa) => ({ x: ox + piece.start.x + pins[id][0], y: piece.start.y + pins[id][1] });
+    const a = pin('africa', af);
+    const b = pin('south-america', sa);
+    const line = this.add.graphics();
+    const drawLine = (from: { x: number; y: number }) => {
+      line.clear().fillStyle(0xffd23f);
+      const d = Math.hypot(a.x - from.x, a.y - from.y);
+      for (let t = 4; t < d - 4; t += 4) line.fillRect(Math.round(from.x + ((a.x - from.x) * t) / d), Math.round(from.y + ((a.y - from.y) * t) / d), 2, 1);
+    };
+    drawLine(b);
+    const dot = (p: { x: number; y: number }) => this.add.graphics().fillStyle(0x1b2a38).fillRect(p.x - 2, p.y - 2, 5, 5).fillStyle(0xd9483b).fillRect(p.x - 1, p.y - 1, 3, 3);
+    dot({ x: 0, y: 0 }).setPosition(a.x, a.y);
+    const pb = dot({ x: 0, y: 0 }).setPosition(b.x, b.y);
+    const style = { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: UI_COLORS.ink, backgroundColor: '#121a28', padding: { x: 2, y: 1 } };
+    this.add.text(a.x + 4, a.y - 2, this.flow.ui.line('line-strata-karoo'), style).setOrigin(0, 1);
+    const lb = this.add.text(b.x - 4, b.y - 2, this.flow.ui.line('line-strata-parana'), style).setOrigin(1, 1);
+    const dist = this.add.text((a.x + b.x) / 2, (a.y + b.y) / 2 + 4, this.flow.ui.line('line-strata-distance'), { ...style, color: '#ffd23f' }).setOrigin(0.5, 0);
+    // each camera only reaches its own part of the scene (the map sits MAP_OFFSET to the right), so nothing overlaps
+    void cam;
+    return {
+      join: () =>
+        new Promise<void>((resolve) => {
+          dist.setVisible(false);
+          const dx = sa.target.x - sa.start.x;
+          const dy = sa.target.y - sa.start.y;
+          const from = { x: imgs[sa.id].x, y: imgs[sa.id].y };
+          this.tweens.addCounter({
+            from: 0,
+            to: 1,
+            duration: SLIDE_MS,
+            ease: 'Sine.easeInOut',
+            onUpdate: (tw) => {
+              const k = tw.getValue() ?? 0;
+              imgs[sa.id].setPosition(Math.round(from.x + dx * k), Math.round(from.y + dy * k));
+              const nb = { x: Math.round(b.x + dx * k), y: Math.round(b.y + dy * k) };
+              pb.setPosition(nb.x, nb.y);
+              lb.setPosition(nb.x - 4, nb.y - 2);
+              drawLine(nb);
+            },
+            onComplete: () => resolve(),
+          });
+        }),
+    };
   }
 
   private layerTex(i: number): string {

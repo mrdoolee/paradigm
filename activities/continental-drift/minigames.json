@@ -1,84 +1,106 @@
 {
-  "dig": {
-    "cols": 16,
-    "rows": 5,
-    "cell": 20,
-    "origin": [
-      81,
-      66
-    ],
-    "fossils": [
-      {
-        "x": 1,
-        "y": 1,
-        "w": 2,
-        "h": 1
-      },
-      {
-        "x": 5,
-        "y": 2,
-        "w": 1,
-        "h": 2
-      },
-      {
-        "x": 9,
-        "y": 1,
-        "w": 2,
-        "h": 1
-      },
-      {
-        "x": 12,
-        "y": 3,
-        "w": 2,
-        "h": 1
-      }
-    ]
-  },
-  "scratch": {
-    "cols": 40,
-    "rows": 20,
-    "cell": 8,
-    "origin": [
-      80,
-      48
-    ],
-    "brush": 1.6,
-    "arrow": {
-      "from": [
-        130,
-        170
-      ],
-      "to": [
-        350,
-        90
-      ]
-    }
-  },
-  "strata": {
-    "layers": [
-      "line-strata-1",
-      "line-strata-2",
-      "line-strata-3"
-    ],
-    "colors": [
-      "#4a4038",
-      "#6a6a72",
-      "#b89a66"
-    ],
-    "left": [
-      150,
-      56
-    ],
-    "right": [
-      330,
-      56
-    ],
-    "w": 88,
-    "h": 44
-  },
-  "survey": {
-    "trackY": 96,
-    "floorTop": 120,
-    "floorH": 100
+ "dig": {
+  "cols": 16,
+  "rows": 5,
+  "cell": 20,
+  "origin": [
+   81,
+   66
+  ],
+  "fossils": [
+   {
+    "x": 1,
+    "y": 1,
+    "w": 2,
+    "h": 1
+   },
+   {
+    "x": 5,
+    "y": 2,
+    "w": 1,
+    "h": 2
+   },
+   {
+    "x": 9,
+    "y": 1,
+    "w": 2,
+    "h": 1
+   },
+   {
+    "x": 12,
+    "y": 3,
+    "w": 2,
+    "h": 1
+   }
+  ]
+ },
+ "scratch": {
+  "cols": 40,
+  "rows": 20,
+  "cell": 8,
+  "origin": [
+   80,
+   48
+  ],
+  "brush": 1.6,
+  "arrow": {
+   "from": [
+    130,
+    170
+   ],
+   "to": [
+    350,
+    90
+   ]
   }
+ },
+ "strata": {
+  "layers": [
+   "line-strata-1",
+   "line-strata-2",
+   "line-strata-3"
+  ],
+  "colors": [
+   "#4a4038",
+   "#6a6a72",
+   "#b89a66"
+  ],
+  "left": [
+   150,
+   152
+  ],
+  "right": [
+   330,
+   152
+  ],
+  "w": 88,
+  "h": 32,
+  "map": {
+   "view": [
+    130,
+    26,
+    220,
+    118
+   ],
+   "region": [
+    110,
+    82
+   ],
+   "pins": {
+    "africa": [
+     43,
+     70
+    ],
+    "south-america": [
+     31,
+     42
+    ]
+   }
+  }
+ },
+ "survey": {
+  "trackY": 96,
+  "floorTop": 120,
+  "floorH": 100
+ }
 }

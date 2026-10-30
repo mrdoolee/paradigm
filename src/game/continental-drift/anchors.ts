@@ -85,6 +85,9 @@ export const ANCHORS: Record<string, BlockKind> = {
   'line-strata-1': 'line',
   'line-strata-2': 'line',
   'line-strata-3': 'line',
+  'line-strata-karoo': 'line',
+  'line-strata-parana': 'line',
+  'line-strata-distance': 'line',
 };
 
 // every talk anchor a town map names (townsfolk, the aide) must exist too
