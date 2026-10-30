@@ -1,7 +1,7 @@
 // Builds the sailing grid: continents at today's positions (pieces.json "start") on the 480x360 board,
 // cut into square cells. A cell is land when its centre pixel is land in any continent mask.
 // Hand edits (straits, canals, harbours) live in activities/continental-drift/sail.json, not here.
-// Usage: npm run build:sea   (also writes a 3x preview PNG to tools/sea-preview.png)
+// Usage: npm run build:sea   (also writes a 3x preview PNG to work/debug/sea-preview.png)
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { PNG } from 'pngjs';
 
@@ -72,5 +72,5 @@ for (let y = 0; y < H; y++)
 for (const { at } of Object.values(sail.ports))
   for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) put(at[0] + i, at[1] + j, [255, 210, 63]);
 mkdirSync('tools', { recursive: true });
-writeFileSync('tools/sea-preview.png', PNG.sync.write(prev));
+writeFileSync('work/debug/sea-preview.png', PNG.sync.write(prev));
 console.log(`${OUT}: ${cols}x${rows} cells of ${CELL}px`);

@@ -8,13 +8,9 @@ dist/
 # 테스트 산출물
 test-results/
 playwright-report/
-# 하네스 작업 공간(장부·검토 결과)과 브레인스토밍 화면
-_workspace/
+# git 밖 작업 폴더 하나: 장부·검토 결과(ledger), 그림 생성 원본(art-runs), 내려받은 자료(data), 디버그(debug), 외부 도구(sprite-gen)
+# 고른 결과만 activities/<id>/로 옮긴다
+work/
+# 브레인스토밍 화면(superpowers 스킬이 정한 위치)
 .superpowers/
-# 외부 도구와 그림 생성 작업 폴더(원본·호출 기록). 고른 결과만 activities/<id>/art/로 옮긴다
-tools/sprite-gen/
-tools/art-runs/
 __pycache__/
-tools/geo/
-tools/dbg/
-tools/sea-preview.png

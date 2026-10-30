@@ -14,7 +14,7 @@ import { renderPatterns, type Patterns } from './patterns';
 
 const SRC_URL =
   'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_110m_admin_0_countries.geojson';
-const SRC = 'tools/geo/ne_110m_admin_0_countries.geojson';
+const SRC = 'work/data/ne_110m_admin_0_countries.geojson';
 export const PIECES_DIR = 'activities/continental-drift/art/pieces';
 const PIECES_JSON = `${PIECES_DIR}/pieces.json`;
 const PATTERNS_JSON = 'activities/continental-drift/patterns.json';
@@ -37,7 +37,7 @@ export interface PiecesFile {
 
 async function loadSource(): Promise<FeatureCollection> {
   if (!existsSync(SRC)) {
-    mkdirSync('tools/geo', { recursive: true });
+    mkdirSync('work/data', { recursive: true });
     const res = await fetch(SRC_URL);
     if (!res.ok) throw new Error(`download failed: ${res.status}`);
     writeFileSync(SRC, Buffer.from(await res.arrayBuffer()));

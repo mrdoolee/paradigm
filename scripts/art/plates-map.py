@@ -1,7 +1,7 @@
 """정리 페이지 1쪽의 판 경계·지진·화산 지도를 공개 데이터로 그린다(같은 입력이면 같은 그림).
 
 사용: python scripts/art/plates-map.py  ->  activities/continental-drift/art/summary/plates.png (400x160)
-입력(git 밖 tools/geo/, 받는 곳은 sources.md MAP-*):
+입력(git 밖 work/data/, 받는 곳은 sources.md MAP-*):
 - ne_110m_admin_0_countries.geojson  땅(Natural Earth, 퍼블릭 도메인)
 - pb2002.json                        판 경계(Bird 2003 PB2002, fraxen/tectonicplates, ODC-By 1.0)
 - quakes.json                        지진 규모 6.5 이상 1975~2024(USGS, 퍼블릭 도메인)
@@ -16,7 +16,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
-GEO = ROOT / "tools" / "geo"
+GEO = ROOT / "work" / "data"
 OUT = ROOT / "activities" / "continental-drift" / "art" / "summary" / "plates.png"
 W, H = 400, 160
 LAT_TOP, LAT_BOTTOM = 84.0, -60.0

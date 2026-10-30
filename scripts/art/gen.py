@@ -2,9 +2,9 @@
 그림 한 장 생성 래퍼: sprite-gen gen(OpenAI) -> 크로마 제거 -> pixel_unfake 격자 복원.
 
 사용:
-  tools/sprite-gen/.venv/Scripts/python.exe scripts/art/gen.py --game <id> --id <artId> \
+  work/sprite-gen/.venv/Scripts/python.exe scripts/art/gen.py --game <id> --id <artId> \
       --prompt-file <path> [--ref <png> ...] [--states <json 파일 또는 JSON 문자열>] \
-      --out tools/art-runs/<id>/<artId>/ [--cell WxH] [--palette-size N] [--logical-height N] \
+      --out work/art-runs/<id>/<artId>/ [--cell WxH] [--palette-size N] [--logical-height N] \
       [--outline on|off|0..1] [--safe-margin N] [--aspect-ratio 1:1] [--quality low|medium|high|auto]       [--var 키=값 ...] [--sheet] [--no-key] [--pitch-hint PX]
   (--var: 프롬프트 틀의 {{키}}를 채운다. 빠진 키·안 쓴 키는 오류. --sheet: --states에 상태 여러 개를 받아, 한 번의 호출로
    세로로 쌓인 줄 그림 하나를 받고 줄마다 잘라 상태별로 격자 복원한다(걷기 4방향 한 호출). 줄 순서 = --states 키 순서)
@@ -15,7 +15,7 @@
   '요금이 매겨지지 않는' 429/503 거절은 최대 2번까지 다시 보낸다. 크레딧 오류는 다시 보내지 않는다.
 - 키(OPENAI_API_KEY)는 .env에서 읽어 하위 프로세스의 환경 변수로만 넘긴다. 인자·로그·출력에 넣지 않고, 출력에 섞이면 가린다.
 - 크레딧·인증 오류면 메시지를 출력하고 종료 코드 3으로 끝낸다.
-- 호출 수는 tools/art-runs/calls.jsonl에 한 줄({date, game, id, calls})로 더한다. 호출을 보낸 시도마다 1을 센다(실패해도 센다).
+- 호출 수는 work/art-runs/calls.jsonl에 한 줄({date, game, id, calls})로 더한다. 호출을 보낸 시도마다 1을 센다(실패해도 센다).
 
 원본은 마젠타 단색 배경으로 받아 run/raw/에 그대로 보존하고, 배경 제거와 격자 복원은 extract가 한다.
 투명 배경 참고 이미지는 마젠타 위에 얹어(out/refs/) 올린다.
@@ -35,11 +35,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-# 이 저장소 tools/sprite-gen(설치했을 때) → 없으면 이전 저장소의 설치본(nos-art 스킬 2절)
-_LOCAL_SG = ROOT / "tools" / "sprite-gen"
+# 이 저장소 work/sprite-gen(설치했을 때) → 없으면 이전 저장소의 설치본(nos-art 스킬 2절)
+_LOCAL_SG = ROOT / "work" / "sprite-gen"
 _OLD_SG = Path(r"C:/Users/mrdoo/Documents/nos_game_project/tools/sprite-gen")
 SPRITE_GEN = _LOCAL_SG if (_LOCAL_SG / ".venv").exists() else _OLD_SG
-CALLS_LOG = ROOT / "tools" / "art-runs" / "calls.jsonl"
+CALLS_LOG = ROOT / "work" / "art-runs" / "calls.jsonl"
 EXIT_CREDIT_OR_AUTH = 3
 DEFAULT_STATE = "art"
 
@@ -109,7 +109,7 @@ def sprite_gen_exe() -> Path:
         p = SPRITE_GEN / ".venv" / rel
         if p.exists():
             return p
-    raise FileNotFoundError("sprite-gen 실행 파일을 찾지 못했습니다(tools/sprite-gen/.venv).")
+    raise FileNotFoundError("sprite-gen 실행 파일을 찾지 못했습니다(work/sprite-gen/.venv).")
 
 
 def parse_vars(items: list[str]) -> dict[str, str]:
