@@ -127,9 +127,12 @@ export class StrataScene extends Phaser.Scene {
     dot({ x: 0, y: 0 }).setPosition(a.x, a.y);
     const pb = dot({ x: 0, y: 0 }).setPosition(b.x, b.y);
     const style = { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: UI_COLORS.ink, backgroundColor: '#121a28', padding: { x: 2, y: 1 } };
-    this.add.text(a.x + 4, a.y - 2, this.flow.ui.line('line-strata-karoo'), style).setOrigin(0, 1);
+    this.add.text(a.x + 5, a.y - 3, this.flow.ui.line('line-strata-karoo'), style).setOrigin(0, 1);
     const lb = this.add.text(b.x - 4, b.y - 2, this.flow.ui.line('line-strata-parana'), style).setOrigin(1, 1);
-    const dist = this.add.text((a.x + b.x) / 2, (a.y + b.y) / 2 + 4, this.flow.ui.line('line-strata-distance'), { ...style, color: '#ffd23f' }).setOrigin(0.5, 0);
+    // below the dashed line and a little left of its middle, so the label clears the line and Africa's coast
+    const mid = { x: (a.x + b.x) / 2 - 10, y: (a.y + b.y) / 2 };
+    const slope = (a.y - b.y) / (a.x - b.x || 1);
+    const dist = this.add.text(mid.x, mid.y + Math.max(4, Math.ceil(slope * 46) + 4), this.flow.ui.line('line-strata-distance'), { ...style, color: '#ffd23f' }).setOrigin(0.5, 0);
     // each camera only reaches its own part of the scene (the map sits MAP_OFFSET to the right), so nothing overlaps
     void cam;
     return {

@@ -54,13 +54,13 @@ export function renderPatterns(p: Patterns, w: number, h: number): Record<string
     const len = Math.hypot(tx - fx, ty - fy) || 1;
     const ux = (tx - fx) / len;
     const uy = (ty - fy) / len;
-    const head = 4;
+    const head = 5;
     const left: Pt = [tx - ux * head - uy * head * 0.7, ty - uy * head + ux * head * 0.7];
     const right: Pt = [tx - ux * head + uy * head * 0.7, ty - uy * head - ux * head * 0.7];
     return [[a.from, a.to], [left, a.to, right]] as Pt[][];
   });
-  for (const lines of arrows) for (const l of lines) stroke(glacier, w, h, l, 3.6, rim);
-  for (const lines of arrows) for (const l of lines) stroke(glacier, w, h, l, 1.6, gc);
+  for (const lines of arrows) for (const l of lines) stroke(glacier, w, h, l, 4.4, rim);
+  for (const lines of arrows) for (const l of lines) stroke(glacier, w, h, l, 2.2, gc);
 
   const mountain = new Uint8Array(w * h * 4);
   const mc = hex(p.colors?.mountain ?? '#8a5a2b');
