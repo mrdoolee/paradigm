@@ -128,8 +128,12 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     const onCard = cards.includes(document.activeElement as HTMLAnchorElement);
     select(onCard ? selected + (e.key === 'ArrowDown' ? 1 : -1) : selected, true);
-  } else if (e.key === 'Enter' && document.activeElement === document.body && cards[selected]) {
-    // Enter with nothing focused starts the highlighted game
+  } else if ((e.key === ' ' || e.key === 'Enter') && cards[selected]) {
+    // Space (as in the games) or Enter starts the highlighted game, from a card or with nothing focused
+    const onCard = cards.includes(document.activeElement as HTMLAnchorElement);
+    if (!onCard && document.activeElement !== document.body) return;
+    if (e.key === 'Enter' && onCard) return; // the link handles Enter itself
+    e.preventDefault();
     cards[selected].click();
   }
 });

@@ -47,7 +47,7 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 | `bash .claude/skills/nos-check/scripts/check.sh [--shots] [--e2e]` | 규칙·타입·테스트·원고 검사 한 번에 |
 | `npm run dev` | 개발 서버 (Claude Code에서는 Browser 도구의 preview_start) |
 | `npm run typecheck` / `npm test` / `npm run check:script` / `npm run shots` / `npm run e2e` | 타입·단위·원고·스크린샷·끝까지 플레이 (e2e 서버 포트 5191) |
-| `npm run build:logo` | 첫 화면 제목 로고(`src/home/logo-*.png`)를 갈무리 도트 글꼴(BDF, OFL)로 다시 만들기 — `SITE_TITLE`을 바꾸면 돌린다 |
+| `npm run build:logo` | 첫 화면 제목 로고(`src/home/logo.png`, 한 줄)를 갈무리 도트 글꼴(BDF, OFL)로 다시 만들기 — `SITE_TITLE`을 바꾸면 돌린다 |
 | `npm run build:masks` / `build:sea` / `build:stripes` | 대륙 마스크·항해 바다 칸·해저 줄무늬 다시 만들기 (도구는 `activities/continental-drift/tools/`) |
 
 ### 폴더 구조

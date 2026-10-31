@@ -1,6 +1,7 @@
 // Builds the list-page title logo from the Galmuri bitmap fonts (BDF, SIL OFL 1.1).
-// SITE_TITLE "A: B" becomes two pixel images: A large (Galmuri14, bold, gold gradient) and B (Galmuri11 Bold, cream).
-// Output: src/home/logo-main.png, src/home/logo-sub.png at 1 pixel per font dot (the page scales them by an integer).
+// SITE_TITLE becomes one line of pixel lettering (Galmuri14, bold): the part before ': ' in a gold gradient,
+// the rest in cream, all with a dark outline and shadow.
+// Output: src/home/logo.png at 1 pixel per font dot (the page scales it by an integer).
 // Usage: npm run build:logo   (run again whenever SITE_TITLE changes)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { PNG } from 'pngjs';
@@ -51,6 +52,8 @@ interface Mask {
   w: number;
   h: number;
   on: Uint8Array;
+  /** where each character starts, in mask x (after trimming) */
+  pens: number[];
 }
 
 function render(font: Font, text: string, tracking = 0): Mask {
@@ -63,7 +66,9 @@ function render(font: Font, text: string, tracking = 0): Mask {
   const h = font.ascent + font.descent;
   const on = new Uint8Array(w * h);
   let pen = 0;
+  const pens: number[] = [];
   for (const g of chars) {
+    pens.push(pen);
     const bytes = Math.ceil(g.w / 8) * 8;
     g.rows.forEach((bits, r) => {
       for (let c = 0; c < g.w; c++) {
@@ -75,10 +80,11 @@ function render(font: Font, text: string, tracking = 0): Mask {
     });
     pen += g.dw + tracking;
   }
-  return trim(on, w, h);
+  const t = trim(on, w, h);
+  return { ...t, pens: pens.map((x) => x - t.x0) };
 }
 
-function trim(on: Uint8Array, w: number, h: number): Mask {
+function trim(on: Uint8Array, w: number, h: number) {
   let x0 = w, y0 = h, x1 = -1, y1 = -1;
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++)
@@ -90,7 +96,7 @@ function trim(on: Uint8Array, w: number, h: number): Mask {
   const th = y1 - y0 + 1;
   const out = new Uint8Array(tw * th);
   for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) out[y * tw + x] = on[(y + y0) * w + x + x0];
-  return { w: tw, h: th, on: out };
+  return { w: tw, h: th, on: out, x0 };
 }
 
 /** Classic bitmap bold: OR the mask with itself shifted one dot right. */
@@ -99,7 +105,7 @@ function embolden(m: Mask): Mask {
   const on = new Uint8Array(w * m.h);
   for (let y = 0; y < m.h; y++)
     for (let x = 0; x < m.w; x++) if (m.on[y * m.w + x]) on[y * w + x] = on[y * w + x + 1] = 1;
-  return { w, h: m.h, on };
+  return { w, h: m.h, on, pens: m.pens };
 }
 
 type RGB = [number, number, number];
@@ -109,7 +115,7 @@ const hex = (s: string): RGB => [1, 3, 5].map((i) => parseInt(s.slice(i, i + 2),
  * Paints the mask: fill colour per text row (gradient bands), a one-dot outline around it,
  * and an optional shadow one dot below-right of the outline.
  */
-function paint(m: Mask, fill: (row: number) => RGB, outline: RGB, shadow: RGB | null): PNG {
+function paint(m: Mask, fill: (x: number, row: number) => RGB, outline: RGB, shadow: RGB | null): PNG {
   const pad = 2;
   const w = m.w + pad * 2;
   const h = m.h + pad * 2;
@@ -129,7 +135,7 @@ function paint(m: Mask, fill: (row: number) => RGB, outline: RGB, shadow: RGB | 
   };
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
-      if (at(x, y)) set(x, y, fill(y - pad));
+      if (at(x, y)) set(x, y, fill(x - pad, y - pad));
       else if (near(x, y)) set(x, y, outline);
       else if (shadow && near(x - 1, y - 1)) set(x, y, shadow);
     }
@@ -137,17 +143,15 @@ function paint(m: Mask, fill: (row: number) => RGB, outline: RGB, shadow: RGB | 
 }
 
 const DIST = 'node_modules/galmuri/dist';
-const [mainText, subText] = SITE_TITLE.includes(': ') ? SITE_TITLE.split(': ', 2) : [SITE_TITLE, ''];
+const cut = SITE_TITLE.indexOf(': ');
+const goldChars = cut < 0 ? [...SITE_TITLE].length : [...SITE_TITLE.slice(0, cut)].length;
 
-const main = embolden(render(parseBdf(`${DIST}/Galmuri14.bdf`), mainText, 2));
-// gold, light at the top, darker toward the bottom (the game's accent #ffd23f in the middle)
+const logo = embolden(render(parseBdf(`${DIST}/Galmuri14.bdf`), SITE_TITLE, 2));
+const goldEnd = logo.pens[goldChars] ?? logo.w;
+// gold, light at the top, darker toward the bottom (the game's accent #ffd23f in the middle); the rest cream
 const GOLD = ['#fff6c2', '#ffe680', '#ffd23f', '#ffd23f', '#f0aa2c', '#d9862a'].map(hex);
-const gold = (row: number) => GOLD[Math.min(GOLD.length - 1, Math.floor((row / main.h) * GOLD.length))];
-writeFileSync('src/home/logo-main.png', PNG.sync.write(paint(main, gold, hex('#3a1f0e'), hex('#0b1018'))));
-console.log(`src/home/logo-main.png: ${main.w + 4}x${main.h + 4}`);
-
-if (subText) {
-  const sub = render(parseBdf(`${DIST}/Galmuri11-Bold.bdf`), subText);
-  writeFileSync('src/home/logo-sub.png', PNG.sync.write(paint(sub, () => hex('#f4ecd8'), hex('#0b1018'), null)));
-  console.log(`src/home/logo-sub.png: ${sub.w + 4}x${sub.h + 4}`);
-}
+const CREAM = ['#fffbef', '#f4ecd8', '#f4ecd8', '#f4ecd8', '#e8dfc6', '#d6c9a6'].map(hex);
+const band = (bands: RGB[], row: number) => bands[Math.min(bands.length - 1, Math.floor((row / logo.h) * bands.length))];
+const fill = (x: number, row: number) => band(x < goldEnd ? GOLD : CREAM, row);
+writeFileSync('src/home/logo.png', PNG.sync.write(paint(logo, fill, hex('#3a1f0e'), hex('#0b1018'))));
+console.log(`src/home/logo.png: ${logo.w + 4}x${logo.h + 4}`);

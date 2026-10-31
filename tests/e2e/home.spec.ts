@@ -3,7 +3,7 @@ import { readdirSync, existsSync } from 'node:fs';
 
 const activities = readdirSync('activities').filter((id) => existsSync(`activities/${id}/script.md`));
 
-test('@e2e 첫 화면: 주제마다 카드 하나, 첫 카드가 골라져 있고 방향키와 Enter로 들어간다', async ({ page }) => {
+test('@e2e 첫 화면: 주제마다 카드 하나, 첫 카드가 골라져 있고 방향키와 Space로 들어간다', async ({ page }) => {
   await page.goto('/');
   const cards = page.locator('.game');
   await expect(cards).toHaveCount(activities.length);
@@ -14,7 +14,11 @@ test('@e2e 첫 화면: 주제마다 카드 하나, 첫 카드가 골라져 있�
   await page.keyboard.press('ArrowDown');
   await expect(cards.first()).toBeFocused();
   await page.screenshot({ path: `test-results/screens/${test.info().project.name}-landing.png`, fullPage: true });
-  await page.keyboard.press('Enter');
+  await page.keyboard.press('Space');
+  await expect(page).toHaveURL(new RegExp(`/${activities[0]}/$`));
+  // Space with nothing focused works too
+  await page.goto('/');
+  await page.keyboard.press('Space');
   await expect(page).toHaveURL(new RegExp(`/${activities[0]}/$`));
 });
 
