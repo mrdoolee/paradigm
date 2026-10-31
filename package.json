@@ -11,6 +11,7 @@
     "e2e": "playwright test --grep @e2e",
     "build:masks": "tsx activities/continental-drift/tools/map/build-masks.ts",
     "build:widths": "tsx scripts/font/build-widths.ts",
+    "build:logo": "tsx scripts/font/build-logo.ts",
     "check:script": "tsx scripts/check-script.ts",
     "build:sfx": "tsx scripts/sfx/make-sfx.ts",
     "build:stripes": "tsx activities/continental-drift/tools/map/build-stripes.ts",

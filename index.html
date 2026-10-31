@@ -7,7 +7,54 @@
     <link rel="stylesheet" href="/src/home/home.css" />
   </head>
   <body>
-    <main id="home"></main>
+    <header class="band band-top">
+      <h1 class="logo" id="site-title">
+        <img class="logo-main" src="/src/home/logo-main.png" alt="" width="68" height="18" />
+        <img class="logo-sub" src="/src/home/logo-sub.png" alt="" width="80" height="15" />
+      </h1>
+      <p class="tagline" id="site-tagline"></p>
+    </header>
+
+    <main class="paper">
+      <h2 class="list-label"><span class="pill">게임 고르기</span></h2>
+      <ul class="games" id="games"></ul>
+    </main>
+
+    <footer class="band band-bottom">
+      <p class="hints" aria-hidden="true">
+        <span class="key">↑↓</span> 고르기 <span class="key">Enter</span> 시작
+      </p>
+      <p class="credit">
+        © 2026 Designed &amp; Developed by
+        <button type="button" class="credit-link" id="credit-open" aria-haspopup="dialog" aria-controls="credit-modal">두리쌤</button>.
+        All rights reserved.
+      </p>
+    </footer>
+
+    <div class="modal-backdrop" id="credit-backdrop" hidden>
+      <div class="modal" id="credit-modal" role="dialog" aria-modal="true" aria-labelledby="credit-title">
+        <button type="button" class="modal-close" id="credit-close" aria-label="닫기">✕</button>
+        <section class="panel">
+          <h2 class="panel-title" id="credit-title">✨ 제작: 두리쌤</h2>
+          <h3 class="panel-sub">📌 이용 조건</h3>
+          <ul class="panel-list">
+            <li>교육 목적으로 자유롭게 사용하실 수 있습니다.</li>
+            <li>재배포 시 출처(제작자 표기)를 유지해주세요.</li>
+            <li>코드를 임의로 수정한 버전을 다시 배포하지 말아주세요.</li>
+            <li>수정이 필요하시면 아래 연락처로 요청해주세요.</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h3 class="panel-sub">📷 문의</h3>
+          <ul class="panel-list">
+            <li>Instagram: <a href="https://www.instagram.com/trdoolee" target="_blank" rel="noopener noreferrer">trdoolee</a></li>
+            <li>Blog: <a href="https://blog.naver.com/trdoolee" target="_blank" rel="noopener noreferrer">blog.naver.com/trdoolee</a></li>
+          </ul>
+          <p class="panel-note">간단한 질문 위주로 답변드리며, 답변이 늦어질 수 있습니다.</p>
+        </section>
+      </div>
+    </div>
+
     <script type="module" src="/src/home/main.ts"></script>
   </body>
 </html>

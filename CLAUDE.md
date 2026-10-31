@@ -7,7 +7,7 @@
 **패러다임: 과학자의 시간** — 과학사 사례로 **과학의 본성(NOS)** 을 겪어 보는 짧은 웹 게임 활동 모음. 대상은 한국 중·고등학생, 혼자 하는 자율 학습이 기본.
 
 - 프로젝트 이름은 `src/engine/strings.ts`의 `SITE_TITLE` 한 곳(목록 페이지·모든 게임 제목 화면·브라우저 탭). 한 줄 소개 `SITE_TAGLINE`("과학사로 겪는 과학의 본성").
-- **게임마다 서브 네임**을 짓는다. 원고의 `@line-title`(제목 화면 큰 글)·`@line-card-title`(목록 카드)에 쓰고, 탐구 질문은 `@line-card-desc` 첫 문장에 둔다. 탭 제목은 "서브 네임 · 프로젝트 이름".
+- **게임마다 서브 네임**을 짓는다. 원고의 `@line-title`(제목 화면 큰 글)·`@line-card-title`(목록 카드)에 쓰고, 탐구 질문은 `@line-card-desc` 첫 문장에 둔다. 카드 아래 작은 정보는 `@line-card-meta`(예: 약 20분 · 혼자 하기 · 성취기준). 탭 제목은 "서브 네임 · 프로젝트 이름".
 
 - 한 활동은 **10~15분**(대륙이동설은 사용자 결정으로 **20분 이내**, 증거 수집 RPG). **기록이 아니라 경험이 목적**이다. 결과를 수집하지 않는다(교사 화면·시트 연동·저장 없음).
 - **타이핑 없이** 끌기·고르기·누르기로 진행한다. 학생이 흐름을 따라가면 NOS를 느끼게 하고, 가상 조수가 짧게 짚어 준다. 끝나면 학생용 정리 페이지(과학 개념 + 이 활동의 NOS 뜻).
@@ -47,6 +47,7 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 | `bash .claude/skills/nos-check/scripts/check.sh [--shots] [--e2e]` | 규칙·타입·테스트·원고 검사 한 번에 |
 | `npm run dev` | 개발 서버 (Claude Code에서는 Browser 도구의 preview_start) |
 | `npm run typecheck` / `npm test` / `npm run check:script` / `npm run shots` / `npm run e2e` | 타입·단위·원고·스크린샷·끝까지 플레이 (e2e 서버 포트 5191) |
+| `npm run build:logo` | 첫 화면 제목 로고(`src/home/logo-*.png`)를 갈무리 도트 글꼴(BDF, OFL)로 다시 만들기 — `SITE_TITLE`을 바꾸면 돌린다 |
 | `npm run build:masks` / `build:sea` / `build:stripes` | 대륙 마스크·항해 바다 칸·해저 줄무늬 다시 만들기 (도구는 `activities/continental-drift/tools/`) |
 
 ### 폴더 구조
@@ -54,7 +55,8 @@ Phaser 4 + TypeScript + Vite. 배포(Vercel)·push는 사용자 승인 뒤.
 ```
 src/engine/        모든 게임 공통: 화면·배율, UI 장면(대화창·선택지·안내 띠), 입력, 끌어 맞추기 / script/ 원고 읽기·검사 / strings.ts 플랫폼 공통 문구
 src/rpg/           고전 RPG 틀: 걷기, 칸 길찾기, 정리 창
-src/home/          첫 화면 목록 (activities/*/script.md를 스스로 찾음)
+src/home/          첫 화면: 생성한 도트 제목 로고, 게임 카드(위아래로 나열, 고르기 강조·방향키), 제작자 모달
+                   카드 = 원고 @line-card-title·desc·meta + 표지 art/cover.png(없으면 art/scenes/title.png, 240×180 가운데 1배)
 activities/<id>/   한 주제의 모든 것: index.html(주소 /<id>/), script.md, sources.md, 데이터, art/,
                    game/(이 주제 장면·main.ts·anchors.ts), tools/(전용 생성 도구), tests/unit·e2e/
 scripts/ tests/    공통 도구·공통 테스트

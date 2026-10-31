@@ -38,6 +38,7 @@ export const ANCHORS: Record<string, BlockKind> = {
   'line-controls': 'line',
   'line-card-title': 'line',
   'line-card-desc': 'line',
+  'line-card-meta': 'line',
   'page-about': 'page',
   'lab-intro': 'dialogue',
   'aide-chat': 'dialogue',

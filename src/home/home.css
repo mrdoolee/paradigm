@@ -1,11 +1,200 @@
-:root { --bg: #14161c; --ink: #ece6d6; --card: #232836; --accent: #ffd23f; }
-html { background: var(--bg); color: var(--ink); }
-body { margin: 0; font: 18px/1.6 system-ui, "Malgun Gothic", sans-serif; }
-main { max-width: 44em; margin: 0 auto; padding: 40px 16px; }
-h1 { font-size: 1.6em; margin-bottom: 0; }
-.tagline { margin-top: 4px; margin-bottom: 28px; opacity: 0.8; }
-.cards { list-style: none; padding: 0; display: grid; gap: 16px; }
-.card { display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 10px; background: var(--card); color: var(--ink); text-decoration: none; border: 2px solid transparent; }
-.card:hover, .card:focus-visible { border-color: var(--accent); }
-.card span { text-wrap: pretty; word-break: keep-all; }
-.card strong { font-size: 1.25em; color: var(--accent); }
+/* List page. Colours are the in-game UI colours (src/engine/UiScene.ts UI_COLORS, title box),
+   font is the in-game pixel font Galmuri. Pixel borders are four box-shadows, so the corners step like pixel art. */
+:root {
+  --band: #1a2733;        /* UI_COLORS.barFill */
+  --box: #121a28;         /* UI_COLORS.boxFill */
+  --edge: #e8dfc6;        /* UI_COLORS.boxEdge */
+  --inner: #4b5870;       /* UI_COLORS.boxInner */
+  --ink: #f4ecd8;         /* UI_COLORS.ink */
+  --dim: #9aa6b8;         /* UI_COLORS.dim */
+  --accent: #ffd23f;      /* UI_COLORS.accent */
+  --paper: #efe6cf;
+  --paper-line: #e2d6b8;
+  --card: #fbf6e8;
+  --card-ink: #121a28;
+  --card-dim: #5a6578;
+  --u: 4px;               /* one pixel of the 2x-scaled pixel art */
+}
+
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+html.modal-open, html.modal-open body { overflow: hidden; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--card-ink);
+  font: 15px/1.6 Galmuri14, "Malgun Gothic", sans-serif;
+  -webkit-font-smoothing: none;
+}
+img { image-rendering: pixelated; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* top and bottom bands: the dialog box look (dark fill, light double line) */
+.band {
+  background: var(--band);
+  color: var(--ink);
+  border-color: var(--edge);
+  border-style: solid;
+  border-width: 0;
+  position: relative;
+}
+.band-top { border-bottom-width: var(--u); padding: 40px 16px 28px; text-align: center; }
+.band-top::after,
+.band-bottom::before {
+  content: "";
+  position: absolute; left: 0; right: 0; height: var(--u);
+  background: var(--inner);
+}
+.band-top::after { bottom: 0; }
+.band-bottom::before { top: 0; }
+.band-bottom { border-top-width: var(--u); padding: 20px 16px 28px; text-align: center; margin-top: auto; }
+
+.logo { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.logo-main { width: calc(68px * 6); height: calc(18px * 6); max-width: 100%; }
+.logo-sub { width: calc(80px * 3); height: calc(15px * 3); max-width: 100%; }
+.tagline {
+  margin: 18px 0 0;
+  font: 24px/1.2 Galmuri11, sans-serif;
+  color: var(--accent);
+}
+
+/* paper area with a faint grid, like a map table */
+.paper {
+  width: 100%;
+  background:
+    linear-gradient(var(--paper-line) 2px, transparent 2px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--paper-line) 2px, transparent 2px) 0 0 / 32px 32px,
+    var(--paper);
+  padding: 32px 16px 48px;
+  flex: 1 0 auto;
+}
+.list-label { margin: 0 auto 24px; max-width: 880px; text-align: center; font-weight: normal; }
+.pill {
+  --frame: var(--card-ink);
+  display: inline-block;
+  padding: 4px 28px;
+  background: var(--card);
+  font: 24px/1.3 Galmuri11, sans-serif;
+  box-shadow: 0 -4px 0 0 var(--frame), 0 4px 0 0 var(--frame), -4px 0 0 0 var(--frame), 4px 0 0 0 var(--frame);
+}
+
+/* game cards, one per row */
+.games { list-style: none; margin: 0 auto; padding: 0 8px; max-width: 880px; display: grid; gap: 32px; }
+.game {
+  --frame: var(--card-ink);
+  position: relative;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 16px;
+  background: var(--card);
+  color: var(--card-ink);
+  text-decoration: none;
+  outline: none;
+  box-shadow:
+    0 -4px 0 0 var(--frame), 0 4px 0 0 var(--frame), -4px 0 0 0 var(--frame), 4px 0 0 0 var(--frame),
+    8px 12px 0 0 rgba(18, 26, 40, 0.25);
+  transition: transform 80ms steps(2);
+}
+.game.is-selected {
+  --frame: var(--accent);
+  background: #fff9e2;
+  transform: translate(0, -4px);
+  box-shadow:
+    0 -4px 0 0 var(--frame), 0 4px 0 0 var(--frame), -4px 0 0 0 var(--frame), 4px 0 0 0 var(--frame),
+    0 -8px 0 0 var(--card-ink), 0 8px 0 0 var(--card-ink), -8px 0 0 0 var(--card-ink), 8px 0 0 0 var(--card-ink),
+    8px 16px 0 0 rgba(18, 26, 40, 0.25);
+}
+.cursor {
+  position: absolute; left: -36px; top: 50%; transform: translateY(-50%);
+  font: 24px/1 Galmuri11, sans-serif; color: var(--card-ink);
+  visibility: hidden;
+}
+.game.is-selected .cursor { visibility: visible; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { visibility: hidden; } }
+
+.cover {
+  width: 240px; height: 180px; overflow: hidden; display: block;
+  background: var(--box);
+  box-shadow: 0 0 0 4px var(--box);
+}
+.cover img { width: 480px; height: 360px; margin: -90px 0 0 -120px; display: block; } /* 1:1 pixels, centre crop */
+
+.info { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.game-title { font: 24px/1.3 Galmuri11, sans-serif; font-weight: bold; }
+.game-desc { word-break: keep-all; text-wrap: pretty; }
+.game-meta {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 2px 10px;
+  font: 12px/1.6 Galmuri11, sans-serif;
+  color: var(--ink);
+  background: var(--box);
+}
+
+/* bottom band: key hints and the credit line */
+.hints { margin: 0 0 14px; font: 12px/1 Galmuri11, sans-serif; color: var(--ink); }
+.key {
+  display: inline-block;
+  margin: 0 4px 0 12px;
+  padding: 3px 8px;
+  background: var(--ink);
+  color: var(--box);
+}
+.credit { margin: 0; font: 12px/1.8 Galmuri11, sans-serif; color: var(--dim); }
+.credit-link {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.credit-link:hover, .credit-link:focus-visible { color: var(--accent); outline: none; }
+
+/* credit modal: the in-game dialog box */
+.modal-backdrop[hidden] { display: none; }
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 10;
+  display: grid; place-items: center;
+  padding: 24px 16px;
+  background: rgba(11, 16, 24, 0.72);
+}
+.modal {
+  --frame: var(--edge);
+  position: relative;
+  width: min(520px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 52px 24px 24px;
+  background: var(--box);
+  color: var(--ink);
+  border: 4px solid var(--inner);
+  box-shadow: 0 -4px 0 0 var(--frame), 0 4px 0 0 var(--frame), -4px 0 0 0 var(--frame), 4px 0 0 0 var(--frame);
+  display: grid; gap: 16px;
+}
+.modal-close {
+  position: absolute; top: 8px; right: 8px;
+  width: 32px; height: 32px;
+  font: 16px/1 Galmuri11, sans-serif;
+  color: var(--ink); background: var(--band);
+  border: 2px solid var(--inner); cursor: pointer;
+}
+.modal-close:hover, .modal-close:focus-visible { color: var(--box); background: var(--accent); outline: none; }
+.panel { padding: 16px 18px; background: var(--band); border: 2px solid var(--inner); }
+.panel-title { margin: 0 0 10px; font: 24px/1.3 Galmuri11, sans-serif; color: var(--accent); }
+.panel-sub { margin: 0 0 6px; font: bold 15px/1.8 Galmuri14, sans-serif; color: var(--ink); }
+.panel-list { margin: 0; padding-left: 20px; }
+.panel-list li { margin: 2px 0; }
+.panel-list a { color: var(--accent); text-underline-offset: 3px; }
+.panel-note { margin: 10px 0 0; font: italic 12px/1.6 Galmuri11, sans-serif; color: var(--dim); }
+
+@media (max-width: 640px) {
+  .game { grid-template-columns: 1fr; }
+  .cover { margin: 0 auto; }
+  .cursor { display: none; }
+  .logo-main { width: calc(68px * 4); height: calc(18px * 4); }
+  .logo-sub { width: calc(80px * 2); height: calc(15px * 2); }
+}
