@@ -29,7 +29,7 @@ bash .claude/skills/nos-check/scripts/check.sh --e2e      # + 끝까지 플레�
 
 ## 규칙 검사 (`.claude/skills/nos-check/scripts/rules-check.mjs`)
 편집 훅이 고친 파일마다 돌리고, `check.sh`가 저장소 전체에 돌린다. 오류면 종료 코드 1.
-- **코드 안 한국어 문장 금지** (`src/`·`activities/<id>/game/`의 코드. 주석·테스트·도구(`scripts/`, `activities/<id>/tools/`)·`src/strings.ts` 제외): 게임 문장은 원고에. 이유: 교사가 고칠 수 있는 곳이 한 곳이어야 한다.
+- **코드 안 한국어 문장 금지** (`src/`·`activities/<id>/game/`의 코드. 주석·테스트·도구(`scripts/`, `activities/<id>/tools/`)·`src/engine/strings.ts` 제외): 게임 문장은 원고에. 이유: 교사가 고칠 수 있는 곳이 한 곳이어야 한다.
 - **게임 화면에 HTML 겹치기 금지** (`src/engine/`·`src/rpg/`·`activities/<id>/game/`에서 `this.add.dom`, `document.createElement`): 이유: 대화창이 화면을 미는 문제의 근원(설계 6절).
 - **`Math.random` 금지**: 같은 입력이면 같은 화면이어야 스크린샷·e2e가 안정적이다. 필요하면 시드 난수.
 - **이모지 금지** (▶▼◀▲ 같은 도형 기호는 허용).

@@ -1,5 +1,5 @@
 import { parseScript } from '../engine/script/parse';
-import { SITE_TITLE } from '../strings';
+import { SITE_TAGLINE, SITE_TITLE } from '../engine/strings';
 
 // Activity list: one card per activities/<id>/script.md, using its line-card-* anchors.
 const scripts = import.meta.glob('../../activities/*/script.md', { query: '?raw', import: 'default', eager: true }) as Record<
@@ -11,6 +11,9 @@ document.title = SITE_TITLE;
 const main = document.getElementById('home')!;
 const h1 = document.createElement('h1');
 h1.textContent = SITE_TITLE;
+const tagline = document.createElement('p');
+tagline.className = 'tagline';
+tagline.textContent = SITE_TAGLINE;
 const list = document.createElement('ul');
 list.className = 'cards';
 for (const [path, text] of Object.entries(scripts)) {
@@ -32,4 +35,4 @@ for (const [path, text] of Object.entries(scripts)) {
   li.append(a);
   list.append(li);
 }
-main.append(h1, list);
+main.append(h1, tagline, list);

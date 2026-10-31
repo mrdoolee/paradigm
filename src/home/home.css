@@ -2,7 +2,8 @@
 html { background: var(--bg); color: var(--ink); }
 body { margin: 0; font: 18px/1.6 system-ui, "Malgun Gothic", sans-serif; }
 main { max-width: 44em; margin: 0 auto; padding: 40px 16px; }
-h1 { font-size: 1.6em; }
+h1 { font-size: 1.6em; margin-bottom: 0; }
+.tagline { margin-top: 4px; margin-bottom: 28px; opacity: 0.8; }
 .cards { list-style: none; padding: 0; display: grid; gap: 16px; }
 .card { display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 10px; background: var(--card); color: var(--ink); text-decoration: none; border: 2px solid transparent; }
 .card:hover, .card:focus-visible { border-color: var(--accent); }

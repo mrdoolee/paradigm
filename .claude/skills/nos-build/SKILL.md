@@ -69,6 +69,7 @@ description: NOS 과학사 활동(예: 대륙이동설)을 설계 문서·구현
 ```
 src/engine/        모든 게임 공통: 화면·배율, UI 장면(대화창·선택지·안내 띠), 입력, 끌어 맞추기, 디버그
 src/engine/script/ 원고 읽기·쪽 나누기·줄바꿈·검사
+src/engine/strings.ts 플랫폼 공통 문구(프로젝트 이름 SITE_TITLE 등) — 코드 속 한국어가 허용되는 한 곳
 src/rpg/           고전 RPG 틀: 걷기(Walker), 칸 길찾기(grid), 정리 창(SummaryScene)
 activities/<id>/   한 주제의 모든 것
   index.html         게임 페이지(주소 /<id>/ — Vite 플러그인이 스스로 찾는다, 설정 고칠 것 없음)
@@ -81,7 +82,7 @@ work/              git 밖 작업 폴더(5절)
 ```
 
 - 주제 코드에서 공통 부품은 별칭으로 가져온다: `@engine/...`, `@rpg/...`. 같은 주제 안은 상대 경로.
-- 새 주제는 같은 단계표를 쓴다. `activities/<새 id>/`에 위 구조를 만들고(대륙이동설의 `index.html`·`game/main.ts`·`game/anchors.ts`를 본보기로), `src/engine`·`src/rpg`는 고치지 않고 쓴다.
+- 새 주제는 같은 단계표를 쓴다. 먼저 **서브 네임**을 사용자와 정한다(프로젝트 "패러다임: 과학자의 시간" 아래 게임 이름, 예: 대륙이동설 "판게아의 기억"). 원고 `@line-title`·`@line-card-title`에 쓰고, 탐구 질문은 `@line-card-desc` 첫 문장에. `activities/<새 id>/`에 위 구조를 만들고(대륙이동설의 `index.html`·`game/main.ts`·`game/anchors.ts`를 본보기로), `src/engine`·`src/rpg`는 고치지 않고 쓴다.
 - 대륙이동설의 마을·제목·항해 장면(`activities/continental-drift/game/scenes/TownScene.ts` 등)은 아직 주제 전용이다. 두 번째 주제를 설계할 때 두 예시를 놓고 마을·진행 순서·지도 이동을 데이터로 바꿔 `src/rpg`로 옮긴다(계획: `docs/superpowers/plans/2026-10-31-folder-structure.md`).
 - 공통 부품(`src/`)을 바꾸면 모든 주제가 깨지지 않는지 `nos-check --e2e`로 확인한다.
 

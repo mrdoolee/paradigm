@@ -2,10 +2,11 @@ import Phaser from 'phaser';
 import { bindActions } from '@engine/actions';
 import { enterScene } from '@engine/debug';
 import { FONT } from '@engine/layout';
+import { SITE_TITLE } from '@engine/strings';
 import { VIEW_H, VIEW_W } from '@engine/screen';
 import { UI_KEY, type UiScene } from '@engine/UiScene';
 
-/** Title screen: the activity name and "press to start". Any confirm or tap starts the puzzle. */
+/** Title screen: the series name, this game's name and "press to start". Any confirm or tap starts the puzzle. */
 export class TitleScene extends Phaser.Scene {
   constructor() {
     super('Title');
@@ -28,9 +29,10 @@ export class TitleScene extends Phaser.Scene {
     }
 
     const style = { fontFamily: FONT.family, fontSize: `${FONT.sizePx}px`, color: '#f4ecd8' };
-    // Title drawn at 2x of the pixel font by scaling the text object by an integer.
-    this.add.text(VIEW_W / 2, 144, ui.line('line-title'), style).setOrigin(0.5).setScale(2);
-    const start = this.add.text(VIEW_W / 2, 178, ui.line('line-start'), { ...style, color: '#ffd23f' }).setOrigin(0.5);
+    // series name small on top, this game's name at 2x of the pixel font (integer scale), then "press to start"
+    this.add.text(VIEW_W / 2, 128, SITE_TITLE, { ...style, color: '#c8d0dc' }).setOrigin(0.5);
+    this.add.text(VIEW_W / 2, 152, ui.line('line-title'), style).setOrigin(0.5).setScale(2);
+    const start = this.add.text(VIEW_W / 2, 182, ui.line('line-start'), { ...style, color: '#ffd23f' }).setOrigin(0.5);
     this.time.addEvent({ delay: 500, loop: true, callback: () => start.setVisible(!start.visible) });
     // how to play, in one line under the title box
     const controls = this.add.text(VIEW_W / 2, 222, ui.line('line-controls'), { ...style, color: '#c8d0dc' }).setOrigin(0.5);

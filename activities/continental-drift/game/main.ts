@@ -1,6 +1,7 @@
 import 'galmuri/dist/galmuri.css';
 import scriptText from '../script.md?raw';
 import { parseScript } from '@engine/script/parse';
+import { SITE_TITLE } from '@engine/strings';
 import { startGame } from '@engine/boot';
 import { dbg, installDebug } from '@engine/debug';
 import { UiScene } from '@engine/UiScene';
@@ -23,7 +24,7 @@ if (errors.length) {
   console.error('script.md errors', errors);
 }
 const card = script.blocks.get('line-card-title');
-if (card && card.kind === 'line') document.title = card.text;
+if (card && card.kind === 'line') document.title = `${card.text} · ${SITE_TITLE}`;
 
 installDebug();
 const game = await startGame(

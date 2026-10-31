@@ -1,6 +1,6 @@
 // Reads activities/<id>/script.md. The format is described in the file's header comment.
 // Errors carry codes; scripts/check-script.ts turns them into teacher-facing messages.
-import { CHARACTERS_HEADING, MARK_LABELS } from '../../strings';
+import { CHARACTERS_HEADING, MARK_LABELS } from '../strings';
 
 export interface Character {
   id: string;
