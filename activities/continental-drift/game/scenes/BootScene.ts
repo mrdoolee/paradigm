@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { UI_KEY, UiScene } from '@engine/UiScene';
 import type { Script } from '@engine/script/parse';
-import { ART } from '../data';
+import { ART, MUSIC } from '../data';
 import { Run, advanceToTown, runFromStart, type TownId } from '../run';
 
 /** Loads every activity image and sound once, starts the UI overlay, then the first scene. */
@@ -20,6 +20,7 @@ export class BootScene extends Phaser.Scene {
     const script = this.registry.get('script') as Script;
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.setScript(script);
+    ui.setMusicSources(MUSIC);
     this.scene.launch(UI_KEY);
     const dev = import.meta.env.DEV;
     // Dev-only shortcuts used by tests and tuning:

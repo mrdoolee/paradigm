@@ -8,7 +8,9 @@ export const dbg = {
   scene: '',
   phase: null as string | null,
   choiceCount: 0,
-  ui: null as null | { status: { dialog: boolean; choice: boolean; guide: string | null } },
+  ui: null as null | {
+    status: { dialog: boolean; choice: boolean; guide: string | null; sound: boolean; music: string | null };
+  },
   board: null as null | {
     info(id: string): { pos: Pt; target: Pt; snapped: boolean; size: { w: number; h: number } } | null;
     movableIds(): string[];
@@ -51,6 +53,8 @@ export interface NosDebug {
     dialog: boolean;
     choice: boolean;
     guide: string | null;
+    sound: boolean;
+    music: string | null;
     zoom: number;
     choiceCount: number;
     world: { x: number; y: number; zoom: number; scrollX: number; scrollY: number } | null;
@@ -77,6 +81,8 @@ export function installDebug(): void {
         dialog: dbg.ui?.status.dialog ?? false,
         choice: dbg.ui?.status.choice ?? false,
         guide: dbg.ui?.status.guide ?? null,
+        sound: dbg.ui?.status.sound ?? false,
+        music: dbg.ui?.status.music ?? null,
         zoom: dbg.game?.scale.zoom ?? 0,
         choiceCount: dbg.choiceCount,
         world: cam ? { x: cam.x, y: cam.y, zoom: cam.zoom, scrollX: cam.scrollX, scrollY: cam.scrollY } : null,

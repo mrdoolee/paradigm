@@ -49,6 +49,7 @@ export class SurveyScene extends Phaser.Scene {
     this.target = null;
     this.ui = this.scene.get(UI_KEY) as UiScene;
     this.ui.bind(this);
+    this.ui.music('sea');
     this.run = this.registry.get('run') as Run;
     this.track = new SurveyTrack(X0, X1);
     this.drawSection();

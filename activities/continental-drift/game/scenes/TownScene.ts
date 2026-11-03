@@ -63,6 +63,7 @@ export class TownScene extends Phaser.Scene {
     this.run = this.registry.get('run') as Run;
     this.ui = this.scene.get(UI_KEY) as UiScene;
     this.ui.bind(this);
+    this.ui.music(this.def.id);
 
     const thingCells = new Set(this.def.things.map((t) => `${t.cell[0]},${t.cell[1]}`));
     const base = gridFromRows(this.def.rows, this.def.walkable);

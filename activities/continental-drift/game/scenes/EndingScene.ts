@@ -16,6 +16,7 @@ export class EndingScene extends Phaser.Scene {
     enterScene('Ending', this);
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
+    ui.music('lab');
 
     if (this.textures.exists('sail/sea')) this.add.image(0, 0, 'sail/sea').setOrigin(0);
     const g = this.add.graphics().setVisible(!this.textures.exists('sail/sea'));

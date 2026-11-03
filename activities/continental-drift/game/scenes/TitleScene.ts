@@ -16,6 +16,7 @@ export class TitleScene extends Phaser.Scene {
     enterScene('Title', this);
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
+    ui.music('lab');
 
     if (this.textures.exists('scenes/title')) {
       this.add.image(0, 0, 'scenes/title').setOrigin(0);

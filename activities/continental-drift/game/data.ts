@@ -32,6 +32,17 @@ export const ART: Record<string, string> = Object.fromEntries(
   Object.entries(urls).map(([path, url]) => [path.replace(/^.*\/art\//, '').replace(/\.png$/, ''), url]),
 );
 
+/** Background music, one track per place, keyed by file name (lab, india, australia, africa, debate, sea). */
+const musicUrls = import.meta.glob('../music/*.mp3', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>;
+
+export const MUSIC: Record<string, string> = Object.fromEntries(
+  Object.entries(musicUrls).map(([path, url]) => [path.replace(/^.*\//, '').replace(/\.mp3$/, ''), url]),
+);
+
 const hex = (c: string) => parseInt(c.slice(1), 16);
 
 export function worldPieces(): PieceSpec[] {

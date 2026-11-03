@@ -28,6 +28,7 @@ export class DebateScene extends Phaser.Scene {
     enterScene('Debate', this);
     const ui = this.scene.get(UI_KEY) as UiScene;
     ui.bind(this);
+    ui.music('debate');
     this.drawHall();
     void this.run(ui);
   }

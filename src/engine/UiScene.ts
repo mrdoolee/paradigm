@@ -32,6 +32,9 @@ export const UI_COLORS = {
 const C = UI_COLORS;
 
 const SLIDE_STEP_MS = 40;
+/** Music sits under dialog reading: quiet, with a short cross-fade between places. */
+const MUSIC_VOLUME = 0.35;
+const MUSIC_FADE_MS = 800;
 
 /** Draws a two-line pixel frame (outer light, inner dark) on a filled box. */
 export function frame(g: Phaser.GameObjects.Graphics, x: number, y: number, w: number, h: number) {
@@ -53,6 +56,10 @@ export class UiScene extends Phaser.Scene {
   private world: Phaser.Scene | null = null;
   private queue = new DialogQueue();
   private soundOn = false;
+  private musicUrls: Record<string, string> = {};
+  private musicWant: string | null = null;
+  private musicNow: { name: string; sound: Phaser.Sound.BaseSound } | null = null;
+  private musicLoading = new Set<string>();
 
   private dialog!: Phaser.GameObjects.Container;
   private portrait!: Phaser.GameObjects.Image;
@@ -76,7 +83,13 @@ export class UiScene extends Phaser.Scene {
   private onAction: ((a: Action) => void) | null = null;
   private onTap: (() => void) | null = null;
 
-  readonly status = { dialog: false, choice: false, guide: null as string | null };
+  readonly status = {
+    dialog: false,
+    choice: false,
+    guide: null as string | null,
+    sound: false,
+    music: null as string | null,
+  };
 
   constructor() {
     super(UI_KEY);
@@ -138,6 +151,47 @@ export class UiScene extends Phaser.Scene {
     if (this.soundOn && this.cache.audio.exists(`sfx-${name}`)) this.sound.play(`sfx-${name}`);
   }
 
+  /** Background music files of the activity, by track name. Loaded only when sound is on. */
+  setMusicSources(urls: Record<string, string>) {
+    this.musicUrls = urls;
+  }
+
+  /** World scenes name the track for their place; null for silence. Same name keeps playing. */
+  music(name: string | null) {
+    this.musicWant = name && this.musicUrls[name] ? name : null;
+    this.syncMusic();
+  }
+
+  private syncMusic() {
+    const want = this.soundOn ? this.musicWant : null;
+    if (this.musicNow?.name === want) return;
+    if (this.musicNow) {
+      const old = this.musicNow.sound;
+      this.musicNow = null;
+      this.tweens.add({ targets: old, volume: 0, duration: MUSIC_FADE_MS, onComplete: () => old.destroy() });
+    }
+    this.status.music = null;
+    if (!want) return;
+    const key = `bgm-${want}`;
+    if (!this.cache.audio.exists(key)) {
+      if (!this.musicLoading.has(key)) {
+        this.musicLoading.add(key);
+        this.load.audio(key, this.musicUrls[want]);
+        this.load.once(`filecomplete-audio-${key}`, () => {
+          this.musicLoading.delete(key);
+          this.syncMusic();
+        });
+        this.load.start();
+      }
+      return;
+    }
+    const sound = this.sound.add(key, { loop: true, volume: 0 });
+    sound.play();
+    this.tweens.add({ targets: sound, volume: MUSIC_VOLUME, duration: MUSIC_FADE_MS });
+    this.musicNow = { name: want, sound };
+    this.status.music = want;
+  }
+
   /** Line text of a `line-*` anchor (title screens use it). */
   line(anchor: string): string {
     const b = this.script.blocks.get(anchor);
@@ -191,8 +245,10 @@ export class UiScene extends Phaser.Scene {
     hit.on('pointerdown', (_p: Phaser.Input.Pointer, _x: number, _y: number, e: Phaser.Types.Input.EventData) => {
       e.stopPropagation();
       this.soundOn = !this.soundOn;
+      this.status.sound = this.soundOn;
       this.drawSoundIcon();
       this.sfx('page');
+      this.syncMusic();
     });
     this.drawSoundIcon();
   }

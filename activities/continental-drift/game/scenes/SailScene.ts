@@ -46,6 +46,7 @@ export class SailScene extends Phaser.Scene {
     this.run = this.registry.get('run') as Run;
     this.ui = this.scene.get(UI_KEY) as UiScene;
     this.ui.bind(this);
+    this.ui.music('sea');
     this.auto = !!data.returnFrom;
 
     this.drawMap();

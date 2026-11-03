@@ -7,6 +7,8 @@ export interface NosState {
   dialog: boolean;
   choice: boolean;
   guide: string | null;
+  sound: boolean;
+  music: string | null;
   zoom: number;
   choiceCount: number;
   world: { x: number; y: number; zoom: number; scrollX: number; scrollY: number } | null;
