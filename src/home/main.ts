@@ -104,6 +104,11 @@ backdrop.addEventListener('click', (e) => {
   if (e.target === backdrop) closeModal();
 });
 
+/** Focused elements that use Space or Enter themselves. */
+const CONTROLS = 'button, a[href], input, textarea, select, [contenteditable]';
+/** Space by key or by physical key, so it still works while a Korean IME is on. */
+const isSpace = (e: KeyboardEvent) => e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar';
+
 document.addEventListener('keydown', (e) => {
   if (isOpen()) {
     if (e.key === 'Escape') {
@@ -128,10 +133,12 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     const onCard = cards.includes(document.activeElement as HTMLAnchorElement);
     select(onCard ? selected + (e.key === 'ArrowDown' ? 1 : -1) : selected, true);
-  } else if ((e.key === ' ' || e.key === 'Enter') && cards[selected]) {
-    // Space (as in the games) or Enter starts the highlighted game, from a card or with nothing focused
-    const onCard = cards.includes(document.activeElement as HTMLAnchorElement);
-    if (!onCard && document.activeElement !== document.body) return;
+  } else if ((isSpace(e) || e.key === 'Enter') && cards[selected]) {
+    // Space (as in the games) or Enter starts the highlighted game, unless another control has focus
+    const active = document.activeElement;
+    const onCard = cards.includes(active as HTMLAnchorElement);
+    if (!onCard && active instanceof HTMLElement && active.matches(CONTROLS)) return;
+    if (e.repeat) return;
     if (e.key === 'Enter' && onCard) return; // the link handles Enter itself
     e.preventDefault();
     cards[selected].click();

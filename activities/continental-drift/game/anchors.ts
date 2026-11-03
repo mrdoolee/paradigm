@@ -9,6 +9,7 @@ export const ANCHORS: Record<string, BlockKind> = {
   'fossil-after': 'dialogue',
   'glacier-before': 'dialogue',
   'glacier-after': 'dialogue',
+  'mountain-recall': 'dialogue',
   'mountain-before': 'dialogue',
   'mountain-after': 'dialogue',
   'merge-after': 'dialogue',

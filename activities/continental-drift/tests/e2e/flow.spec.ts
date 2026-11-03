@@ -29,7 +29,7 @@ test('@e2e 목록에서 시작해 끝까지 하면 마지막 장면에서 정리
   const touch = isTouch(info.project.name);
   await page.goto('/');
   const histStart = await page.evaluate(() => history.length);
-  await page.locator('a.card').first().click();
+  await page.locator('a.game').first().click();
   await waitForNos(page);
   expect((await state(page)).scene).toBe('Title');
   await advance(page, touch);

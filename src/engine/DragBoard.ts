@@ -107,6 +107,13 @@ export class DragBoard {
     if (this.movable.length === 0) this.scene.time.delayedCall(0, () => this.events.emit('phase-done'));
   }
 
+  /** Shows the listed patterns on every piece that has them, without changing the phase. */
+  showPatterns(patterns: string[]): void {
+    for (const p of this.pieces.values()) {
+      for (const [name, img] of Object.entries(p.layers)) img.setVisible(patterns.includes(name));
+    }
+  }
+
   /** Shows every piece at full strength with no highlight (for cut-scenes). */
   showAll(): void {
     this.movable = [];
@@ -151,10 +158,17 @@ export class DragBoard {
 
   /** All pieces' rims flash `times` times (used for the "one landmass" moment). */
   flashAll(times: number, done: () => void): void {
+    this.flash([...this.pieces.keys()], times, done);
+  }
+
+  /** The listed pieces' rims flash `times` times; `bright` also shows them at full strength (to point back at placed pieces). */
+  flash(ids: string[], times: number, done: () => void, bright = false): void {
+    const list = ids.map((id) => this.pieces.get(id)).filter((p): p is Piece => !!p);
+    if (bright) for (const p of list) p.box.setAlpha(1);
     let n = 0;
     const tick = () => {
       const on = n % 2 === 0;
-      for (const p of this.pieces.values()) p.rim.setTint(on ? RIM_ACTIVE : RIM_IDLE);
+      for (const p of list) p.rim.setTint(on ? RIM_ACTIVE : RIM_IDLE);
       n++;
       if (n < times * 2) this.scene.time.delayedCall(250, tick);
       else {

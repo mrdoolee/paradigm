@@ -121,6 +121,15 @@
   - 『The Days of a Man』(D.S. Jordan, 1922, 미국 World Book Co.) 수록 초상(E. Spencer Macky) — 공용 "PD-US"(1931년 이전 미국 출판), https://commons.wikimedia.org/wiki/File:Sir_Tannatt_William_Edgeworth_David_(1858-1934).jpg (확인 2026-10-30). 사진인지 그림인지 공용 설명에 없다. 주된 참고는 1898년 사진(PD-Australia)이다.
   - 생성 1회(`art/prompts/portrait-real.txt`, 참고: 마을 사람 초상 시트(그림체) + 위 사진 2장). 1920년 무렵 60대 모습. bg 64×64 15색, 배경 투명. 정리 페이지에 "원작 아님"을 적었다.
 - **비르발 사니·알렉산더 뒤 토이트**: 퍼블릭 도메인 원본 사진을 찾지 못해 그리지 않았다(공용에 사니는 2025년 흉상 사진 CC BY-SA뿐, 뒤 토이트는 초상 없음).
+- **2026-11-03 사니·뒤 토이트 시대 초상(실제 모습 아님)**: 다시 찾았으나 저작권이 확실히 풀린 원본 사진은 여전히 없다(공용에 사니는 현대 흉상 사진 2장 `Bust of Birbal Sahni (Birla Industrial & Technological Museum).jpg`·`Birbal Sahni.jpg`, 모두 CC BY-SA; 뒤 토이트는 없음). 사용자 결정("없으면 대충 당시 시대 사람의 초상으로 그려줘")으로 닮게 그리지 않은 1920년대 사람 초상을 만들었다. 실존 인물 사진은 참고하지 않았다.
+  - 생성 2회(`art/prompts/portrait-period.txt`, 참고: 마을 사람 초상 시트 `portraits-a` + 데이비드 초상 원본(그림체)). 옷차림은 마을 걷는 그림(`chars/india-scientist-down.png` 갈색 정장, `chars/africa-scientist-down.png` 카키 답사복·챙 넓은 모자)에 맞췄다.
+  - 손질: `bg.py --size 64x64 --colors 16 --key`, 테두리에 남은 마젠타 섞인 픽셀(사니 35개)을 투명으로.
+  - 정리 페이지에 "그 시대 사람의 모습으로 상상해 그렸어요. 실제 얼굴과 닮지 않았어요"를 적었다.
+
+| 파일 | 원본 id | 호출 | 손질 |
+|---|---|---|---|
+| `portrait/sahni.png` | portrait-sahni | 1 | bg 64×64 16색, 배경 투명, 마젠타 테두리 정리 |
+| `portrait/dutoit.png` | portrait-dutoit | 1 | bg 64×64 16색, 배경 투명 |
 
 생성 호출 합계(누계): 35회.
 
@@ -136,3 +145,5 @@
 - 생성 그림은 맨틀을 용암처럼 주황으로 칠했다. 맨틀이 액체라는 오해를 막으려고 설명 글에 "맨틀은 대부분 고체지만 아주 천천히 흘러요(단순화한 그림)"를 붙였다.
 
 생성 호출 합계(누계): 37회.
+
+생성 호출 합계(누계): 39회 (2026-11-03 사니·뒤 토이트 시대 초상 2회).

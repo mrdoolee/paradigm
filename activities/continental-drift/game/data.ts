@@ -11,6 +11,8 @@ export interface Phase {
   pattern: string | null;
   dot: number | null;
   before: string;
+  /** Pieces placed earlier that already show this phase's pattern: they light up while `say` plays, before `before`. */
+  recall?: { pieces: string[]; say: string };
   guide: string;
   after: string;
 }

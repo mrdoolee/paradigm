@@ -140,6 +140,13 @@ export class PuzzleScene extends Phaser.Scene {
     for (const phase of this.phases) {
       dbg.phase = phase.id;
       this.board.setEnabled(false);
+      if (phase.recall && phase.pattern) {
+        // pieces placed earlier already carry this pattern: show it on them first
+        const recall = phase.recall;
+        this.board.showPatterns([...shown, phase.pattern]);
+        await new Promise<void>((r) => this.board.flash(recall.pieces, 2, r, true));
+        await this.ui.say(recall.say);
+      }
       await this.ui.say(phase.before);
       const dots = phase.dot === null ? null : { done: phase.dot, total: DOT_TOTAL };
       this.ui.setGuide(phase.guide, dots);

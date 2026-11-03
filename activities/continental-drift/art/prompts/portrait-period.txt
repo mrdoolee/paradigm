@@ -1,0 +1,5 @@
+Pixel art portrait, chest-up, facing front turned slightly to the left, in the same style as the reference images (the game's other portraits).
+An imagined scientist of the 1920s: {{who}}.
+This is not a likeness of any real person: an ordinary, dignified face true to the region and period, drawn simply; no caricature, no exaggeration.
+Period clothing: {{clothes}}. Plain muted grey-blue background.
+1-pixel dark navy (#1b2a38) outline, light from the top-left, 2 shading steps, muted palette, crisp pixels, no anti-aliasing, no text.
