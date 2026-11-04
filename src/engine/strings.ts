@@ -11,4 +11,4 @@ export const CHARACTERS_HEADING = '등장인물';
 export const SITE_TITLE = '패러다임: 과학자의 시간';
 
 /** One line under the series name on the list page. */
-export const SITE_TAGLINE = '과학사로 겪는 과학의 본성';
+export const SITE_TAGLINE = '과학사로 살펴보는 과학의 본성';
