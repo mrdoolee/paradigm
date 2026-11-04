@@ -16,6 +16,8 @@ import {
   PORTRAIT,
   TOPBAR,
 } from './layout';
+import { VIEW_H, VIEW_W } from './screen';
+import { ROTATE_HINT } from './strings';
 
 export const UI_KEY = 'Ui';
 export type Sfx = 'page' | 'snap' | 'done';
@@ -90,6 +92,8 @@ export class UiScene extends Phaser.Scene {
     guide: null as string | null,
     sound: true,
     music: null as string | null,
+    /** a touch screen held upright: the turn-sideways cover is up */
+    rotate: false,
   };
 
   constructor() {
@@ -117,6 +121,7 @@ export class UiScene extends Phaser.Scene {
     this.buildDialog();
     this.buildChoice();
     this.buildSoundToggle();
+    this.buildRotateCover();
 
     bindActions(this, (a) => this.onAction?.(a));
     this.input.on('pointerdown', () => this.onTap?.());
@@ -252,6 +257,34 @@ export class UiScene extends Phaser.Scene {
       this.syncMusic();
     });
     this.drawSoundIcon();
+  }
+
+  /**
+   * Games are landscape only. A touch screen held upright gets a cover, drawn on the canvas like
+   * the rest of the UI, asking to turn it; the game waits underneath and goes on once turned.
+   */
+  private buildRotateCover() {
+    const bg = this.add.graphics();
+    // same colour as the page around the canvas, so the cover fills the whole upright screen
+    bg.fillStyle(0x14161c).fillRect(0, 0, VIEW_W, VIEW_H);
+    // the canvas is small when upright, so the words are drawn at 2x (icon 4x)
+    const icon = this.text(VIEW_W / 2, VIEW_H / 2 - 30, '↻').setOrigin(0.5).setScale(4);
+    const label = this.text(VIEW_W / 2, VIEW_H / 2 + 26, ROTATE_HINT).setOrigin(0.5).setScale(2);
+    const cover = this.add.container(0, 0, [bg, icon, label]).setDepth(10_000).setVisible(false);
+    const block = this.add.zone(0, 0, VIEW_W, VIEW_H).setOrigin(0).setDepth(10_001);
+    block.on('pointerdown', (_p: Phaser.Input.Pointer, _x: number, _y: number, e: Phaser.Types.Input.EventData) =>
+      e.stopPropagation(),
+    );
+    const upright = window.matchMedia('(orientation: portrait) and (pointer: coarse)');
+    const apply = () => {
+      this.status.rotate = upright.matches;
+      cover.setVisible(upright.matches);
+      if (upright.matches) block.setInteractive();
+      else block.disableInteractive();
+    };
+    upright.addEventListener('change', apply);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => upright.removeEventListener('change', apply));
+    apply();
   }
 
   private drawSoundIcon() {

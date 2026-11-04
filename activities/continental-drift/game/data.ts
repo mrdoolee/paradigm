@@ -18,6 +18,8 @@ export interface Phase {
 }
 
 export const PHASES = puzzle.phases as Phase[];
+/** Table puzzle: the target outline shows only after this much play time on a step. */
+export const HINT_AFTER_MS = puzzle.hintAfterSec * 1000;
 export const WORLD_PHASES = PHASES.filter((p) => p.board === 'world').map((p) => p.id);
 export const DOT_TOTAL = PHASES.filter((p) => p.dot !== null).length;
 

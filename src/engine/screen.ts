@@ -1,7 +1,11 @@
 export const VIEW_W = 480;
 export const VIEW_H = 360;
 
-/** Largest integer zoom that fits the window; never below 1. */
+/**
+ * Largest integer zoom that fits the window. When even 1x does not fit (a phone held sideways),
+ * shrink below 1 so the whole screen still shows; pixels then come out a little uneven.
+ */
 export function pickZoom(innerW: number, innerH: number): number {
-  return Math.max(1, Math.min(Math.floor(innerW / VIEW_W), Math.floor(innerH / VIEW_H)));
+  const fit = Math.min(innerW / VIEW_W, innerH / VIEW_H);
+  return fit < 1 ? fit : Math.floor(fit);
 }

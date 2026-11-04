@@ -9,6 +9,7 @@ export interface NosState {
   guide: string | null;
   sound: boolean;
   music: string | null;
+  rotate: boolean;
   zoom: number;
   choiceCount: number;
   world: { x: number; y: number; zoom: number; scrollX: number; scrollY: number } | null;

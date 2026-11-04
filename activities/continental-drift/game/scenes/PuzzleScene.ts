@@ -7,7 +7,7 @@ import { UI_KEY, type UiScene } from '@engine/UiScene';
 import seafloor from '../../art/seafloor/seafloor.json';
 import type { Run } from '../run';
 import { hash } from '../minigames/stripeArt';
-import { DOT_TOTAL, PHASES, WORLD_PHASES, seafloorPieces, worldPieces, type Phase } from '../data';
+import { DOT_TOTAL, HINT_AFTER_MS, PHASES, WORLD_PHASES, seafloorPieces, worldPieces, type Phase } from '../data';
 
 interface PuzzleData {
   phases?: string[];
@@ -57,7 +57,7 @@ export class PuzzleScene extends Phaser.Scene {
         s.fixed = true;
       }
     }
-    this.board = new DragBoard(this, specs, PUZZLE_AREA);
+    this.board = new DragBoard(this, specs, PUZZLE_AREA, { hintAfterMs: HINT_AFTER_MS });
     dbg.board = this.board;
     if (board !== 'world') this.drawRidgeMark();
     this.events.on('ui-opened', () => this.board.setEnabled(false));

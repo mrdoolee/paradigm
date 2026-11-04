@@ -194,5 +194,6 @@ img { image-rendering: pixelated; }
   .game { grid-template-columns: 1fr; }
   .cover { margin: 0 auto; }
   .cursor { display: none; }
-  .logo-img { width: calc(195px * 2); height: calc(18px * 2); }
+  /* 2x; on a phone held upright (narrower than 2x + gutters) it shrinks to fit */
+  .logo-img { width: calc(195px * 2); height: auto; max-width: 100%; }
 }

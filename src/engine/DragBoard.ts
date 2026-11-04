@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { bindActions } from './actions';
 import { KEY_STEP, SNAP_RADIUS, type Pt, type Rect } from './layout';
 import { clampToArea, snapSteps, trySnap } from './snap';
+import { HintClock } from './hint';
 
 export interface PieceSpec {
   id: string;
@@ -35,6 +36,12 @@ const RIM_ACTIVE = 0xfff6c8;
 const RIM_SELECTED = 0xffd23f;
 const RIM_IDLE = 0x1b2a38;
 const STEP_MS = 40;
+const BLINK_MS = 250;
+
+export interface DragBoardOptions {
+  /** Show the target outline only after this much play time on a phase (0 = at once). */
+  hintAfterMs?: number;
+}
 
 /**
  * Drag-to-fit board. Each piece is a Container (land + pattern layers + rim)
@@ -48,8 +55,15 @@ export class DragBoard {
   private drag: { id: string; dx: number; dy: number } | null = null;
   private selected: string | null = null;
   private blink = 0;
+  private hint: HintClock;
 
-  constructor(private scene: Phaser.Scene, specs: PieceSpec[], private area: Rect) {
+  constructor(
+    private scene: Phaser.Scene,
+    specs: PieceSpec[],
+    private area: Rect,
+    opts: DragBoardOptions = {},
+  ) {
+    this.hint = new HintClock(opts.hintAfterMs ?? 0);
     for (const spec of specs) {
       const land = scene.add.image(0, 0, spec.tex).setOrigin(0).setTint(spec.color);
       const layers: Record<string, Phaser.GameObjects.Image> = {};
@@ -84,7 +98,7 @@ export class DragBoard {
       else if (a === 'confirm') this.dropSelected();
       else if (a === 'left' || a === 'right' || a === 'up' || a === 'down') this.nudge(a);
     });
-    const timer = scene.time.addEvent({ delay: 250, loop: true, callback: () => this.tickBlink() });
+    const timer = scene.time.addEvent({ delay: BLINK_MS, loop: true, callback: () => this.tickBlink() });
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       timer.remove();
       this.events.removeAllListeners();
@@ -95,6 +109,7 @@ export class DragBoard {
   setPhase(movable: string[], patterns: string[]): void {
     this.movable = movable.filter((id) => !this.pieces.get(id)?.snapped);
     this.selected = null;
+    this.hint.reset();
     let depth = 0;
     for (const p of this.pieces.values()) {
       const active = movable.includes(p.spec.id);
@@ -124,6 +139,11 @@ export class DragBoard {
   setEnabled(on: boolean): void {
     this.enabled = on;
     if (!on) this.onUp(true);
+  }
+
+  /** Whether the target outline is on (it still blinks while on). */
+  hintShown(): boolean {
+    return this.hint.shown;
   }
 
   info(id: string): { pos: Pt; target: Pt; snapped: boolean; size: { w: number; h: number } } | null {
@@ -227,6 +247,7 @@ export class DragBoard {
     if (!hit) return;
     p.snapped = true;
     if (this.selected === p.spec.id) this.selected = null;
+    this.hint.reset();
     this.animate(p, hit, 3, () => {
       p.box.setAlpha(1);
       this.refreshRims();
@@ -281,16 +302,18 @@ export class DragBoard {
     for (const p of this.pieces.values()) {
       const active = this.movable.includes(p.spec.id) && !p.snapped;
       p.rim.setTint(p.spec.id === this.selected ? RIM_SELECTED : active ? RIM_ACTIVE : RIM_IDLE);
-      p.dotted.setVisible(active && this.blink % 2 === 0);
+      p.dotted.setVisible(active && this.hint.shown && this.blink % 2 === 0);
     }
   }
 
   private tickBlink() {
     // Screenshot runs (?steady=1, dev only) keep the target outline lit so every shot shows it.
     if (!this.scene.registry.get('steady')) this.blink++;
+    // only time the player can move a piece counts (not dialogs or snapping)
+    this.hint.tick(BLINK_MS, this.enabled && this.movableIds().length > 0);
     for (const p of this.pieces.values()) {
       const active = this.movable.includes(p.spec.id) && !p.snapped;
-      p.dotted.setVisible(active && this.blink % 2 === 0);
+      p.dotted.setVisible(active && this.hint.shown && this.blink % 2 === 0);
     }
   }
 }

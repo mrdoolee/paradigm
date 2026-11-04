@@ -12,3 +12,6 @@ export const SITE_TITLE = '패러다임: 과학자의 시간';
 
 /** One line under the series name on the list page. */
 export const SITE_TAGLINE = '과학사로 살펴보는 과학의 본성';
+
+/** Shown over a game on a touch screen held upright: games are landscape only. */
+export const ROTATE_HINT = '화면을 가로로 돌려 주세요';
