@@ -55,7 +55,8 @@ export class UiScene extends Phaser.Scene {
   private script!: Script;
   private world: Phaser.Scene | null = null;
   private queue = new DialogQueue();
-  private soundOn = false;
+  /** Sound starts on (user decision 2026-11-04); browsers stay silent until the first press. */
+  private soundOn = true;
   private musicUrls: Record<string, string> = {};
   private musicWant: string | null = null;
   private musicNow: { name: string; sound: Phaser.Sound.BaseSound } | null = null;
@@ -87,7 +88,7 @@ export class UiScene extends Phaser.Scene {
     dialog: false,
     choice: false,
     guide: null as string | null,
-    sound: false,
+    sound: true,
     music: null as string | null,
   };
 

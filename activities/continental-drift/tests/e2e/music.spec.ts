@@ -7,29 +7,23 @@ const TOGGLE = { x: 469, y: 11 };
 const musicIs = (page: import('@playwright/test').Page, name: string | null) =>
   expect.poll(async () => (await state(page)).music, { timeout: 15_000 }).toBe(name);
 
-test('@e2e 소리는 처음엔 꺼져 있고 배경음악도 내려받지 않는다', async ({ page }) => {
-  const requested: string[] = [];
-  page.on('request', (r) => {
-    // dev server also asks for tiny ?import url modules; only real audio fetches count
-    if (r.url().includes('/music/') && !r.url().includes('?import')) requested.push(r.url());
-  });
+test('@e2e 소리는 처음엔 켜져 있고 제목 화면부터 연구실 곡이 나온다', async ({ page }) => {
   await page.goto('/continental-drift/');
   await waitForNos(page);
-  await page.waitForTimeout(500);
-  const s = await state(page);
-  expect([s.sound, s.music]).toEqual([false, null]);
-  expect(requested).toEqual([]);
+  expect((await state(page)).sound).toBe(true);
+  await musicIs(page, 'lab');
 });
 
-test('@e2e 소리를 켜면 그 장소 곡이 나오고, 끄면 멈춘다', async ({ page }, info) => {
+test('@e2e 소리 단추로 끄면 곡이 멈추고, 다시 켜면 돌아온다', async ({ page }, info) => {
   const touch = isTouch(info.project.name);
   await page.goto('/continental-drift/');
   await waitForNos(page);
-  await tapAt(page, TOGGLE, touch);
-  expect((await state(page)).sound).toBe(true);
   await musicIs(page, 'lab');
   await tapAt(page, TOGGLE, touch);
+  expect((await state(page)).sound).toBe(false);
   await musicIs(page, null);
+  await tapAt(page, TOGGLE, touch);
+  await musicIs(page, 'lab');
 });
 
 for (const [query, name] of [
@@ -43,7 +37,6 @@ for (const [query, name] of [
     test.skip(info.project.name !== 'desktop', 'one viewport is enough');
     await page.goto(`/continental-drift/?${query}`);
     await waitForNos(page);
-    await tapAt(page, TOGGLE, false);
     await musicIs(page, name);
   });
 }
