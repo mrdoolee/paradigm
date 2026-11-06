@@ -4,6 +4,11 @@ import type { Pt } from '../engine/layout';
 
 export type Dir = 'up' | 'down' | 'left' | 'right';
 export const STEP_MS = 110;
+/**
+ * Places the sprite shows during one cell step. Fewer than the screen's frame rate on purpose:
+ * the character hops 4 art pixels at a time (16px cell / 4) like a classic RPG, not a smooth glide.
+ */
+export const WALK_FRAMES = 4;
 const DELTA: Record<Dir, Cell> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 
 /**
@@ -98,7 +103,8 @@ export class Walker {
     if (!this.to) return;
     this.t += delta;
     const k = Math.min(1, this.t / STEP_MS);
-    this.place({ x: this.from.x + (this.to.x - this.from.x) * k, y: this.from.y + (this.to.y - this.from.y) * k });
+    const shown = Math.floor(k * WALK_FRAMES) / WALK_FRAMES;
+    this.place({ x: this.from.x + (this.to.x - this.from.x) * shown, y: this.from.y + (this.to.y - this.from.y) * shown });
     if (k < 1) return;
     this._cell = this.nextCell();
     this.from = this.to;
