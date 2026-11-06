@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { VIEW_W, VIEW_H, pickZoom } from './screen';
+import { mountTouchpad } from './touchpad';
 
 export const BORDER_COLOR = '#14161c';
 export const FONT_FAMILY = 'Galmuri11';
@@ -36,5 +37,6 @@ export async function startGame(
     if (game.scale.zoom !== z) game.scale.setZoom(z);
   };
   window.addEventListener('resize', onResize);
+  mountTouchpad();
   return game;
 }

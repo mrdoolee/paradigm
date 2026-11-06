@@ -1,0 +1,78 @@
+/* On-screen buttons beside the game (touchpad.ts). Colours are the in-game UI colours (UiScene UI_COLORS). */
+:root {
+  --tp-room: 0px;
+  --tp-pad: clamp(76px, calc(var(--tp-room) - 24px), 132px);
+  --tp-fill: #121a28;
+  --tp-edge: #e8dfc6;
+  --tp-inner: #4b5870;
+  --tp-ink: #f4ecd8;
+  --tp-accent: #ffd23f;
+}
+
+.tp {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: var(--tp-room);
+  z-index: 5;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding-top: 12vh; /* a little below the middle, where thumbs rest */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.tp-on .tp { display: flex; }
+.tp-left { left: 0; }
+.tp-right { right: 0; }
+
+/* pixel frame: four hard shadows so the corners step like the dialog box */
+.tp-arm, .tp-hub, .tp-btn {
+  background: var(--tp-fill);
+  color: var(--tp-ink);
+  box-shadow: 0 -3px 0 0 var(--tp-edge), 0 3px 0 0 var(--tp-edge), -3px 0 0 0 var(--tp-edge), 3px 0 0 0 var(--tp-edge),
+    inset 0 0 0 3px var(--tp-inner);
+}
+.is-down { background: var(--tp-accent); color: var(--tp-fill); }
+
+.tp-dpad {
+  position: relative;
+  width: var(--tp-pad);
+  height: var(--tp-pad);
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+.tp-arm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: calc(var(--tp-pad) / 7) / 1 Galmuri11, sans-serif;
+  pointer-events: none;
+}
+.tp-arm-up { grid-area: 1 / 2; }
+.tp-arm-left { grid-area: 2 / 1; }
+.tp-arm-right { grid-area: 2 / 3; }
+.tp-arm-down { grid-area: 3 / 2; }
+.tp-hub { grid-area: 2 / 2; pointer-events: none; box-shadow: inset 0 0 0 3px var(--tp-inner); }
+
+.tp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 14px/1 Galmuri11, sans-serif;
+}
+.tp-a {
+  width: calc(var(--tp-pad) * 0.62);
+  height: calc(var(--tp-pad) * 0.62);
+  font-size: 16px;
+}
+.tp-cycle {
+  width: calc(var(--tp-pad) * 0.62);
+  height: 32px;
+  font-size: 12px;
+}

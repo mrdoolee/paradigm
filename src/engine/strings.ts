@@ -15,3 +15,7 @@ export const SITE_TAGLINE = '과학사로 살펴보는 과학의 본성';
 
 /** Shown over a game on a touch screen held upright: games are landscape only. */
 export const ROTATE_HINT = '화면을 가로로 돌려 주세요';
+
+/** On-screen buttons beside the game on a phone held sideways (src/engine/touchpad.ts). */
+export const TOUCH_CONFIRM = '확인';
+export const TOUCH_CYCLE = '바꾸기';
