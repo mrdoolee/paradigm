@@ -60,6 +60,7 @@ img { image-rendering: pixelated; }
   margin: 12px 0 0;
   font: 24px/1.2 Galmuri11, sans-serif;
   color: var(--accent);
+  word-break: keep-all;
 }
 
 /* paper area with a faint grid, like a map table */
@@ -146,7 +147,7 @@ img { image-rendering: pixelated; }
   background: var(--ink);
   color: var(--box);
 }
-.credit { margin: 0; font: 12px/1.8 Galmuri11, sans-serif; color: var(--dim); }
+.credit { margin: 0; font: 12px/1.8 Galmuri11, sans-serif; color: var(--dim); word-break: keep-all; }
 .credit-link {
   font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer;
   text-decoration: underline; text-underline-offset: 3px;
@@ -190,10 +191,20 @@ img { image-rendering: pixelated; }
 .panel-list a { color: var(--accent); text-underline-offset: 3px; }
 .panel-note { margin: 10px 0 0; font: italic 12px/1.6 Galmuri11, sans-serif; color: var(--dim); }
 
+/* the ▶ cursor sits outside the card; without room beside the list it would be cut off */
+@media (max-width: 967px) {
+  .cursor { display: none; }
+}
+/* phone held sideways: the 4x logo (780px) no longer fits, so 3x */
+@media (max-width: 812px) {
+  .logo-img { width: calc(195px * 3); height: calc(18px * 3); }
+}
+
 @media (max-width: 640px) {
   .game { grid-template-columns: 1fr; }
   .cover { margin: 0 auto; }
   .cursor { display: none; }
   /* 2x; on a phone held upright (narrower than 2x + gutters) it shrinks to fit */
   .logo-img { width: calc(195px * 2); height: auto; max-width: 100%; }
+  .tagline { font-size: 18px; }
 }
