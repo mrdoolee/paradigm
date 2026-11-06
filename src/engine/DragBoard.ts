@@ -56,6 +56,9 @@ export class DragBoard {
   private selected: string | null = null;
   private blink = 0;
   private hint: HintClock;
+  /** Pieces whose target outline shows from the start of the phase, without waiting. */
+  private hintNow: string[] = [];
+  private flashing = 0;
 
   constructor(
     private scene: Phaser.Scene,
@@ -105,9 +108,13 @@ export class DragBoard {
     });
   }
 
-  /** Makes `movable` the current phase and shows the listed patterns on every piece that has them. */
-  setPhase(movable: string[], patterns: string[]): void {
+  /**
+   * Makes `movable` the current phase and shows the listed patterns on every piece that has them.
+   * `hintNow` pieces show their target outline at once (the others wait for the hint delay).
+   */
+  setPhase(movable: string[], patterns: string[], hintNow: string[] = []): void {
     this.movable = movable.filter((id) => !this.pieces.get(id)?.snapped);
+    this.hintNow = hintNow;
     this.selected = null;
     this.hint.reset();
     let depth = 0;
@@ -184,6 +191,7 @@ export class DragBoard {
   /** The listed pieces' rims flash `times` times; `bright` also shows them at full strength (to point back at placed pieces). */
   flash(ids: string[], times: number, done: () => void, bright = false): void {
     const list = ids.map((id) => this.pieces.get(id)).filter((p): p is Piece => !!p);
+    this.flashing++;
     if (bright) for (const p of list) p.box.setAlpha(1);
     let n = 0;
     const tick = () => {
@@ -192,6 +200,7 @@ export class DragBoard {
       n++;
       if (n < times * 2) this.scene.time.delayedCall(250, tick);
       else {
+        this.flashing--;
         this.refreshRims();
         done();
       }
@@ -301,9 +310,19 @@ export class DragBoard {
   private refreshRims() {
     for (const p of this.pieces.values()) {
       const active = this.movable.includes(p.spec.id) && !p.snapped;
-      p.rim.setTint(p.spec.id === this.selected ? RIM_SELECTED : active ? RIM_ACTIVE : RIM_IDLE);
-      p.dotted.setVisible(active && this.hint.shown && this.blink % 2 === 0);
+      p.rim.setTint(this.rimTint(p, active));
+      p.dotted.setVisible(this.dottedOn(p, active));
     }
+  }
+
+  /** The selected piece's rim blinks yellow, so a switch with the cycle key is easy to see. */
+  private rimTint(p: Piece, active: boolean): number {
+    if (p.spec.id === this.selected) return this.blink % 2 === 0 ? RIM_SELECTED : RIM_IDLE;
+    return active ? RIM_ACTIVE : RIM_IDLE;
+  }
+
+  private dottedOn(p: Piece, active: boolean): boolean {
+    return active && (this.hint.shown || this.hintNow.includes(p.spec.id)) && this.blink % 2 === 0;
   }
 
   private tickBlink() {
@@ -313,7 +332,8 @@ export class DragBoard {
     this.hint.tick(BLINK_MS, this.enabled && this.movableIds().length > 0);
     for (const p of this.pieces.values()) {
       const active = this.movable.includes(p.spec.id) && !p.snapped;
-      p.dotted.setVisible(active && this.hint.shown && this.blink % 2 === 0);
+      p.dotted.setVisible(this.dottedOn(p, active));
+      if (p.spec.id === this.selected && !this.flashing) p.rim.setTint(this.rimTint(p, active));
     }
   }
 }

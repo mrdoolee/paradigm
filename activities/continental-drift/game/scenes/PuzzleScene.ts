@@ -154,7 +154,7 @@ export class PuzzleScene extends Phaser.Scene {
       await new Promise<void>((resolve) => {
         this.board.events.once('phase-done', resolve);
         if (phase.pattern) shown.push(phase.pattern);
-        this.board.setPhase(phase.move, [...shown]);
+        this.board.setPhase(phase.move, [...shown], phase.hintNow);
       });
       this.ui.sfx('done');
       this.ui.setGuide(null);

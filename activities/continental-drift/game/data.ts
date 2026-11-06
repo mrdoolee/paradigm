@@ -8,6 +8,8 @@ export interface Phase {
   id: string;
   board: 'world' | 'seafloor';
   move: string[];
+  /** Pieces whose target outline shows at once, before the hint delay (the first piece the others line up with). */
+  hintNow?: string[];
   pattern: string | null;
   dot: number | null;
   before: string;
